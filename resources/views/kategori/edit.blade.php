@@ -13,7 +13,7 @@ aria-labelledby="modalEditKategoriLabel{{ $data->id }}" aria-hidden="true">
         @method('PUT')
         <div class="modal-body">
             <div class="mb-3">
-                <label class="form-label">Kode Kategori</label>
+                <label class="form-label">ID</label>
                 <input type="text" class="form-control" name="id" value="{{ $data->id }}" readonly>
             </div>
 

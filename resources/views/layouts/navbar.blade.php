@@ -54,7 +54,7 @@
             <li class="mt-4">
                 <a href="{{ route('pembeli.index') }}" target="_blank" class="btn w-100 shadow-sm d-flex align-items-center justify-content-center" 
                    style="background-color: #202124; color: white; border-radius: 50px;">
-                    <i class="bi bi-cart-fill me-2"></i> ORDER MENU
+                    <i class="bi bi-cart-fill me-2"></i> BUKA MENU
                 </a>
             </li>
         </ul>

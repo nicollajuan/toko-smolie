@@ -130,7 +130,7 @@
 
     {{-- 3. RINGKASAN MENU --}}
     <div class="d-flex align-items-center mb-4">
-        <h4 class="fw-bold text-dark m-0 me-3">Menu Andalan</h4>
+        <h4 class="fw-bold text-dark m-0 me-3">Kategori Menu</h4>
         <div class="flex-grow-1 border-bottom"></div>
     </div>
 
