@@ -10,10 +10,10 @@
 
     <title>@yield('title', 'Warung Tahu Lontong')</title>
 
-    {{-- FONTS --}}
+    {{-- FONTS: Diganti ke Poppins dan Nunito untuk kesan playful & modern --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     {{-- BOOTSTRAP 5 --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,25 +24,28 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
 
     <style>
-        /* --- KFC THEME VARIABLES --- */
+        /* --- TIMBUKTOON THEME VARIABLES --- */
         :root {
-            --kfc-red: #E4002B;
-            --kfc-dark: #202124;
-            --kfc-gray: #f8f9fa;
+            --theme-primary: #DD3827; /* Merah-Oranye ceria seperti di gambar */
+            --theme-secondary: #FDE8E5; /* Merah sangat muda untuk background hover/aksen */
+            --theme-dark: #2D3142; /* Biru dongker gelap untuk teks agar tidak terlalu kaku */
+            --theme-gray: #F9F9FB; /* Abu-abu sangat muda untuk background body */
+            --theme-text: #4F5665;
         }
 
         body {
-            font-family: 'Open Sans', sans-serif;
-            background-color: var(--kfc-gray);
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--theme-gray);
             overflow-x: hidden;
-            color: var(--kfc-dark);
+            color: var(--theme-text);
         }
 
-        h1, h2, h3, h4, h5, h6, .kfc-font {
-            font-family: 'Oswald', sans-serif;
-            text-transform: uppercase;
+        /* Heading menggunakan Poppins yang membulat */
+        h1, h2, h3, h4, h5, h6, .theme-font {
+            font-family: 'Poppins', sans-serif;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            color: var(--theme-dark);
+            /* Menghapus text-transform: uppercase agar lebih ramah */
         }
 
         /* --- SIDEBAR STYLE --- */
@@ -51,98 +54,113 @@
             margin-left: -260px;
             transition: margin .25s ease-out;
             background-color: #ffffff;
-            border-right: 1px solid #eee;
+            border-right: none; /* Dihilangkan, diganti shadow halus */
             width: 260px;
             position: fixed;
             top: 0;
             left: 0;
             z-index: 1000;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.03);
         }
 
         #page-content-wrapper {
             min-width: 100vw;
-            padding-left: 0; /* Default mobile first */
+            padding-left: 0;
             transition: all 0.25s ease-out;
         }
 
-        /* Tampilan Desktop (>768px) */
         @media (min-width: 768px) {
             #sidebar-wrapper { margin-left: 0; }
             #page-content-wrapper { padding-left: 260px; }
-            
-            /* Saat ditoggle di desktop, sidebar sembunyi */
             body.toggled #sidebar-wrapper { margin-left: -260px; }
             body.toggled #page-content-wrapper { padding-left: 0; }
         }
 
-        /* Tampilan Mobile (<768px) */
         @media (max-width: 768px) {
-            /* Saat ditoggle di mobile, sidebar muncul */
             body.toggled #sidebar-wrapper { margin-left: 0; }
         }
 
         /* --- BUTTONS --- */
         .btn {
-            border-radius: 50px;
+            border-radius: 50px; /* Pil membulat penuh seperti di gambar */
             font-weight: 600;
-            padding: 8px 20px;
-            text-transform: uppercase;
-            font-family: 'Oswald', sans-serif;
-            letter-spacing: 1px;
-            transition: all 0.2s;
+            padding: 10px 24px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
         }
 
         .btn-primary, .btn-success {
-            background-color: var(--kfc-red);
-            border-color: var(--kfc-red);
+            background-color: var(--theme-primary);
+            border-color: var(--theme-primary);
             color: white;
         }
 
         .btn-primary:hover, .btn-success:hover {
-            background-color: #b00020;
-            border-color: #b00020;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(228, 0, 43, 0.3);
+            background-color: #C02E1F;
+            border-color: #C02E1F;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(221, 56, 39, 0.25);
         }
 
         .btn-outline-secondary {
-            border-color: #ddd;
-            color: var(--kfc-dark);
+            border-color: #E2E8F0;
+            color: var(--theme-text);
+            background-color: white;
         }
         
         .btn-outline-secondary:hover {
-            background-color: var(--kfc-dark);
-            color: white;
+            background-color: var(--theme-secondary);
+            color: var(--theme-primary);
+            border-color: var(--theme-primary);
         }
 
-        /* --- CARD & TABLE STYLE --- */
+        /* --- CARD STYLE (Lebih membulat & Halus) --- */
         .card {
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border-radius: 20px; /* Sudut sangat membulat */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
             background: white;
+            transition: transform 0.3s ease;
+        }
+
+        /* --- TABLE STYLE --- */
+        .table {
+            color: var(--theme-text);
         }
 
         /* DataTables Customization */
         .dataTables_wrapper .dataTables_paginate .paginate_button.current, 
         .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-            background: var(--kfc-red) !important;
+            background: var(--theme-primary) !important;
             color: white !important;
-            border: 1px solid var(--kfc-red) !important;
-            border-radius: 50%;
+            border: none !important;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(221, 56, 39, 0.2);
         }
 
-        thead.table-light tr th {
-            background-color: var(--kfc-red) !important;
-            color: white !important;
+        thead.table-light tr th, table thead tr th {
+            background-color: var(--theme-secondary) !important;
+            color: var(--theme-primary) !important;
             border: none;
-            font-family: 'Oswald', sans-serif;
-            font-weight: 500;
-            text-transform: uppercase;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            padding: 15px !important;
         }
         
-        table tr:first-child th:first-child { border-top-left-radius: 10px; }
-        table tr:first-child th:last-child { border-top-right-radius: 10px; }
+        /* Membulatkan ujung header tabel */
+        table thead tr th:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+        table thead tr th:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+        
+        table tbody tr td {
+            padding: 15px !important;
+            vertical-align: middle;
+            border-bottom: 1px dashed #E2E8F0;
+        }
+        
+        /* Navbar Atas */
+        .navbar {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02) !important;
+        }
     </style>
 </head>
 
@@ -151,7 +169,7 @@
     <div class="d-flex" id="wrapper">
         
         {{-- 1. SIDEBAR --}}
-        <div id="sidebar-wrapper" class="shadow-sm">
+        <div id="sidebar-wrapper">
             @include('layouts.navbar')
         </div>
 
@@ -159,17 +177,17 @@
         <div id="page-content-wrapper" class="d-flex flex-column min-vh-100">
             
             {{-- A. Navbar Atas --}}
-            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top shadow-sm px-4 py-3">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom-0 sticky-top px-4 py-3">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-light border shadow-sm me-3" id="menu-toggle">
-                        <i class="bi bi-list fs-5"></i>
+                    <button class="btn btn-outline-secondary border-0 shadow-sm me-3 rounded-circle" id="menu-toggle" style="width: 45px; height: 45px; padding: 0;">
+                        <i class="bi bi-list fs-4 m-0"></i>
                     </button>
-                    <span class="fw-bold d-none d-md-block kfc-font text-secondary">Dashboard Admin</span>
+                    <span class="fw-bold d-none d-md-block theme-font fs-5" style="color: var(--theme-primary);">Dashboard Admin</span>
                 </div>
             </nav>
 
             {{-- B. Isi Konten Utama --}}
-            <div class="container-fluid p-4 flex-grow-1">
+            <div class="container-fluid p-4 p-md-5 flex-grow-1">
 
                 {{-- ======================================================== --}}
                 {{-- ALERT GLOBAL                                             --}}
@@ -177,23 +195,23 @@
                 
                 {{-- 1. Alert Sukses --}}
                 @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="background-color: #d1e7dd; border-left: 5px solid #198754; color: #0f5132;">
+                    <div class="alert alert-success alert-dismissible fade show border-0 mb-4" role="alert" style="background-color: #E8F5E9; border-radius: 16px; color: #2E7D32;">
                         <div class="d-flex align-items-center">
-                            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                            <i class="bi bi-check-circle-fill me-3 fs-4"></i>
                             <span class="fw-bold">{{ session('success') }}</span>
                         </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close mt-1" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
 
                 {{-- 2. Alert Error --}}
                 @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 5px solid #dc3545;">
+                    <div class="alert alert-danger alert-dismissible fade show border-0 mb-4" role="alert" style="background-color: #FFEBEE; border-radius: 16px; color: #C62828;">
                         <div class="d-flex align-items-center">
-                            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                            <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
                             <span class="fw-bold">{{ session('error') }}</span>
                         </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close mt-1" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
                 {{-- ======================================================== --}}
@@ -202,9 +220,9 @@
             </div>
 
             {{-- C. Footer --}}
-            <footer class="bg-white py-3 border-top mt-auto">
-                <div class="container-fluid text-center text-muted small">
-                    &copy; {{ date('Y') }} <strong>Warung Tahu Lontong</strong>. All Rights Reserved.
+            <footer class="bg-transparent py-4 mt-auto">
+                <div class="container-fluid text-center text-muted small" style="font-family: 'Poppins', sans-serif;">
+                    &copy; {{ date('Y') }} <strong style="color: var(--theme-primary);">Warung Tahu Lontong</strong>. All Rights Reserved.
                     @if(View::exists('layouts.footer'))
                         @include('layouts.footer')
                     @endif
