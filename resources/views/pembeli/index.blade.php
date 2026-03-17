@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warung Tahu Lontong - Order</title>
+    <title>Smolie Gift - Pusat Custom Souvenir</title>
     
     {{-- Bootstrap 5 & Icons --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* --- TEMA BARU YANG DISERAGAMKAN DENGAN ADMIN --- */
+        /* --- TEMA BARU --- */
         :root { 
             --primary-color: #DD3827; /* Merah Coral Ceria */
             --secondary-color: #FDE8E5; /* Pink Muda */
@@ -48,7 +48,7 @@
         .btn-cat { border: none; background: white; color: #64748B; border-radius: 50px; padding: 10px 24px; font-weight: 600; white-space: nowrap; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); font-family: 'Poppins', sans-serif;}
         .btn-cat:hover, .btn-cat.active { background-color: var(--primary-color); color: white; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(221, 56, 39, 0.2); }
         
-        /* Banner diganti menjadi gradasi yang lebih ceria */
+        /* Banner untuk Souvenir */
         .hero-banner { background: linear-gradient(135deg, var(--primary-color), #FF7A68); border-radius: 24px; padding: 40px 20px; text-align: center; color: white; margin-bottom: 30px; box-shadow: 0 15px 35px rgba(221, 56, 39, 0.2); }
         
         .service-option { background: white; border-radius: 20px; padding: 15px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.03); transition: all 0.3s; border: 2px solid transparent; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #64748B; text-decoration: none; }
@@ -71,9 +71,6 @@
         
         .floating-cart { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--text-dark); color: white; padding: 15px 25px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 15px 35px rgba(45, 49, 66, 0.3); z-index: 1050; text-decoration: none; transition: 0.3s;}
         .floating-cart:hover { transform: translateX(-50%) translateY(-5px); color: white; background: #1e212d; }
-
-        /* Badge Tambahan */
-        .custom-badge { background-color: var(--secondary-color); color: var(--primary-color); border: 1px solid rgba(221,56,39,0.2); }
     </style>
 </head>
 <body id="beranda">
@@ -83,14 +80,14 @@
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="/">
                 <img src="{{ asset('template/img/tahu.png') }}" width="45" height="45" class="me-2 rounded-circle border border-2 border-white shadow-sm">
-                <span class="ms-1" style="color: var(--primary-color);">Tahu Lontong</span>
+                <span class="ms-1" style="color: var(--primary-color);">Smolie Gift</span>
             </a>
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link active" href="{{ url('/') }}#beranda">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/') }}#menu-area">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://maps.app.goo.gl/QXPS4XWyi1L5ofAo7" target="_blank">Lokasi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/') }}#menu-area">Katalog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" target="_blank">Kontak</a></li>
                     @auth <li class="nav-item"><a class="nav-link" href="{{ route('pembeli.riwayat') }}">Riwayat</a></li> @endauth
                 </ul>
                 <div class="d-flex align-items-center mt-3 mt-lg-0">
@@ -116,9 +113,10 @@
     </nav>
 
     <div class="container">
+        {{-- BNNER BARU UNTUK SOUVENIR --}}
         <div class="hero-banner">
-            <h2 class="fw-bold mb-2 display-6">Lapar? Pesan Sekarang!</h2>
-            <p class="mb-0 fs-5" style="opacity: 0.9;">Nikmati Tahu Lontong Legendaris</p>
+            <h2 class="fw-bold mb-2 display-6">Cari Souvenir Unik & Cantik?</h2>
+            <p class="mb-0 fs-5" style="opacity: 0.9;">Temukan beragam pilihan custom souvenir di Smolie Gift!</p>
         </div>
 
         @if(session('success'))
@@ -128,26 +126,32 @@
             </div>
         @endif
 
-        {{-- Layanan --}}
+        @if(session('error'))
+            <div class="alert border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center" style="background-color: #FFEBEE; color: #C62828;">
+                <i class="bi bi-exclamation-circle-fill fs-4 me-3"></i> <strong>{{ session('error') }}</strong>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        {{-- Layanan Pengambilan --}}
         <div class="mb-5">
-            <h5 class="fw-bold mb-3 ps-2" style="color: var(--text-dark);">Mau makan gimana?</h5>
+            <h5 class="fw-bold mb-3 ps-2" style="color: var(--text-dark);">Metode Pengambilan Pesanan</h5>
             @php $layanan = session('jenis_pesanan', 'takeaway'); @endphp
             <div class="row g-3">
-                <div class="col-4"><a href="{{ route('set.layanan', 'takeaway') }}" class="text-decoration-none"><div class="service-option {{ $layanan == 'takeaway' ? 'active-service' : '' }}"><i class="bi bi-bag-check-fill fs-3 mb-2"></i><div class="fw-bold small">Takeaway</div></div></a></div>
-                <div class="col-4"><a href="{{ route('set.layanan', 'dine_in') }}" class="text-decoration-none"><div class="service-option {{ $layanan == 'dine_in' ? 'active-service' : '' }}"><i class="bi bi-shop fs-3 mb-2"></i><div class="fw-bold small">Dine In</div></div></a></div>
-                <div class="col-4"><a href="{{ route('set.layanan', 'delivery') }}" class="text-decoration-none"><div class="service-option {{ $layanan == 'delivery' ? 'active-service' : '' }}"><i class="bi bi-box-seam-fill fs-3 mb-2"></i><div class="fw-bold small">Delivery</div></div></a></div>
+                <div class="col-6"><a href="{{ route('set.layanan', 'takeaway') }}" class="text-decoration-none"><div class="service-option {{ $layanan == 'takeaway' ? 'active-service' : '' }}"><i class="bi bi-shop fs-3 mb-2"></i><div class="fw-bold small">Ambil di Toko (Pickup)</div></div></a></div>
+                <div class="col-6"><a href="{{ route('set.layanan', 'delivery') }}" class="text-decoration-none"><div class="service-option {{ $layanan == 'delivery' ? 'active-service' : '' }}"><i class="bi bi-box-seam-fill fs-3 mb-2"></i><div class="fw-bold small">Kirim via Ekspedisi</div></div></a></div>
             </div>
         </div>
 
         {{-- Menu Area --}}
         <div id="menu-area" class="pt-2">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="fw-bold mb-0" style="color: var(--text-dark);">Menu Pilihan</h4>
+                <h4 class="fw-bold mb-0" style="color: var(--text-dark);">Katalog Produk</h4>
             </div>
 
             {{-- Filter Kategori --}}
             <div class="category-scroll">
-                <button class="btn btn-cat active" data-filter="all">Semua Menu</button>
+                <button class="btn btn-cat active" data-filter="all">Semua Kategori</button>
                 @foreach($kategori as $k)
                     <button class="btn btn-cat" data-filter="{{ $k->id }}">{{ $k->nama_kategori }}</button>
                 @endforeach
@@ -196,7 +200,7 @@
                                     </button>
                                 @else
                                     <button type="button" class="btn-add" data-bs-toggle="modal" data-bs-target="#modalOrder-{{ $p->id }}">
-                                        <i class="bi bi-plus-circle me-1"></i> Tambah
+                                        <i class="bi bi-plus-circle me-1"></i> Pesan
                                     </button>
                                 @endif
                             </div>
@@ -204,7 +208,7 @@
                     </div>
                 </div>
 
-                {{-- MODAL DETAIL PESANAN --}}
+                {{-- MODAL DETAIL PESANAN SOUVENIR --}}
                 @if(!$isNonAktif)
                 <div class="modal fade" id="modalOrder-{{ $p->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -213,119 +217,78 @@
                                 <h4 class="modal-title fw-bold" style="color: var(--text-dark);">{{ $p->nama_produk }}</h4>
                                 <button type="button" class="btn-close bg-light rounded-circle p-2" data-bs-dismiss="modal" style="box-shadow: none;"></button>
                             </div>
-                            <form action="{{ route('add.to.cart', $p->id) }}" method="GET">
+                            
+                            {{-- PENTING: METHOD POST & ENCTYPE UNTUK UPLOAD FILE DESAIN --}}
+                            <form action="{{ route('add.to.cart', $p->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
                                 <div class="modal-body px-4 pb-4 pt-3">
+                                    <input type="hidden" class="harga-dasar" value="{{ $p->harga }}">
                                     
-                                    {{-- ... BAGIAN LOGIKA DETEKSI KATEGORI (TETAP SAMA) ... --}}
-                                    @php 
-                                        $namaKategori = strtolower($p->kategori->nama_kategori ?? '');
+                                    {{-- 1. Pilihan Warna / Tema --}}
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold text-dark">Pilihan Warna / Motif</label>
+                                        <select class="form-select border-secondary rounded-3" name="warna">
+                                            <option value="">Pilih varian...</option>
+                                            <option value="Pastel">Warna Pastel (Soft)</option>
+                                            <option value="Monokrom">Monokrom (Hitam Putih)</option>
+                                            <option value="Emas">Aksen Emas (Gold)</option>
+                                            <option value="Campur">Campur / Random</option>
+                                        </select>
+                                    </div>
+
+                                    {{-- 2. Pilihan Kemasan --}}
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold text-dark">Pilihan Kemasan</label>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            {{-- Penambahan data-price agar ditangkap oleh Javascript hitungTotal --}}
+                                            <input type="radio" class="btn-check kemasan-radio" name="kemasan" id="kem1-{{ $p->id }}" value="Plastik" data-price="0" onchange="hitungTotal({{ $p->id }})" checked>
+                                            <label class="btn btn-outline-secondary rounded-pill px-3" for="kem1-{{ $p->id }}">Plastik & Kawat Emas</label>
+
+                                            <input type="radio" class="btn-check kemasan-radio" name="kemasan" id="kem2-{{ $p->id }}" value="Tile" data-price="1000" onchange="hitungTotal({{ $p->id }})">
+                                            <label class="btn btn-outline-secondary rounded-pill px-3" for="kem2-{{ $p->id }}">Bungkus Tile (+Rp 1.000)</label>
+
+                                            <input type="radio" class="btn-check kemasan-radio" name="kemasan" id="kem3-{{ $p->id }}" value="Box" data-price="2500" onchange="hitungTotal({{ $p->id }})">
+                                            <label class="btn btn-outline-secondary rounded-pill px-3" for="kem3-{{ $p->id }}">Box Eksklusif (+Rp 2.500)</label>
+                                        </div>
+                                    </div>
+
+                                    {{-- 3. Ekstra Tambahan --}}
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold text-dark">Ekstra Tambahan</label>
                                         
-                                        $isDessert = str_contains($namaKategori, 'dessert') || str_contains($namaKategori, 'campur');
-                                        $isMinuman = !$isDessert && (str_contains($namaKategori, 'minuman') || str_contains($namaKategori, 'drink'));
-                                        $isSnack   = str_contains($namaKategori, 'snack') || str_contains($namaKategori, 'cemilan');
-                                    @endphp
-
-                                    @if($isDessert)
-                                        <input type="hidden" class="harga-dasar" value="{{ $p->harga }}">
-                                        {{-- (Kode Form Dessert Tetap Sama, Hanya Sesuaikan Class Jika Perlu) --}}
-                                        <div class="mb-3">
-                                            <label class="fw-bold small mb-2" style="color: var(--text-dark);">Pilihan Es</label>
-                                            <div class="d-flex flex-wrap gap-2">
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="radio" name="opsi_es" value="Es Normal" checked><label class="form-check-label small fw-semibold">Normal Es</label></div>
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="radio" name="opsi_es" value="Extra Es"><label class="form-check-label small fw-semibold">Extra Es</label></div>
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="radio" name="opsi_es" value="Tanpa Es"><label class="form-check-label small fw-semibold">Tanpa Es</label></div>
+                                        <div class="form-check p-3 border rounded-3 mb-2 d-flex justify-content-between align-items-center bg-light">
+                                            <div>
+                                                <input class="form-check-input ms-0 me-2 addon-check" type="checkbox" name="ekstra[]" value="Sablon" id="ext1-{{ $p->id }}" data-price="500" onchange="hitungTotal({{ $p->id }})">
+                                                <label class="form-check-label fw-semibold" for="ext1-{{ $p->id }}">Sablon Nama / Inisial</label>
                                             </div>
-                                        </div>
-                                        {{-- (Susu, Toping, dll. Biarkan Sesuai Kode Asli Anda) --}}
-                                        <div class="mb-3">
-                                            <label class="fw-bold small mb-2" style="color: var(--text-dark);">Opsi Susu</label>
-                                            <div class="d-flex gap-2">
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="radio" name="opsi_susu" value="Pakai Susu" checked><label class="form-check-label small fw-semibold">Pakai Susu</label></div>
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="radio" name="opsi_susu" value="Tanpa Susu"><label class="form-check-label small fw-semibold">Tanpa Susu</label></div>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="fw-bold small mb-2" style="color: var(--text-dark);">Tambah Buah <span class="badge custom-badge ms-1 rounded-pill">+Rp 2.000</span></label>
-                                            <div class="d-flex flex-wrap gap-2">
-                                                @foreach(['Semangka', 'Melon', 'Nanas', 'Nangka', 'Blewah'] as $buah)
-                                                <div class="form-check border px-3 py-2 rounded-pill">
-                                                    <input class="form-check-input addon-check" type="checkbox" name="buah[]" value="{{ $buah }}" data-price="2000" onchange="hitungTotal({{ $p->id }})">
-                                                    <label class="form-check-label small fw-semibold">{{ $buah }}</label>
-                                                </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="fw-bold small mb-2" style="color: var(--text-dark);">Extra Lainnya</label>
-                                            <div class="list-group border-0">
-                                                <label class="list-group-item d-flex justify-content-between align-items-center gap-2 border rounded-4 mb-2 py-3 px-3 shadow-sm">
-                                                    <div class="d-flex gap-2 align-items-center">
-                                                        <input class="form-check-input flex-shrink-0 addon-check mt-0" type="checkbox" name="extra_jelly" value="Extra Jelly" data-price="2000" onchange="hitungTotal({{ $p->id }})">
-                                                        <span class="fw-semibold">Extra Jelly/Cincau</span>
-                                                    </div>
-                                                    <span class="small fw-bold" style="color: var(--primary-color);">+Rp 2.000</span>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                    @elseif($isMinuman)
-                                        <input type="hidden" class="harga-dasar" value="{{ $p->harga }}">
-                                        <div class="mb-4">
-                                            <label class="fw-bold small mb-2" style="color: var(--text-dark);">Pilihan Es</label>
-                                            <div class="d-flex flex-wrap gap-2">
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="radio" name="opsi_es" value="Es Normal" checked><label class="form-check-label small fw-semibold">Normal Es</label></div>
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="radio" name="opsi_es" value="Sedikit Es"><label class="form-check-label small fw-semibold">Sedikit Es</label></div>
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="radio" name="opsi_es" value="Hangat"><label class="form-check-label small fw-semibold">Hangat (No Es)</label></div>
-                                            </div>
-                                        </div>
-
-                                    @elseif($isSnack)
-                                        <input type="hidden" class="harga-dasar" value="{{ $p->harga }}">
-                                    @else
-                                        <input type="hidden" class="harga-dasar" value="{{ $p->harga }}">
-                                        <div class="mb-3">
-                                            <label class="fw-bold small mb-2" style="color: var(--text-dark);">Level Pedas</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-white border-end-0 text-danger rounded-start-pill ps-3"><i class="bi bi-fire"></i></span>
-                                                <input type="number" name="cabe" class="form-control border-start-0 rounded-end-pill py-2" placeholder="0 (Tidak Pedas)" min="0" max="20">
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="fw-bold small mb-2" style="color: var(--text-dark);">Request Toping</label>
-                                            <div class="d-flex flex-wrap gap-2">
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="checkbox" name="tanpa_bawang" id="noBawang{{ $p->id }}"><label class="form-check-label small fw-semibold" for="noBawang{{ $p->id }}">No Bawang</label></div>
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="checkbox" name="tanpa_timun" id="noTimun{{ $p->id }}"><label class="form-check-label small fw-semibold" for="noTimun{{ $p->id }}">No Timun</label></div>
-                                                <div class="form-check border px-3 py-2 rounded-pill"><input class="form-check-input" type="checkbox" name="tanpa_seledri" id="noSeledri{{ $p->id }}"><label class="form-check-label small fw-semibold" for="noSeledri{{ $p->id }}">No Seledri</label></div>
-                                            </div>
+                                            <span class="text-danger fw-bold">+Rp 500</span>
                                         </div>
                                         
-                                        <div class="mb-4">
-                                            <label class="fw-bold small mb-2" style="color: var(--text-dark);">Ekstra Tambahan</label>
-                                            <div class="list-group border-0 gap-2">
-                                                <label class="list-group-item d-flex justify-content-between align-items-center gap-2 border rounded-4 py-3 px-3 shadow-sm">
-                                                    <div class="d-flex gap-2 align-items-center">
-                                                        <input class="form-check-input flex-shrink-0 addon-check mt-0" type="checkbox" name="tambah_telur" value="Telur Dadar" data-price="4000" onchange="hitungTotal({{ $p->id }})">
-                                                        <span class="fw-semibold">Tambah Telur Dadar</span>
-                                                    </div>
-                                                    <span class="small fw-bold" style="color: var(--primary-color);">+Rp 4.000</span>
-                                                </label>
-
-                                                <label class="list-group-item d-flex justify-content-between align-items-center gap-2 border rounded-4 py-3 px-3 shadow-sm">
-                                                    <div class="d-flex gap-2 align-items-center">
-                                                        <input class="form-check-input flex-shrink-0 addon-check mt-0" type="checkbox" name="extra_lontong" value="Extra Lontong" data-price="3000" onchange="hitungTotal({{ $p->id }})">
-                                                        <span class="fw-semibold">Extra Lontong</span>
-                                                    </div>
-                                                    <span class="small fw-bold" style="color: var(--primary-color);">+Rp 3.000</span>
-                                                </label>
+                                        <div class="form-check p-3 border rounded-3 d-flex justify-content-between align-items-center bg-light">
+                                            <div>
+                                                <input class="form-check-input ms-0 me-2 addon-check" type="checkbox" name="ekstra[]" value="Kartu Ucapan" id="ext2-{{ $p->id }}" data-price="300" onchange="hitungTotal({{ $p->id }})">
+                                                <label class="form-check-label fw-semibold" for="ext2-{{ $p->id }}">Thanks Card (Kartu Ucapan)</label>
                                             </div>
+                                            <span class="text-danger fw-bold">+Rp 300</span>
                                         </div>
-                                    @endif
+                                    </div>
+
+                                    {{-- 4. Custom Desain --}}
+                                    <div class="mb-4 p-3 rounded-4" style="background-color: #FDE8E5; border: 1px dashed #DD3827;">
+                                        <label class="form-label fw-bold" style="color: #DD3827;">
+                                            <i class="bi bi-palette-fill me-2"></i>Custom Desain & Catatan
+                                        </label>
+                                        <p class="small text-muted mb-2">Punya desain sendiri untuk sablon/kartu? Unggah di sini atau tulis instruksi untuk tim kami.</p>
+                                        
+                                        <input class="form-control mb-2 border-white shadow-sm" type="file" name="file_desain" accept="image/png, image/jpeg, application/pdf">
+                                        <textarea class="form-control border-white shadow-sm" name="catatan_desain" rows="3" placeholder="Contoh: Tolong desain sablon font romantis. Tulisannya 'Nico & Lili'"></textarea>
+                                    </div>
 
                                     {{-- BAGIAN BAWAH MODAL (Hitung & Simpan) --}}
                                     <div class="d-flex justify-content-between align-items-center pt-4 border-top">
                                         <div class="qty-control shadow-sm">
                                             <button type="button" class="btn-qty" onclick="kurangModal({{ $p->id }})"><i class="bi bi-dash"></i></button>
-                                            <input type="number" name="quantity" id="qtyModal-{{ $p->id }}" class="input-qty fs-5" value="1" min="1" readonly>
+                                            <input type="number" name="qty" id="qtyModal-{{ $p->id }}" class="input-qty fs-5" value="1" min="1" readonly>
                                             <button type="button" class="btn-qty" onclick="tambahModal({{ $p->id }})"><i class="bi bi-plus"></i></button>
                                         </div>
                                         <button type="submit" id="btn-submit-{{ $p->id }}" class="btn text-white rounded-pill px-4 py-3 fw-bold shadow-sm" style="background: var(--primary-color);">
@@ -344,32 +307,28 @@
         </div>
     </div>
     
-    {{-- ================= FOOTER ================= --}}
+    {{-- ================= FOOTER BARU SMOLIE GIFT ================= --}}
     <footer style="background-color: var(--text-dark); color: #b0b0b0; font-family: 'Nunito', sans-serif;">
-        
-        {{-- Garis Coral di Atas Footer --}}
         <div style="height: 6px; background-color: var(--primary-color); width: 100%;"></div>
 
         <div class="container py-5">
-            {{-- Isi Footer Tetap Sama, Hanya Penyesuaian Warna --}}
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <h5 class="text-white fw-bold mb-3 d-flex align-items-center" style="font-family: 'Poppins', sans-serif;">
                         <img src="{{ asset('template/img/tahu.png') }}" alt="Logo" width="40" height="40" class="me-2 rounded-circle bg-white p-1">
-                        WARUNG TAHU
+                        SMOLIE GIFT
                     </h5>
-                    <p class="small mb-4">Menyajikan Tahu Lontong & Tahu Tek dengan resep bumbu petis legendaris sejak 2010.</p>
+                    <p class="small mb-4">Pusat pemesanan custom souvenir eksklusif, terpercaya, dan harga bersahabat untuk menyempurnakan hari bahagia Anda.</p>
                     <ul class="list-unstyled small">
-                        <li class="mb-2 d-flex align-items-start"><i class="bi bi-geo-alt-fill me-2 mt-1" style="color: var(--primary-color);"></i> <span>Jl. Sukorejo Indah No. 314, Katang</span></li>
-                        <li class="mb-2 d-flex align-items-center"><i class="bi bi-clock-fill me-2" style="color: var(--primary-color);"></i> <span>Buka: 10.00 - 16.00 WIB</span></li>
+                        <li class="mb-2 d-flex align-items-start"><i class="bi bi-geo-alt-fill me-2 mt-1" style="color: var(--primary-color);"></i> <span>Kediri, Jawa Timur</span></li>
+                        <li class="mb-2 d-flex align-items-center"><i class="bi bi-clock-fill me-2" style="color: var(--primary-color);"></i> <span>Buka: Senin - Sabtu (08.00 - 16.00 WIB)</span></li>
                     </ul>
                 </div>
                 
-                {{-- (Kolom Lainnya Disingkat untuk Kerapihan, Kode Asli Anda Tidak Ada Masalah Disini) --}}
                 <div class="col-lg-4 col-md-12 ms-auto">
-                    <h6 class="text-white fw-bold mb-3 text-uppercase small" style="font-family: 'Poppins', sans-serif;">Pesan Cepat Via Whatsapp?</h6>
+                    <h6 class="text-white fw-bold mb-3 text-uppercase small" style="font-family: 'Poppins', sans-serif;">Konsultasi Desain & Pesanan?</h6>
                     <a href="https://wa.me/6285795813531" target="_blank" class="btn w-100 fw-bold rounded-pill py-3 shadow-sm text-white" style="background-color: var(--primary-color); border: none; font-family: 'Poppins', sans-serif;">
-                        <i class="bi bi-whatsapp me-2 fs-5"></i> CHAT SEKARANG
+                        <i class="bi bi-whatsapp me-2 fs-5"></i> CHAT WHATSAPP KAMI
                     </a>
                 </div>
             </div>
@@ -393,7 +352,7 @@
                     <span class="fw-bold fs-6" style="font-family: 'Poppins', sans-serif;">Rp {{ number_format($totalHarga, 0, ',', '.') }}</span>
                 </div>
             </div>
-            <div class="fw-bold small" style="font-family: 'Poppins', sans-serif;">Bayar <i class="bi bi-chevron-right ms-1"></i></div>
+            <div class="fw-bold small" style="font-family: 'Poppins', sans-serif;">Proses Order <i class="bi bi-chevron-right ms-1"></i></div>
         </a>
     @endif
 
@@ -410,17 +369,27 @@
             });
         });
 
+        // SCRIPT BARU UNTUK MENGHITUNG TOTAL SOUVENIR
         function hitungTotal(id) {
             var modal = $('#modalOrder-' + id);
+            
+            // 1. Ambil Harga Dasar Piring/Souvenir
             var hargaDasar = parseInt(modal.find('.harga-dasar').val()) || 0;
+            
+            // 2. Ambil Jumlah/Qty
             var qty = parseInt($('#qtyModal-' + id).val()) || 1;
             
+            // 3. Ambil Harga Kemasan (Plastik/Tile/Box)
+            var kemasanPrice = parseInt(modal.find('.kemasan-radio:checked').data('price')) || 0;
+
+            // 4. Ambil Harga Tambahan (Sablon/Kartu)
             var totalAddon = 0;
             modal.find('.addon-check:checked').each(function() {
                 totalAddon += parseInt($(this).data('price'));
             });
 
-            var hargaPerItem = hargaDasar + totalAddon;
+            // Rumus: (Harga Souvenir + Harga Kemasan + Tambahan Lain) * Jumlah Pesanan
+            var hargaPerItem = hargaDasar + kemasanPrice + totalAddon;
             var totalAkhir = hargaPerItem * qty;
 
             var formatRupiah = new Intl.NumberFormat('id-ID').format(totalAkhir);

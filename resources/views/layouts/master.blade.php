@@ -8,7 +8,7 @@
     {{-- 2. CSRF TOKEN (PENTING UNTUK AJAX) --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Warung Tahu Lontong')</title>
+    <title>@yield('title', 'Smolie Gift')</title>
 
     {{-- FONTS: Diganti ke Poppins dan Nunito untuk kesan playful & modern --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -222,7 +222,7 @@
             {{-- C. Footer --}}
             <footer class="bg-transparent py-4 mt-auto">
                 <div class="container-fluid text-center text-muted small" style="font-family: 'Poppins', sans-serif;">
-                    &copy; {{ date('Y') }} <strong style="color: var(--theme-primary);">Warung Tahu Lontong</strong>. All Rights Reserved.
+                    &copy; {{ date('Y') }} <strong style="color: var(--theme-primary);">Smolie Gift</strong>. All Rights Reserved.
                     @if(View::exists('layouts.footer'))
                         @include('layouts.footer')
                     @endif

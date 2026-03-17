@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <div class="text-center">
-            <h3 style="margin-bottom: 5px;">WARUNG TAHU LONTONG</h3>
+            <h3 style="margin-bottom: 5px;">SMOLIE GIFT</h3>
             Perumahan Sukorejo Indah No. 123<br>
             WA: 0878-4760-4348
         </div>

@@ -133,7 +133,7 @@ Route::middleware(['auth'])->group(function () {
 # =========================================================================
 Route::get('/', [PembeliController::class, 'index'])->name('pembeli.index'); // Halaman Awal
 Route::get('cart', [PembeliController::class, 'cart'])->name('cart');
-Route::get('add-to-cart/{id}', [PembeliController::class, 'addToCart'])->name('add.to.cart');
+Route::post('add-to-cart/{id}', [PembeliController::class, 'addToCart'])->name('add.to.cart');
 Route::delete('remove-from-cart', [PembeliController::class, 'removeCart'])->name('remove.from.cart');
 Route::post('checkout', [PembeliController::class, 'checkout'])->name('checkout');
 

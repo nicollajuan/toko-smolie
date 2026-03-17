@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riwayat Pesanan - Warung Tahu Lontong</title>
+    <title>Riwayat Pesanan - Smolie Gift</title>
     
     {{-- Bootstrap 5 & Icons --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -380,7 +380,7 @@
                 <div class="col-lg-4 col-md-6">
                     <h5 class="text-white fw-bold mb-3 d-flex align-items-center" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px;">
                         <img src="{{ asset('template/img/tahu.png') }}" alt="Logo" width="35" height="35" class="me-2 rounded-circle bg-white p-1">
-                        WARUNG TAHU
+                        SMOLIE GIFT
                     </h5>
                     <p class="small mb-4" style="line-height: 1.6;">
                         Menyajikan Tahu Lontong & Tahu Tek dengan resep bumbu petis legendaris sejak 2010. Rasakan kenikmatan asli Jawa Timur.
@@ -445,7 +445,7 @@
 
         {{-- COPYRIGHT --}}
         <div class="py-3 text-center border-top border-secondary border-opacity-10" style="background-color: #ffff;">
-            <small class="text-muted">&copy; 2025 Warung Tahu Lontong. All Rights Reserved.</small>
+            <small class="text-muted">&copy; 2026 Smolie Gift. All Rights Reserved.</small>
         </div>
     </footer>
 

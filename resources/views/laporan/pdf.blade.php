@@ -49,8 +49,7 @@
     </style>
 </head>
 <body>
-    <h2>Laporan Penjualan Warung Tahu Lontong</h2>
-    <p>Dicetak pada: {{ date('d F Y, H:i') }}</p>
+    <h2>Laporan Penjualan Smolie Gift</p>
     
     <table>
         <thead>

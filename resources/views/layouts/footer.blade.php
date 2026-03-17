@@ -7,7 +7,7 @@
                 <div class="d-flex align-items-center mb-3">
                     {{-- Ganti src sesuai lokasi logo Anda --}}
                     <img src="{{ asset('template/img/tahu.png') }}" alt="Logo" width="40" height="40" class="me-2 rounded-circle bg-white p-1">
-                    <span class="fs-4 fw-bold text-white text-uppercase" style="font-family: 'Oswald'; letter-spacing: 1px;">Warung Tahu</span>
+                    <span class="fs-4 fw-bold text-white text-uppercase" style="font-family: 'Oswald'; letter-spacing: 1px;">Smolie Gift</span>
                 </div>
                 <p class="small mb-2">
                     Menyajikan Tahu Lontong & Tahu Tek dengan resep bumbu petis legendaris sejak 2010. Rasakan kenikmatan asli Jawa Timur.
@@ -65,7 +65,7 @@
         {{-- BAGIAN COPYRIGHT BAWAH --}}
         <div class="row align-items-center">
             <div class="col-md-6 text-center text-md-start small">
-                &copy; {{ date('Y') }} <strong>Warung Tahu Lontong</strong>. All Rights Reserved.
+                &copy; {{ date('Y') }} <strong>Smolie Gift</strong>. All Rights Reserved.
             </div>
             <div class="col-md-6 text-center text-md-end small">
                 <a href="#" class="text-decoration-none text-muted me-3">Privacy Policy</a>

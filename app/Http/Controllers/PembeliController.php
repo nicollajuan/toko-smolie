@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produk;
-use App\Models\Transaksi; // Pastikan model ini ada
+use App\Models\Transaksi;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -16,14 +16,13 @@ class PembeliController extends Controller
     // 1. Halaman Menu
     public function index()
     {
-        // Mengambil produk termasuk yang non-aktif (untuk ditampilkan sebagai habis/tidak tersedia)
         $produk = Produk::with('kategori')->get(); 
         $kategori = Kategori::all(); 
         
         return view('pembeli.index', compact('produk', 'kategori'));
     }
 
-    // 2. Tambah ke Keranjang
+    // 2. Tambah ke Keranjang (KOREKSI LOGIKA SOUVENIR)
     public function addToCart(Request $request, $id)
     {
         $produk = Produk::findOrFail($id);
@@ -35,78 +34,72 @@ class PembeliController extends Controller
 
         $cart = session()->get('cart', []);
         
-        $qty = (int) $request->input('quantity', 1);
+        // Menangkap input jumlah (dari name="qty" di HTML baru)
+        $qty = (int) $request->input('qty', 1);
         if($qty < 1) $qty = 1;
 
         $notes = [];
         $biaya_tambahan = 0;
 
-        // --- A. LOGIKA MINUMAN & DESSERT ---
-        if($request->filled('opsi_es')) { 
-            $notes[] = $request->input('opsi_es'); 
+        // --- A. LOGIKA WARNA / MOTIF ---
+        if($request->filled('warna')) { 
+            $notes[] = "Warna: " . $request->input('warna'); 
         }
-        if($request->filled('opsi_susu')) {
-            $notes[] = $request->input('opsi_susu'); 
-        }
-        
-        // Buah (+2000 per item)
-        if($request->has('buah')) {
-            $buah_pilihan = $request->input('buah');
-            if(is_array($buah_pilihan)){
-                $jumlah_buah = count($buah_pilihan);
-                $biaya_tambahan += ($jumlah_buah * 2000);
-                $buahList = implode(', ', $buah_pilihan);
-                $notes[] = "+Buah: $buahList";
+
+        // --- B. LOGIKA KEMASAN ---
+        if($request->filled('kemasan')) {
+            $kemasan = $request->input('kemasan');
+            $notes[] = "Kemasan: " . $kemasan;
+            
+            // Tambah harga sesuai pilihan kemasan
+            if($kemasan == 'Tile') {
+                $biaya_tambahan += 1000;
+            } elseif($kemasan == 'Box') {
+                $biaya_tambahan += 2500;
             }
         }
 
-        // Jelly (+2000)
-        if($request->has('extra_jelly')) { 
-            $biaya_tambahan += 2000; 
-            $notes[] = "+Jelly"; 
+        // --- C. LOGIKA EKSTRA (Sablon & Kartu) ---
+        if($request->has('ekstra')) {
+            $ekstras = $request->input('ekstra'); // Ini berupa array dari checkbox
+            if(is_array($ekstras)){
+                foreach($ekstras as $eks) {
+                    $notes[] = "+ " . $eks;
+                    
+                    if($eks == 'Sablon') {
+                        $biaya_tambahan += 500;
+                    } elseif($eks == 'Kartu Ucapan') {
+                        $biaya_tambahan += 300;
+                    }
+                }
+            }
         }
 
-        // --- B. LOGIKA MAKANAN BERAT ---
-        $cabe = $request->input('cabe');
-        if($cabe && $cabe > 0) { $notes[] = "Cabe: $cabe"; }
-        
-        if($request->has('extra_lontong')) { 
-            $biaya_tambahan += 3000;
-            $notes[] = "+Extra Lontong"; 
-        }
-        if($request->has('tambah_telur')) { 
-            $biaya_tambahan += 4000;
-            $notes[] = "+Telur"; 
-        }
-        
-        // Opsi "Tanpa"
-        $opsiTanpa = ['tanpa_bawang' => 'No Bawang', 'tanpa_seledri' => 'No Seledri', 'tanpa_timun' => 'No Timun'];
-        foreach($opsiTanpa as $key => $label) {
-            if($request->has($key)) { $notes[] = $label; }
+        // --- D. LOGIKA CATATAN CUSTOM DESAIN ---
+        if($request->filled('catatan_desain')) {
+            $notes[] = 'Catatan: "' . $request->input('catatan_desain') . '"';
         }
 
-        // --- C. LOGIKA SNACK ---
-        if($request->filled('varian_rasa')) {
-            $notes[] = "Rasa: " . $request->input('varian_rasa');
-        }
-        if($request->has('extra_saos')) {
-            $notes[] = "+Saos Sambal";
-        }
-        if($request->has('extra_mayo')) {
-            $biaya_tambahan += 2000;
-            $notes[] = "+Mayonaise";
+        // --- E. LOGIKA UPLOAD FILE DESAIN ---
+        if($request->hasFile('file_desain')) {
+            $file = $request->file('file_desain');
+            $nama_file = time() . "_desain_" . $file->getClientOriginalName();
+            // Simpan di folder public/img/custom_desain
+            $file->move(public_path('img/custom_desain'), $nama_file);
+            
+            // Masukkan nama file ke catatan agar admin bisa mencarinya nanti
+            $notes[] = "[File Desain: " . $nama_file . "]";
         }
 
         // --- FINISHING ---
-        $catatan_string = implode(', ', $notes);
-        // Harga dasar produk + biaya tambahan (toping/extra)
+        $catatan_string = implode(' | ', $notes); // Menggunakan pembatas " | " agar lebih rapi dibaca
+        
+        // Harga dasar produk + biaya tambahan add-on
         $harga_final = $produk->harga + $biaya_tambahan;
 
         // Masukkan Session Cart
-        // CATATAN: Logika ini akan menimpa catatan jika produk ID sama ditambahkan lagi.
         if(isset($cart[$id])) {
             $cart[$id]['quantity'] += $qty;
-            // Update harga jika ada perubahan add-ons (mengambil harga terakhir yang diinput user)
             $cart[$id]['price'] = $harga_final; 
             
             if(!empty($catatan_string)) {
@@ -124,7 +117,7 @@ class PembeliController extends Controller
 
         session()->put('cart', $cart);
         
-        return redirect()->back()->with('success', 'Produk masuk keranjang! Total item ini: Rp ' . number_format($harga_final * $qty, 0, ',', '.'));
+        return redirect()->back()->with('success', 'Souvenir masuk keranjang! Total item ini: Rp ' . number_format($harga_final * $qty, 0, ',', '.'));
     }
 
     // 3. Lihat Keranjang
@@ -152,14 +145,12 @@ class PembeliController extends Controller
         if($request->id && $request->quantity){
             $cart = session()->get('cart');
             
-            // Cek apakah item ada di cart
             if(!isset($cart[$request->id])) {
                  return response()->json(['status' => 'error', 'message' => 'Item tidak ditemukan']);
             }
 
             $produk = Produk::find($request->id);
             
-            // Cek stok realtime
             if(!$produk || $request->quantity > $produk->stock){
                 $sisa = $produk ? $produk->stock : 0;
                 session()->flash('error', 'Maaf, stok tidak mencukupi! Sisa: ' . $sisa);
@@ -172,12 +163,12 @@ class PembeliController extends Controller
         }
     }
 
-    // --- SET LAYANAN (Dine In / Takeaway / Delivery) ---
+    // --- SET LAYANAN (Bisa diganti jadi Pickup / Delivery) ---
     public function setLayanan($tipe)
     {
         if(in_array($tipe, ['dine_in', 'takeaway', 'delivery'])) {
             session()->put('jenis_pesanan', $tipe);
-            return redirect()->back()->with('success', 'Mode pesanan diubah ke: ' . ucfirst(str_replace('_', ' ', $tipe)));
+            return redirect()->back()->with('success', 'Mode pengiriman diubah ke: ' . ucfirst(str_replace('_', ' ', $tipe)));
         }
         return redirect()->back();
     }
@@ -194,14 +185,11 @@ class PembeliController extends Controller
             return redirect()->back()->with('error', 'Keranjang kosong!');
         }
 
-        // Logika Checkout Parsial (Item Checklist)
         $selectedIdsString = $request->input('selected_items');
         if(empty($selectedIdsString)) {
-            // Jika tidak ada checkbox, anggap checkout semua
             $checkoutItems = $fullCart;
             $selectedIds = array_keys($fullCart);
         } else {
-            // Checkout item tertentu saja
             $selectedIds = explode(',', $selectedIdsString);
             $checkoutItems = [];
             foreach($selectedIds as $id) {
@@ -218,14 +206,13 @@ class PembeliController extends Controller
         // Validasi Stok Sebelum Transaksi
         foreach($checkoutItems as $id => $details){
             $produkCek = Produk::find($id);
-            // Cek stok & status
             if(!$produkCek || $produkCek->stock < $details['quantity'] || $produkCek->status == 'non-aktif') {
                 return redirect()->back()->with('error', 'Maaf, produk "' . $details['name'] . '" stok habis atau tidak tersedia.');
             }
         }
 
         // Validasi Input Form
-        $jenis_pesanan = session()->get('jenis_pesanan', 'takeaway'); // Default Takeaway jika null
+        $jenis_pesanan = session()->get('jenis_pesanan', 'takeaway'); 
         
         $rules = [
             'no_hp' => 'required|numeric',
@@ -257,7 +244,7 @@ class PembeliController extends Controller
                 'jenis_pesanan' => $jenis_pesanan,
                 'alamat_pengiriman' => ($jenis_pesanan == 'delivery') ? $request->alamat_pengiriman : null,
                 'detail_rumah' => ($jenis_pesanan == 'delivery') ? $request->detail_rumah : null,
-                'kode_transaksi' => 'TRX-' . time() . rand(100,999), // Tambah random biar unik
+                'kode_transaksi' => 'TRX-' . time() . rand(100,999), 
                 'total_harga' => $total,
                 'status' => 'pending', 
                 'created_at' => now(),
@@ -269,7 +256,7 @@ class PembeliController extends Controller
                 DB::table('detail_transaksi')->insert([
                     'transaksi_id' => $id_transaksi,
                     'produk_id' => $id_produk,
-                    'jumlah' => $details['jumlah'] ?? $details['quantity'], // jaga-jaga naming key
+                    'jumlah' => $details['jumlah'] ?? $details['quantity'], 
                     'subtotal' => $details['price'] * $details['quantity'],
                     'catatan' => $details['note'] ?? null,
                     'created_at' => now(),
@@ -292,12 +279,12 @@ class PembeliController extends Controller
             session()->put('cart', $fullCart);
             session()->forget('jenis_pesanan'); 
 
-            DB::commit(); // Simpan permanen
+            DB::commit(); 
 
             return redirect()->route('pembeli.index')->with('success', 'Pesanan Berhasil! Silakan selesaikan pembayaran.');
 
         } catch (Exception $e) {
-            DB::rollBack(); // Batalkan semua jika ada error
+            DB::rollBack(); 
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses pesanan: ' . $e->getMessage());
         }
     }
@@ -307,7 +294,6 @@ class PembeliController extends Controller
     {
         if (!Auth::check()) { return redirect()->route('login'); }
 
-        // Pastikan Model 'Transaksi' memiliki method 'review()' (hasOne/hasMany)
         $riwayat = Transaksi::with('review') 
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')

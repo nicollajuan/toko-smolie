@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Warung Tahu Lontong</title>
+    <title>Register - Smolie Gift</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -12,7 +12,6 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            /* Latar Belakang Merah Bata seperti di gambar */
             background-color: #C0392B; 
             min-height: 100vh;
             display: flex;
@@ -30,7 +29,6 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
 
-        /* Lingkaran Merah di Kiri */
         .left-side {
             display: flex;
             align-items: center;
@@ -45,7 +43,6 @@
             border-radius: 50%;
         }
 
-        /* Area Form Kanan */
         .right-side {
             padding: 40px 50px;
         }
@@ -81,7 +78,7 @@
         }
 
         .btn-submit {
-            background-color: #D35400; /* Warna Oranye Kemerahan seperti gambar */
+            background-color: #D35400;
             color: white;
             font-weight: 600;
             border-radius: 50px;
@@ -146,50 +143,57 @@
                         {{-- Nama --}}
                         <div class="col-12 mb-3">
                             <label class="form-label">Nama <span>*</span></label>
-                            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                            @error('name') <small class="text-danger mt-1 d-block fw-semibold">{{ $message }}</small> @enderror
                         </div>
 
                         {{-- Email --}}
                         <div class="col-12 mb-3">
                             <label class="form-label">Email <span>*</span></label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required>
+                            @error('email') <small class="text-danger mt-1 d-block fw-semibold">{{ $message }}</small> @enderror
                         </div>
 
                         {{-- Username --}}
                         <div class="col-12 mb-3">
                             <label class="form-label">Username <span>*</span></label>
-                            <input type="text" name="username" class="form-control" value="{{ old('username') }}" required>
+                            <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username') }}" required>
+                            @error('username') <small class="text-danger mt-1 d-block fw-semibold">{{ $message }}</small> @enderror
                         </div>
 
-                        {{-- Jenis Kelamin & No HP (Sejajar) --}}
+                        {{-- Jenis Kelamin & No HP --}}
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Jenis Kelamin</label>
-                            <select name="jenis_kelamin" class="form-select" required>
+                            <label class="form-label">Jenis Kelamin <span>*</span></label>
+                            <select name="jenis_kelamin" class="form-select @error('jenis_kelamin') is-invalid @enderror" required>
                                 <option value="">Pilih...</option>
-                                <option value="Laki-laki">Laki-laki</option>
-                                <option value="Perempuan">Perempuan</option>
+                                <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
                             </select>
+                            @error('jenis_kelamin') <small class="text-danger mt-1 d-block fw-semibold">{{ $message }}</small> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">No HP <span>*</span></label>
-                            <input type="number" name="no_hp" class="form-control" value="{{ old('no_hp') }}" required>
+                            <input type="number" name="no_hp" class="form-control @error('no_hp') is-invalid @enderror" value="{{ old('no_hp') }}" required>
+                            @error('no_hp') <small class="text-danger mt-1 d-block fw-semibold">{{ $message }}</small> @enderror
                         </div>
 
                         {{-- Alamat --}}
                         <div class="col-12 mb-3">
                             <label class="form-label">Alamat <span>*</span></label>
-                            <input type="text" name="alamat" class="form-control" value="{{ old('alamat') }}" required>
+                            <input type="text" name="alamat" class="form-control @error('alamat') is-invalid @enderror" value="{{ old('alamat') }}" required>
+                            @error('alamat') <small class="text-danger mt-1 d-block fw-semibold">{{ $message }}</small> @enderror
                         </div>
 
-                        {{-- Password & Konfirmasi (Sejajar) --}}
+                        {{-- Password & Konfirmasi --}}
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Password <span>*</span></label>
                             <div class="input-group">
-                                <input type="password" name="password" id="pass" class="form-control border-end-0" required>
-                                <span class="input-group-text bg-white password-toggle" onclick="togglePass('pass', 'icon1')">
+                                <input type="password" name="password" id="pass" class="form-control border-end-0 @error('password') is-invalid @enderror" required>
+                                <span class="input-group-text bg-white password-toggle @error('password') border-danger @enderror" onclick="togglePass('pass', 'icon1')">
                                     <i class="bi bi-eye" id="icon1"></i>
                                 </span>
                             </div>
+                            @error('password') <small class="text-danger mt-1 d-block fw-semibold">{{ $message }}</small> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Konfirmasi Password <span>*</span></label>

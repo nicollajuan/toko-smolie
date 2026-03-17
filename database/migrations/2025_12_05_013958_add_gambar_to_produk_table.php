@@ -9,11 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
 {
     Schema::table('produk', function (Blueprint $table) {
-        // Menambah kolom gambar yang boleh kosong (nullable)
-        $table->string('gambar')->nullable()->after('nama_produk'); 
+        // Cek dulu, jika kolom 'gambar' BELUM ada, baru buat kolomnya
+        if (!Schema::hasColumn('produk', 'gambar')) {
+            $table->string('gambar')->nullable()->after('nama_produk'); 
+        }
     });
 }
 
