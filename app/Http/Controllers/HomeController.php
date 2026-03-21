@@ -7,21 +7,15 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    // Memastikan hanya yang login yang bisa akses
-    public function __construct()
-    {
-        // Jika kamu pakai Laravel versi baru, middleware bisa diatur di route, 
-        // tapi baris ini aman untuk memastikan keamanan.
-        //$this->middleware('auth'); 
-    }
+    // Fungsi __construct() beserta isinya sudah dihapus agar tidak error di Laravel 11
 
     public function index()
     {
         // Cek Role User
         $role = Auth::user()->usertype;
 
-        if ($role == 'pembeli') {
-            // Jika Pembeli, lempar ke Halaman Menu Utama
+        if ($role == 'user') {
+            // Jika Pembeli/User, lempar ke Halaman Katalog Depan
             return redirect()->route('pembeli.index');
         } else {
             // Jika Admin/Kasir, masuk ke Dashboard

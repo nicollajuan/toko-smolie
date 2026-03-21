@@ -10,6 +10,23 @@ use App\Http\Middleware\Kasir;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\AksesAdmin;
+
+// Rute ini KHUSUS ADMIN & KASIR
+Route::middleware(['auth', AksesAdmin::class])->group(function () {
+    
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    
+    // Rute Produk
+    Route::get('/tampil-produk', [App\Http\Controllers\ProdukController::class, 'index']);
+    Route::get('/tambah-produk', [App\Http\Controllers\ProdukController::class, 'create']);
+    Route::post('/simpan-produk', [App\Http\Controllers\ProdukController::class, 'store']);
+    Route::put('/update-produk/{id}', [App\Http\Controllers\ProdukController::class, 'update']);
+    Route::delete('/hapus-produk/{id}', [App\Http\Controllers\ProdukController::class, 'destroy']);
+    
+    // Rute Kategori, Laporan, dll letakkan di dalam kurung kurawal ini juga
+    // ...
+});
 
 //routing welcome
 Route::get('/', function () {
