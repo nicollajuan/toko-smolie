@@ -320,7 +320,7 @@
                     </h5>
                     <p class="small mb-4">Pusat pemesanan custom souvenir eksklusif, terpercaya, dan harga bersahabat untuk menyempurnakan hari bahagia Anda.</p>
                     <ul class="list-unstyled small">
-                        <li class="mb-2 d-flex align-items-start"><i class="bi bi-geo-alt-fill me-2 mt-1" style="color: var(--primary-color);"></i> <span>Kediri, Jawa Timur</span></li>
+                        <li class="mb-2 d-flex align-items-start"><i class="bi bi-geo-alt-fill me-2 mt-1" style="color: var(--primary-color);"></i> <span>Mojokerto, Jawa Timur</span></li>
                         <li class="mb-2 d-flex align-items-center"><i class="bi bi-clock-fill me-2" style="color: var(--primary-color);"></i> <span>Buka: Senin - Sabtu (08.00 - 16.00 WIB)</span></li>
                     </ul>
                 </div>
