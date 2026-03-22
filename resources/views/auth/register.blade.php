@@ -36,11 +36,13 @@
             padding: 40px;
         }
 
-        .red-circle {
-            width: 250px;
-            height: 250px;
-            background-color: #C0392B;
+        .img-circle {
+            width: 260px;
+            height: 260px;
             border-radius: 50%;
+            object-fit: cover; /* Memastikan gambar tidak gepeng */
+            box-shadow: 0 15px 35px rgba(221, 56, 39, 0.2);
+            border: 6px solid #FDE8E5; /* Bingkai pinggiran warna pink muda */
         }
 
         .right-side {
@@ -127,9 +129,14 @@
     <div class="auth-card">
         <div class="row g-0">
             
-            {{-- Bagian Kiri: Lingkaran Merah --}}
-            <div class="col-md-5 d-none d-md-flex left-side">
-                <div class="red-circle"></div>
+            {{-- Bagian Kiri: Lingkaran Logo & Teks --}}
+            <div class="col-md-5 d-none d-md-flex left-side flex-column text-center" style="background-color: #FAFAFA;">
+                
+                {{-- PENTING: Sesuaikan nama file 'logo-smolie.jpg' dengan file asli Anda --}}
+                <img src="{{ asset('template/img/smolie.jpg') }}" alt="Profil Smolie Gift" class="img-circle mb-4">
+                
+                <h3 class="fw-bold mb-1" style="color: #2D3142; font-family: 'Poppins', sans-serif;">Smolie Gift</h3>
+                <p class="text-muted small px-4">Souvenir hampers packaging untuk melengkapi kebutuhan acaramu 🎉🎂🍬</p>
             </div>
 
             {{-- Bagian Kanan: Form Register --}}
