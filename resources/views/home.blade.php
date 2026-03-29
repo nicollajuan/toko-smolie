@@ -1,10 +1,10 @@
 @extends('layouts.master')
 
-@section('title', 'Dashboard Warung')
+@section('title', 'Dashboard Smolie Gift')
 
 @section('content')
 <style>
-    /* CSS Khusus Halaman Home - Disesuaikan dengan Tema Timbuktoon */
+    /* CSS Khusus Halaman Home - Disesuaikan dengan Tema Smolie Gift */
     
     /* HERO BANNER STYLE */
     .hero-banner {
@@ -28,10 +28,10 @@
     /* CARD MENU STYLE */
     .menu-card {
         border: none;
-        border-radius: 24px; /* Sudut sangat membulat */
+        border-radius: 24px; 
         background: white;
         transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.04); /* Shadow super halus */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04); 
         height: 100%;
         overflow: hidden;
         position: relative;
@@ -44,7 +44,6 @@
     .menu-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-        /* Garis bawah tebal saat di-hover dengan warna utama */
         border-bottom: 6px solid var(--theme-primary);
     }
 
@@ -56,16 +55,13 @@
         display: flex; align-items: center; justify-content: center;
         margin-bottom: 15px;
         font-size: 2.5rem;
-        color: var(--theme-primary); /* Icon warna merah bata */
+        color: var(--theme-primary); 
         transition: transform 0.3s ease;
     }
 
     .menu-card:hover .icon-wrapper {
-        transform: scale(1.1); /* Efek membesar sedikit saat di-hover */
+        transform: scale(1.1); 
     }
-
-    /* Kita tidak perlu lagi CSS tombol khusus (.btn-primary-kfc dll) 
-       karena sudah diatur secara global di master.blade.php */
 
 </style>
 
@@ -76,10 +72,11 @@
         <div class="col-12">
             <div class="hero-banner">
                 <div class="position-relative z-1">
-                    <h1 class="theme-font display-5 mb-2">Halo, {{ Auth::user()->name }}! 👋</h1>
-                    <p class="fs-5 mt-2 opacity-75 fw-bold" style="letter-spacing: 1px;">SISTEM KASIR TAHU LONTONG BAROKAH</p>
+                    <h1 class="theme-font display-5 mb-2">Halo, {{ explode(' ', Auth::user()->name)[0] }}! 👋</h1>
+                    <p class="fs-5 mt-2 opacity-75 fw-bold" style="letter-spacing: 1px;">DASHBOARD ADMIN SMOLIE GIFT</p>
                 </div>
-                <i class="bi bi-shop hero-pattern"></i>
+                {{-- Icon background diganti menjadi kotak kado --}}
+                <i class="bi bi-gift-fill hero-pattern"></i>
             </div>
         </div>
     </div>
@@ -92,14 +89,13 @@
                     <h4 class="theme-font text-dark m-0"><i class="bi bi-lightning-charge-fill text-warning me-2"></i> Aksi Cepat</h4>
                 </div>
                 <div class="d-flex gap-3 flex-wrap">
-                    {{-- Menggunakan class btn-primary bawaan master.blade yang sudah dimodifikasi --}}
+                    
                     <a href="{{ route('pembeli.index') }}" target="_blank" class="btn btn-primary flex-grow-1 py-3 fs-5 shadow-sm">
-                        <i class="bi bi-cart-fill me-2"></i> Mode Kasir (Buka Menu)
+                        <i class="bi bi-bag-heart-fill me-2"></i> Mode Kasir (Buka Katalog)
                     </a>
                     
-                    {{-- Menggunakan class btn-outline-secondary --}}
                     <a href="/tampil-produk" class="btn btn-outline-secondary py-3 px-4 shadow-sm">
-                        <i class="bi bi-box-seam me-2"></i> Kelola Produk
+                        <i class="bi bi-box-seam me-2"></i> Kelola Souvenir
                     </a>
 
                     <a href="/laporan" class="btn btn-outline-secondary py-3 px-4 shadow-sm">
@@ -110,48 +106,48 @@
         </div>
     </div>
 
-    {{-- 3. RINGKASAN MENU --}}
+    {{-- 3. RINGKASAN KATEGORI SOUVENIR --}}
     <div class="d-flex align-items-center mb-4">
-        <h4 class="theme-font text-dark m-0 me-3">Kategori Menu</h4>
+        <h4 class="theme-font text-dark m-0 me-3">Kategori Produk</h4>
         <div class="flex-grow-1 border-bottom" style="border-style: dashed !important; border-color: #cbd5e1 !important;"></div>
     </div>
 
-    {{-- GRID SYSTEM --}}
+    {{-- GRID SYSTEM KATEGORI --}}
     <div class="row g-4 mb-4">
         
-        {{-- 1. Makanan --}}
+        {{-- 1. Alat Makan & Minum --}}
         <div class="col-md-3 col-6">
             <div class="menu-card p-4 text-center">
-                <div class="icon-wrapper"><i class="bi bi-egg-fried"></i></div>
-                <h5 class="theme-font text-dark">Makanan</h5>
-                <span class="badge px-3 py-2 rounded-pill mt-1" style="background-color: #FFF0ED; color: var(--theme-primary);">Utama</span>
+                <div class="icon-wrapper"><i class="bi bi-cup-hot-fill"></i></div>
+                <h5 class="theme-font text-dark">Alat Makan</h5>
+                <span class="badge px-3 py-2 rounded-pill mt-1" style="background-color: #FFF0ED; color: var(--theme-primary);">Piring/Gelas</span>
             </div>
         </div>
 
-        {{-- 2. Dessert --}}
+        {{-- 2. Furniture --}}
         <div class="col-md-3 col-6">
             <div class="menu-card p-4 text-center">
-                <div class="icon-wrapper"><i class="bi bi-snow2"></i></div>
-                <h5 class="theme-font text-dark">Dessert</h5>
-                <span class="badge px-3 py-2 rounded-pill mt-1" style="background-color: #E6F7FF; color: #0284C7;">Segar</span>
+                <div class="icon-wrapper"><i class="bi bi-lamp-fill"></i></div>
+                <h5 class="theme-font text-dark">Furniture</h5>
+                <span class="badge px-3 py-2 rounded-pill mt-1" style="background-color: #E6F7FF; color: #0284C7;">Dekorasi</span>
             </div>
         </div>
         
-        {{-- 3. Snack --}}
+        {{-- 3. Alat Rumah Tangga --}}
         <div class="col-md-3 col-6">
             <div class="menu-card p-4 text-center">
-                <div class="icon-wrapper"><i class="bi bi-cookie"></i></div> 
-                <h5 class="theme-font text-dark">Snack</h5>
-                <span class="badge px-3 py-2 rounded-pill mt-1" style="background-color: #FEF3C7; color: #D97706;">Camilan</span>
+                <div class="icon-wrapper"><i class="bi bi-house-heart-fill"></i></div> 
+                <h5 class="theme-font text-dark">Rumah Tangga</h5>
+                <span class="badge px-3 py-2 rounded-pill mt-1" style="background-color: #FEF3C7; color: #D97706;">Fungsional</span>
             </div>
         </div>
 
-        {{-- 4. Minuman --}}
+        {{-- 4. Gift Pernikahan --}}
         <div class="col-md-3 col-6">
             <div class="menu-card p-4 text-center">
-                <div class="icon-wrapper"><i class="bi bi-cup-straw"></i></div>
-                <h5 class="theme-font text-dark">Minuman</h5>
-                <span class="badge px-3 py-2 rounded-pill mt-1" style="background-color: #DCFCE7; color: #16A34A;">Dingin</span>
+                <div class="icon-wrapper"><i class="bi bi-box2-heart-fill"></i></div>
+                <h5 class="theme-font text-dark">Pernikahan</h5>
+                <span class="badge px-3 py-2 rounded-pill mt-1" style="background-color: #DCFCE7; color: #16A34A;">Eksklusif</span>
             </div>
         </div>
 
