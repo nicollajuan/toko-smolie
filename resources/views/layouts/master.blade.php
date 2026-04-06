@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <link rel="icon" href="{{ asset('template/img/smolie_icon.png') }}" type="image/jpeg">
+    <link rel="icon" href="{{ asset('template/img/logo-smolie.jpg') }}" type="image/jpeg">
     <meta charset="UTF-8">
     {{-- 1. META VIEWPORT (PENTING UNTUK RESPONSIVE HP) --}}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
