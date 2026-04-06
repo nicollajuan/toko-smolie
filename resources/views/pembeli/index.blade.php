@@ -241,7 +241,6 @@
                                     <div class="mb-4">
                                         <label class="form-label fw-bold text-dark">Pilihan Kemasan</label>
                                         <div class="d-flex gap-2 flex-wrap">
-                                            {{-- Penambahan data-price agar ditangkap oleh Javascript hitungTotal --}}
                                             <input type="radio" class="btn-check kemasan-radio" name="kemasan" id="kem1-{{ $p->id }}" value="Plastik" data-price="0" onchange="hitungTotal({{ $p->id }})" checked>
                                             <label class="btn btn-outline-secondary rounded-pill px-3" for="kem1-{{ $p->id }}">Plastik & Kawat Emas</label>
 
@@ -349,11 +348,11 @@
             <div class="d-flex align-items-center">
                 <div class="bg-white text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; color: var(--primary-color) !important;">{{ $totalQty }}</div>
                 <div class="ms-3 d-flex flex-column text-start">
-                    <span class="small" style="opacity: 0.8;">Total Keranjang</span>
-                    <span class="fw-bold fs-6" style="font-family: 'Poppins', sans-serif;">Rp {{ number_format($totalHarga, 0, ',', '.') }}</span>
+                    <span class="small text-white" style="opacity: 0.8;">Total Keranjang</span>
+                    <span class="fw-bold fs-6 text-white" style="font-family: 'Poppins', sans-serif;">Rp {{ number_format($totalHarga, 0, ',', '.') }}</span>
                 </div>
             </div>
-            <div class="fw-bold small" style="font-family: 'Poppins', sans-serif;">Proses Order <i class="bi bi-chevron-right ms-1"></i></div>
+            <div class="fw-bold small text-white" style="font-family: 'Poppins', sans-serif;">Proses Order <i class="bi bi-chevron-right ms-1"></i></div>
         </a>
     @endif
 
