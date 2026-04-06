@@ -327,7 +327,7 @@
                 
                 <div class="col-lg-4 col-md-12 ms-auto">
                     <h6 class="text-white fw-bold mb-3 text-uppercase small" style="font-family: 'Poppins', sans-serif;">Konsultasi Desain & Pesanan?</h6>
-                    <a href="https://wa.me/6285795813531" target="_blank" class="btn w-100 fw-bold rounded-pill py-3 shadow-sm text-white" style="background-color: var(--primary-color); border: none; font-family: 'Poppins', sans-serif;">
+                    <a href="https://wa.me/62895395810940" target="_blank" class="btn w-100 fw-bold rounded-pill py-3 shadow-sm text-white" style="background-color: var(--primary-color); border: none; font-family: 'Poppins', sans-serif;">
                         <i class="bi bi-whatsapp me-2 fs-5"></i> CHAT WHATSAPP KAMI
                     </a>
                 </div>

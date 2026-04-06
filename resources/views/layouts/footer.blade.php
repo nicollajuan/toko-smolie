@@ -53,7 +53,7 @@
 
                 <div class="bg-dark p-3 rounded border border-secondary">
                     <h6 class="text-white mb-2">Pesan Cepat via WhatsApp?</h6>
-                    <a href="https://wa.me/6285795813531" class="btn btn-success btn-sm w-100 fw-bold">
+                    <a href="https://wa.me/62895395810940" class="btn btn-success btn-sm w-100 fw-bold">
                         <i class="bi bi-whatsapp me-1"></i> Chat Sekarang
                     </a>
                 </div>
