@@ -4,8 +4,8 @@
     <a href="/" class="d-flex align-items-center mb-4 text-decoration-none">
         <img src="{{ asset('template/img/tahu.png') }}" alt="Logo" width="50" height="50" class="me-3 rounded-circle border border-2 border-danger p-1">
         <div class="d-flex flex-column">
-            <span class="fs-4 fw-bold text-uppercase" style="font-family: 'Oswald'; color: #E4002B; line-height: 1;">Warung</span>
-            <span class="fs-5 fw-bold text-dark text-uppercase" style="font-family: 'Oswald'; line-height: 1;">Tahu</span>
+            <span class="fs-4 fw-bold text-uppercase" style="font-family: 'Oswald'; color: #E4002B; line-height: 1;">Smolie</span>
+            <span class="fs-5 fw-bold text-dark text-uppercase" style="font-family: 'Oswald'; line-height: 1;">Gift</span>
         </div>
     </a>
     

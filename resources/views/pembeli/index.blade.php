@@ -80,7 +80,7 @@
     <nav class="navbar navbar-expand-lg navbar-kfc fixed-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="/">
-                <img src="{{ asset('template/img/tahu.png') }}" width="45" height="45" class="me-2 rounded-circle border border-2 border-white shadow-sm">
+                <img src="{{ asset('public/template/img/smolie.jpg') }}" width="45" height="45" class="me-2 rounded-circle border border-2 border-white shadow-sm">
                 <span class="ms-1" style="color: var(--primary-color);">Smolie Gift</span>
             </a>
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
@@ -316,7 +316,7 @@
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <h5 class="text-white fw-bold mb-3 d-flex align-items-center" style="font-family: 'Poppins', sans-serif;">
-                        <img src="{{ asset('template/img/tahu.png') }}" alt="Logo" width="40" height="40" class="me-2 rounded-circle bg-white p-1">
+                        <img src="{{ asset('public/template/img/smolie.jpg') }}" alt="Logo" width="40" height="40" class="me-2 rounded-circle bg-white p-1">
                         SMOLIE GIFT
                     </h5>
                     <p class="small mb-4">Pusat pemesanan custom souvenir eksklusif, terpercaya, dan harga bersahabat untuk menyempurnakan hari bahagia Anda.</p>
