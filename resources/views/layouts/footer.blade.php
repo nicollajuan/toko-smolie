@@ -10,12 +10,12 @@
                     <span class="fs-4 fw-bold text-white text-uppercase" style="font-family: 'Oswald'; letter-spacing: 1px;">Smolie Gift</span>
                 </div>
                 <p class="small mb-2">
-                    Menyajikan Tahu Lontong & Tahu Tek dengan resep bumbu petis legendaris sejak 2010. Rasakan kenikmatan asli Jawa Timur.
+                    Melayani custom pembuatan souvenir dengan harga murah.
                 </p>
                 <ul class="list-unstyled text-small">
-                    <li class="mb-1"><i class="bi bi-geo-alt-fill me-2 text-danger"></i> Jl. Sukorejo Indah No. 314, Katang</li>
-                    <li class="mb-1"><i class="bi bi-clock-fill me-2 text-danger"></i> Buka: 10.00 - 16.00 WIB</li>
-                    <li><i class="bi bi-envelope-fill me-2 text-danger"></i> admin@warungtahu.com</li>
+                    <li class="mb-1"><i class="bi bi-geo-alt-fill me-2 text-danger"></i>Jl. Pogot V, Surabaya Utara, Jawa Timur</li>
+                    <li class="mb-1"><i class="bi bi-clock-fill me-2 text-danger"></i> Buka: 10.00 - 21.00 WIB</li>
+                    <li><i class="bi bi-envelope-fill me-2 text-danger"></i> admin@smoliegift.com</li>
                 </ul>
             </div>
 
@@ -23,8 +23,8 @@
             <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
                 <h5 class="text-white text-uppercase mb-3 fw-bold" style="font-family: 'Oswald';">Menu Favorit</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Tahu Lontong Biasa</a></li>
-                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Tahu Telur Spesial</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Gantungan Kunci</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Piring</a></li>
                     
                 </ul>
             </div>
@@ -33,9 +33,8 @@
             <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
                 <h5 class="text-white text-uppercase mb-3 fw-bold" style="font-family: 'Oswald';">Layanan</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Dine-in (Makan di Tempat)</a></li>
-                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Take Away (Bungkus)</a></li>
-                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Menerima Pesanan (Catering)</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Pesan Ambil (COD)</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Pesan Antar</a></li>
                 </ul>
             </div>
 
