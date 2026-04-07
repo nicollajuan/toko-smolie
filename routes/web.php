@@ -11,6 +11,16 @@ use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AksesAdmin;
+use App\Http\Controllers\ChatController;
+
+Route::middleware(['auth'])->group(function () {
+    // Sisi Pembeli & Admin Kirim
+    Route::post('/chat/kirim', [ChatController::class, 'kirimPesanPembeli'])->name('chat.kirim');
+    
+    // Sisi Admin Kelola
+    Route::get('/admin/chat', [ChatController::class, 'adminChat'])->name('admin.chat');
+    Route::get('/admin/chat/messages/{user_id}', [ChatController::class, 'getMessages']);
+});
 
 // Rute ini KHUSUS ADMIN & KASIR
 Route::middleware(['auth', AksesAdmin::class])->group(function () {
@@ -23,9 +33,9 @@ Route::middleware(['auth', AksesAdmin::class])->group(function () {
     Route::post('/simpan-produk', [App\Http\Controllers\ProdukController::class, 'store']);
     Route::put('/update-produk/{id}', [App\Http\Controllers\ProdukController::class, 'update']);
     Route::delete('/hapus-produk/{id}', [App\Http\Controllers\ProdukController::class, 'destroy']);
-    
-    // Rute Kategori, Laporan, dll letakkan di dalam kurung kurawal ini juga
-    // ...
+
+
+
 });
 
 //routing welcome

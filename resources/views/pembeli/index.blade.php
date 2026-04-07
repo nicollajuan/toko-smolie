@@ -28,7 +28,6 @@
             font-family: 'Nunito', sans-serif; 
             background-color: var(--bg-light); 
             padding-top: 85px; 
-            padding-bottom: 100px; 
             color: #4F5665;
         }
 
@@ -72,6 +71,10 @@
         
         .floating-cart { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--text-dark); color: white; padding: 15px 25px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 15px 35px rgba(45, 49, 66, 0.3); z-index: 1050; text-decoration: none; transition: 0.3s;}
         .floating-cart:hover { transform: translateX(-50%) translateY(-5px); color: white; background: #1e212d; }
+
+        /* Style Tambahan untuk Tombol Radio Pilihan Kemasan/Kertas */
+        .btn-check-custom + .btn { border-radius: 50px; font-size: 0.9rem; color: #64748B; border-color: #CBD5E1; background-color: white; transition: all 0.2s ease;}
+        .btn-check-custom:checked + .btn { background-color: #64748B; color: white; border-color: #64748B; }
     </style>
 </head>
 <body id="beranda">
@@ -80,7 +83,7 @@
     <nav class="navbar navbar-expand-lg navbar-kfc fixed-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="/">
-                <img src="{{ asset('public/template/img/smolie.jpg') }}" width="45" height="45" class="me-2 rounded-circle border border-2 border-white shadow-sm">
+                <img src="{{ asset('template/img/smolie.jpg') }}" width="45" height="45" class="me-2 rounded-circle border border-2 border-white shadow-sm">
                 <span class="ms-1" style="color: var(--primary-color);">Smolie Gift</span>
             </a>
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
@@ -88,7 +91,7 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link active" href="{{ url('/') }}#beranda">Beranda</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/') }}#menu-area">Katalog</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" target="_blank">Kontak</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://wa.me/62895395810940" target="_blank">Kontak</a></li>
                     @auth <li class="nav-item"><a class="nav-link" href="{{ route('pembeli.riwayat') }}">Riwayat</a></li> @endauth
                 </ul>
                 <div class="d-flex align-items-center mt-3 mt-lg-0">
@@ -114,7 +117,7 @@
     </nav>
 
     <div class="container">
-        {{-- BNNER BARU UNTUK SOUVENIR --}}
+        {{-- BANNER BARU UNTUK SOUVENIR --}}
         <div class="hero-banner">
             <h2 class="fw-bold mb-2 display-6">Cari Souvenir Unik & Cantik?</h2>
             <p class="mb-0 fs-5" style="opacity: 0.9;">Temukan beragam pilihan custom souvenir di Smolie Gift!</p>
@@ -228,27 +231,30 @@
                                     {{-- 1. Pilihan Warna / Tema --}}
                                     <div class="mb-4">
                                         <label class="form-label fw-bold text-dark">Pilihan Warna / Motif</label>
-                                        <select class="form-select border-secondary rounded-3" name="warna">
+                                        {{-- Tambahan ID dan onChange event --}}
+                                        <select class="form-select border-secondary rounded-3" name="warna" id="pilihan-varian-{{ $p->id }}" onchange="cekPilihanCustom({{ $p->id }})">
                                             <option value="">Pilih varian...</option>
                                             <option value="Pastel">Warna Pastel (Soft)</option>
                                             <option value="Monokrom">Monokrom (Hitam Putih)</option>
                                             <option value="Emas">Aksen Emas (Gold)</option>
                                             <option value="Campur">Campur / Random</option>
+                                            <option value="custom">Custom Desain Sendiri</option> {{-- Opsi Pemicu --}}
                                         </select>
                                     </div>
 
-                                    {{-- 2. Pilihan Kemasan --}}
+                                    {{-- 2. Ketebalan Kertas --}}
                                     <div class="mb-4">
-                                        <label class="form-label fw-bold text-dark">Pilihan Kemasan</label>
-                                        <div class="d-flex gap-2 flex-wrap">
-                                            <input type="radio" class="btn-check kemasan-radio" name="kemasan" id="kem1-{{ $p->id }}" value="Plastik" data-price="0" onchange="hitungTotal({{ $p->id }})" checked>
-                                            <label class="btn btn-outline-secondary rounded-pill px-3" for="kem1-{{ $p->id }}">Plastik & Kawat Emas</label>
+                                        <label class="form-label fw-bold text-dark">Ketebalan Kertas</label>
+                                        <div class="d-flex flex-wrap gap-2 mt-1">
+                                            {{-- Radio Buttons diubah gayanya pakai Bootstrap Button Group style --}}
+                                            <input type="radio" class="btn-check btn-check-custom kemasan-radio" name="ketebalan" id="kertas1-{{ $p->id }}" value="standar" data-price="0" checked onchange="hitungTotal({{ $p->id }})">
+                                            <label class="btn px-3 py-1 fw-semibold" for="kertas1-{{ $p->id }}">Standar (70gsm)</label>
 
-                                            <input type="radio" class="btn-check kemasan-radio" name="kemasan" id="kem2-{{ $p->id }}" value="Tile" data-price="1000" onchange="hitungTotal({{ $p->id }})">
-                                            <label class="btn btn-outline-secondary rounded-pill px-3" for="kem2-{{ $p->id }}">Bungkus Tile (+Rp 1.000)</label>
+                                            <input type="radio" class="btn-check btn-check-custom kemasan-radio" name="ketebalan" id="kertas2-{{ $p->id }}" value="tebal" data-price="1000" onchange="hitungTotal({{ $p->id }})">
+                                            <label class="btn px-3 py-1 fw-semibold" for="kertas2-{{ $p->id }}">Tebal 80gsm (+Rp 1.000)</label>
 
-                                            <input type="radio" class="btn-check kemasan-radio" name="kemasan" id="kem3-{{ $p->id }}" value="Box" data-price="2500" onchange="hitungTotal({{ $p->id }})">
-                                            <label class="btn btn-outline-secondary rounded-pill px-3" for="kem3-{{ $p->id }}">Box Eksklusif (+Rp 2.500)</label>
+                                            <input type="radio" class="btn-check btn-check-custom kemasan-radio" name="ketebalan" id="kertas3-{{ $p->id }}" value="ekstra" data-price="2500" onchange="hitungTotal({{ $p->id }})">
+                                            <label class="btn px-3 py-1 fw-semibold" for="kertas3-{{ $p->id }}">Ekstra 100gsm (+Rp 2.500)</label>
                                         </div>
                                     </div>
 
@@ -273,15 +279,17 @@
                                         </div>
                                     </div>
 
-                                    {{-- 4. Custom Desain --}}
-                                    <div class="mb-4 p-3 rounded-4" style="background-color: #FDE8E5; border: 1px dashed #DD3827;">
-                                        <label class="form-label fw-bold" style="color: #DD3827;">
-                                            <i class="bi bi-palette-fill me-2"></i>Custom Desain & Catatan
-                                        </label>
-                                        <p class="small text-muted mb-2">Punya desain sendiri untuk sablon/kartu? Unggah di sini atau tulis instruksi untuk tim kami.</p>
-                                        
-                                        <input class="form-control mb-2 border-white shadow-sm" type="file" name="file_desain" accept="image/png, image/jpeg, application/pdf">
-                                        <textarea class="form-control border-white shadow-sm" name="catatan_desain" rows="3" placeholder="Contoh: Tolong desain sablon font romantis. Tulisannya 'Nico & Lili'"></textarea>
+                                    {{-- 4. Custom Desain (Disembunyikan dari awal pakai style display:none) --}}
+                                    <div id="area-custom-{{ $p->id }}" style="display: none;">
+                                        <div class="mb-4 p-3 rounded-4" style="background-color: #FDE8E5; border: 1px dashed #DD3827;">
+                                            <label class="form-label fw-bold" style="color: #DD3827;">
+                                                <i class="bi bi-palette-fill me-2"></i>Custom Desain & Catatan
+                                            </label>
+                                            <p class="small text-muted mb-2">Punya desain sendiri untuk sablon/kartu? Unggah di sini atau tulis instruksi untuk tim kami.</p>
+                                            
+                                            <input class="form-control mb-2 border-white shadow-sm" type="file" name="file_desain" accept="image/png, image/jpeg, application/pdf">
+                                            <textarea class="form-control border-white shadow-sm" name="catatan_desain" rows="3" placeholder="Contoh: Tolong desain sablon font romantis. Tulisannya 'Nico & Lili'"></textarea>
+                                        </div>
                                     </div>
 
                                     {{-- BAGIAN BAWAH MODAL (Hitung & Simpan) --}}
@@ -308,14 +316,14 @@
     </div>
     
     {{-- ================= FOOTER BARU SMOLIE GIFT ================= --}}
-    <footer style="background-color: var(--text-dark); color: #b0b0b0; font-family: 'Nunito', sans-serif;">
+    <footer style="background-color: var(--text-dark); color: #b0b0b0; font-family: 'Nunito', sans-serif; padding-bottom: 120px;">
         <div style="height: 6px; background-color: var(--primary-color); width: 100%;"></div>
 
         <div class="container py-5">
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <h5 class="text-white fw-bold mb-3 d-flex align-items-center" style="font-family: 'Poppins', sans-serif;">
-                        <img src="{{ asset('public/template/img/smolie.jpg') }}" alt="Logo" width="40" height="40" class="me-2 rounded-circle bg-white p-1">
+                        <img src="{{ asset('template/img/smolie.jpg') }}" width="45" height="45" class="me-2 rounded-circle border border-2 border-white shadow-sm">
                         SMOLIE GIFT
                     </h5>
                     <p class="small mb-4">Pusat pemesanan custom souvenir eksklusif, terpercaya, dan harga bersahabat untuk menyempurnakan hari bahagia Anda.</p>
@@ -356,43 +364,77 @@
         </a>
     @endif
 
+    {{-- ================= FLOATING CHAT PELANGGAN ================= --}}
+    <button id="btn-chat-toggle" class="btn shadow-lg d-flex justify-content-center align-items-center" 
+            style="position: fixed; bottom: 30px; right: 30px; z-index: 1060; background-color: #DD3827; color: white; border-radius: 50%; width: 60px; height: 60px; transition: 0.3s;">
+        <i class="bi bi-chat-dots-fill fs-3"></i>
+    </button>
+
+    <div id="mini-chat-box" class="card shadow-lg d-none" 
+         style="position: fixed; bottom: 100px; right: 30px; width: 350px; z-index: 1060; border-radius: 20px; border: none; overflow: hidden; font-family: 'Nunito', sans-serif;">
+        
+        <div class="card-header text-white d-flex justify-content-between align-items-center p-3 border-0" style="background-color: #DD3827;">
+            <div class="d-flex align-items-center">
+                <img src="{{ asset('template/img/smolie.jpg') }}" width="45" height="45" class="me-2 rounded-circle border border-2 border-white shadow-sm">
+                <div>
+                    <h6 class="mb-0 fw-bold" style="font-family: 'Poppins', sans-serif; font-size: 0.95rem;">Admin Smolie</h6>
+                    <small style="font-size: 0.75rem;"><i class="bi bi-circle-fill text-success me-1" style="font-size: 0.5rem;"></i>Siap membalas pesan</small>
+                </div>
+            </div>
+            <button id="btn-close-chat" class="btn btn-sm text-white border-0 shadow-none"><i class="bi bi-x-lg fs-5"></i></button>
+        </div>
+        
+        <div id="chat-history-container" class="card-body p-3 overflow-auto custom-scrollbar" style="height: 320px; background-color: #F9F9FB; display: flex; flex-direction: column; gap: 12px;">
+            <div class="text-center my-1">
+                <span class="badge bg-light text-muted border" style="font-size: 0.65rem;">Hari ini</span>
+            </div>
+
+            <div class="d-flex w-100">
+                <div class="p-2 px-3 rounded-4 text-dark bg-white border shadow-sm" style="max-width: 85%; font-size: 0.85rem; border-top-left-radius: 4px !important;">
+                    Halo Kak! Ada yang bisa kami bantu untuk *custom* desain souvenirnya? 😊
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-footer bg-white p-2 border-top">
+            <div class="input-group align-items-center">
+                <input type="text" id="chat-input-pesan" class="form-control border-0 shadow-none bg-light rounded-pill px-3 py-2" placeholder="Tulis pesan..." style="font-size: 0.85rem;">
+                <button id="btn-kirim-chat" class="btn text-white rounded-circle ms-2 d-flex justify-content-center align-items-center shadow-sm" style="background-color: #DD3827; width: 40px; height: 40px;">
+                    <i class="bi bi-send-fill" style="font-size: 0.9rem; margin-left: -2px;"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- ================= SCRIPT JAVASCRIPT DI PALING BAWAH ================= --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('.btn-cat').click(function() {
-                $('.btn-cat').removeClass('active');
-                $(this).addClass('active');
-                var categoryId = $(this).data('filter');
-                if(categoryId == 'all') { $('.product-item').fadeIn('fast'); } 
-                else { $('.product-item').hide(); $('.product-item[data-category="' + categoryId + '"]').fadeIn('fast'); }
-            });
-        });
+        // --- 1. FUNGSI GLOBAL (Bisa dipanggil dari mana saja) ---
+        function cekPilihanCustom(id) {
+            var valPilihan = $('#pilihan-varian-' + id).val();
+            if(valPilihan === 'custom') {
+                $('#area-custom-' + id).slideDown('fast');
+            } else {
+                $('#area-custom-' + id).slideUp('fast');
+            }
+        }
 
-        // SCRIPT BARU UNTUK MENGHITUNG TOTAL SOUVENIR
         function hitungTotal(id) {
             var modal = $('#modalOrder-' + id);
-            
-            // 1. Ambil Harga Dasar Piring/Souvenir
             var hargaDasar = parseInt(modal.find('.harga-dasar').val()) || 0;
-            
-            // 2. Ambil Jumlah/Qty
             var qty = parseInt($('#qtyModal-' + id).val()) || 1;
-            
-            // 3. Ambil Harga Kemasan (Plastik/Tile/Box)
             var kemasanPrice = parseInt(modal.find('.kemasan-radio:checked').data('price')) || 0;
-
-            // 4. Ambil Harga Tambahan (Sablon/Kartu)
             var totalAddon = 0;
+            
             modal.find('.addon-check:checked').each(function() {
                 totalAddon += parseInt($(this).data('price'));
             });
 
-            // Rumus: (Harga Souvenir + Harga Kemasan + Tambahan Lain) * Jumlah Pesanan
             var hargaPerItem = hargaDasar + kemasanPrice + totalAddon;
             var totalAkhir = hargaPerItem * qty;
-
             var formatRupiah = new Intl.NumberFormat('id-ID').format(totalAkhir);
+            
             $('#btn-submit-' + id).text('Tambah - Rp ' + formatRupiah);
         }
 
@@ -409,6 +451,123 @@
             if (!isNaN(val) && val > 1) input.value = val - 1;
             hitungTotal(id);
         }
+
+        // --- 2. FUNGSI KLIK (Wajib di dalam document.ready) ---
+        $(document).ready(function() {
+            // A. Kategori Filter
+            $('.btn-cat').click(function() {
+                $('.btn-cat').removeClass('active');
+                $(this).addClass('active');
+                var categoryId = $(this).data('filter');
+                if(categoryId == 'all') { $('.product-item').fadeIn('fast'); } 
+                else { $('.product-item').hide(); $('.product-item[data-category="' + categoryId + '"]').fadeIn('fast'); }
+            });
+
+            // B. Efek Navigasi
+            $('.navbar-nav .nav-link').click(function() {
+                $('.navbar-nav .nav-link').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            // C. Toggle Chat Box
+            $('#btn-chat-toggle').click(function() {
+                var icon = $(this).find('i');
+                if(icon.hasClass('bi-chat-dots-fill')) {
+                    icon.removeClass('bi-chat-dots-fill').addClass('bi-x-lg');
+                } else {
+                    icon.removeClass('bi-x-lg').addClass('bi-chat-dots-fill');
+                }
+                $('#mini-chat-box').fadeToggle('fast').toggleClass('d-none');
+                
+                // Saat dibuka, langsung scroll ke bawah
+                if(!$('#mini-chat-box').hasClass('d-none')){
+                    var container = $('#chat-history-container');
+                    container.scrollTop(container[0].scrollHeight);
+                }
+            });
+
+            $('#btn-close-chat').click(function() {
+                $('#mini-chat-box').fadeOut('fast').addClass('d-none');
+                $('#btn-chat-toggle i').removeClass('bi-x-lg').addClass('bi-chat-dots-fill');
+            });
+
+            // D. Fitur Kirim Pesan AJAX
+            $('#btn-kirim-chat').click(function() { kirimPesan(); });
+            $('#chat-input-pesan').keypress(function(e) { if(e.which == 13) kirimPesan(); });
+
+            function kirimPesan() {
+                var pesanTeks = $('#chat-input-pesan').val();
+                var btnKirim = $('#btn-kirim-chat');
+                if(pesanTeks.trim() === '') return;
+
+                btnKirim.html('<span class="spinner-border spinner-border-sm"></span>');
+
+                $.ajax({
+                    url: "{{ route('chat.kirim') }}",
+                    type: "POST",
+                    data: { _token: "{{ csrf_token() }}", pesan: pesanTeks },
+                    success: function(response) {
+                        if(response.status === 'success') {
+                            $('#chat-input-pesan').val('');
+                            // Panggil refresh langsung agar tampilan sinkron
+                            refreshChatPembeli();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        if(xhr.status === 401) {
+                            alert("Silakan login terlebih dahulu.");
+                            window.location.href = "{{ url('/login') }}";
+                        }
+                    },
+                    complete: function() {
+                        btnKirim.html('<i class="bi bi-send-fill"></i>');
+                    }
+                });
+            }
+
+            // E. Fitur Real-time Polling (Hanya untuk User yang Login)
+            @auth
+            setInterval(function() {
+                if (!$('#mini-chat-box').hasClass('d-none')) {
+                    refreshChatPembeli();
+                }
+            }, 5000);
+
+            function refreshChatPembeli() {
+                $.get("/admin/chat/messages/{{ Auth::id() }}", function(messages) {
+                    let chatContainer = $('#chat-history-container');
+                    let htmlContent = `<div class="text-center my-1"><span class="badge bg-light text-muted border small">Chat Smolie Gift</span></div>`;
+                    
+                    messages.forEach(msg => {
+                        if (msg.pengirim === 'admin') {
+                            htmlContent += `
+                                <div class="d-flex w-100 mb-2">
+                                    <div class="p-2 px-3 rounded-4 text-dark bg-white border shadow-sm" style="max-width: 85%; font-size: 0.85rem; border-top-left-radius: 4px !important;">
+                                        ${msg.pesan}
+                                    </div>
+                                </div>`;
+                        } else {
+                            htmlContent += `
+                                <div class="d-flex justify-content-end mb-2">
+                                    <div class="p-2 px-3 rounded-4 text-white shadow-sm" style="background-color: #DD3827; max-width: 85%; font-size: 0.85rem; border-top-right-radius: 4px !important;">
+                                        ${msg.pesan}
+                                    </div>
+                                </div>`;
+                        }
+                    });
+
+                    // Gunakan perbandingan sederhana untuk mencegah refresh berlebihan
+                    if (chatContainer.data('last-content') !== htmlContent) {
+                        chatContainer.html(htmlContent);
+                        chatContainer.data('last-content', htmlContent);
+                        chatContainer.scrollTop(chatContainer[0].scrollHeight);
+                    }
+                });
+            }
+            @endauth
+        });
     </script>
 </body>
 </html>
