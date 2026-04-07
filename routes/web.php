@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AksesAdmin;
 use App\Http\Controllers\ChatController;
 
+//hai
 Route::middleware(['auth'])->group(function () {
     // Sisi Pembeli & Admin Kirim
     Route::post('/chat/kirim', [ChatController::class, 'kirimPesanPembeli'])->name('chat.kirim');
