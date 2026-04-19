@@ -12,6 +12,18 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AksesAdmin;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\TransactionController;
+
+
+// Rute untuk Admin
+Route::get('/admin/transaksi', [TransaksiController::class, 'index'])->name('admin.transaksi');
+Route::patch('/admin/transaksi/{id}/selesai', [TransaksiController::class, 'selesai'])->name('admin.transaksi.selesai');
+Route::get('/admin/transaksi/{id}/struk', [TransaksiController::class, 'cetakStruk'])->name('admin.transaksi.struk');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/riwayat-pesanan', [TransactionController::class, 'history'])->name('pembeli.history');
+    Route::get('/cetak-invoice/{id}', [TransactionController::class, 'cetakPdf'])->name('pembeli.cetak_pdf');
+});
 
 //hai
 Route::middleware(['auth'])->group(function () {

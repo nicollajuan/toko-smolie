@@ -46,17 +46,25 @@ class ChatController extends Controller
 
     public function adminChat()
     {
-        $userIds = Message::select('user_id')->groupBy('user_id')->latest()->pluck('user_id');
+        // KODE YANG DIPERBAIKI ADA DI SINI
+        $userIds = Message::select('user_id')
+                    ->groupBy('user_id')
+                    ->orderByRaw('MAX(created_at) DESC')
+                    ->pluck('user_id');
+                    
         $kontak = User::whereIn('id', $userIds)->get();
+        
         return view('admin.reviews.chat', compact('kontak'));
     }
 
     public function getMessages($user_id)
     {
         $messages = Message::where('user_id', $user_id)->orderBy('created_at', 'asc')->get();
+        
         if (in_array(Auth::user()->usertype, ['admin', 'kasir'])) {
             Message::where('user_id', $user_id)->where('pengirim', 'pembeli')->update(['is_read' => true]);
         }
+        
         return response()->json($messages);
     }
 }
