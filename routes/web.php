@@ -24,6 +24,8 @@ use App\Http\Controllers\PaymentController;
 Route::get('/auth/facebook', [FacebookAuthController::class, 'redirect'])->name('facebook.redirect');
 Route::get('/auth/facebook/callback', [FacebookAuthController::class, 'callback'])->name('facebook.callback');
 
+// Rute untuk Update Pengiriman oleh Admin
+Route::post('/admin/transaksi/{id}/kirim', [TransaksiController::class, 'updatePengiriman'])->name('admin.transaksi.kirim');
 
 // Rute untuk Admin
 Route::get('/admin/transaksi', [TransaksiController::class, 'index'])->name('admin.transaksi');

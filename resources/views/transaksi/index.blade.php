@@ -184,12 +184,14 @@
                             </td>
                             
                             {{-- Status --}}
-                            <td>
-                                @if($data->status == 'pending')
-                                    <span class="badge bg-warning text-dark rounded-pill px-3">Pending</span>
-                                @else
-                                    <span class="badge bg-success rounded-pill px-3"><i class="bi bi-check-circle me-1"></i> Selesai</span>
-                                @endif
+<td>
+    @if($data->status == 'pending')
+        <span class="badge bg-warning text-dark rounded-pill px-3">Pending</span>
+    @elseif($data->status == 'dikirim')
+        <span class="badge bg-info text-white rounded-pill px-3"><i class="bi bi-truck me-1"></i> Dikirim</span>
+    @else
+        <span class="badge bg-success rounded-pill px-3"><i class="bi bi-check-circle me-1"></i> Selesai</span>
+    @endif
                                 
                                 {{-- Status Pembayaran (QRIS) --}}
                                 @if($data->metode_pembayaran == 'qris')
@@ -206,9 +208,19 @@
                             </td>
                             
                             {{-- Aksi --}}
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2 flex-wrap">
-                                    
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                        
+                                        {{-- UBAH $trx MENJADI $data DI BAWAH INI --}}
+                                        @if($data->status != 'selesai' && $data->status != 'dikirim')
+                                            <form action="{{ route('admin.transaksi.kirim', $data->id) }}" method="POST" class="d-inline mt-2">
+                                                @csrf
+                                                <div class="input-group input-group-sm">
+                                                    <input type="date" name="estimasi_tiba" class="form-control" required title="Pilih Tanggal Estimasi">
+                                                    <button type="submit" class="btn btn-info text-white">Kirim Ekspedisi</button>
+                                                </div>
+                                            </form>
+                                        @endif
                                     {{-- TOMBOL LIHAT BUKTI PEMBAYARAN (QRIS) --}}
                                     @if($data->metode_pembayaran == 'qris' && $data->bukti_pembayaran)
                                         <a href="javascript:void(0)" 
@@ -247,18 +259,18 @@
                                     @endif
 
                                     {{-- TOMBOL SELESAI / CETAK STRUK --}}
-                                    @if($data->status == 'pending')
-                                        <form action="{{ route('transaksi.selesai', $data->id) }}" method="POST" onsubmit="return confirm('Selesaikan pesanan ini?');">
-                                            @csrf
-                                            <button type="submit" class="btn btn-primary btn-action-circle shadow-sm" title="Selesaikan Order">
-                                                <i class="bi bi-check-lg"></i>
-                                            </button>
-                                        </form>
-                                    @else
-                                        <a href="{{ route('transaksi.struk', $data->id) }}" target="_blank" class="btn btn-warning btn-action-circle shadow-sm text-dark" title="Cetak Struk">
-                                            <i class="bi bi-printer-fill"></i>
-                                        </a>
-                                    @endif
+@if($data->status != 'selesai')
+    <form action="{{ route('transaksi.selesai', $data->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Selesaikan pesanan ini?');">
+        @csrf
+        <button type="submit" class="btn btn-primary btn-action-circle shadow-sm" title="Selesaikan Order">
+            <i class="bi bi-check-lg"></i>
+        </button>
+    </form>
+@else
+    <a href="{{ route('transaksi.struk', $data->id) }}" target="_blank" class="btn btn-warning btn-action-circle shadow-sm text-dark" title="Cetak Struk">
+        <i class="bi bi-printer-fill"></i>
+    </a>
+@endif
 
                                 </div>
                             </td>

@@ -259,7 +259,13 @@
                                     {{ date('d M Y, H:i', strtotime($data->created_at)) }}
                                 </div>
                             </div>
-                            
+                            @if($data->status == 'dikirim')
+                                <div class="alert alert-info mt-3 mb-0" style="background-color: #e0f2fe; border: 1px solid #bae6fd; color: #0284c7;">
+                                    🚚 <strong>Pesanan Sedang Dikirim!</strong><br>
+                                    Barang sudah diserahkan ke pihak ekspedisi.<br>
+                                    Estimasi tiba pada tanggal: <strong>{{ \Carbon\Carbon::parse($data->estimasi_tiba)->translatedFormat('d F Y') }}</strong>
+                                </div>
+                            @endif
                             @if($data->status == 'pending')
                                 <span class="badge-status badge-pending"><i class="bi bi-hourglass-split me-1"></i> Diproses</span>
                             @else

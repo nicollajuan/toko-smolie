@@ -99,4 +99,21 @@ class TransaksiController extends Controller
         // Download otomatis (Kertas defaultnya adalah A4 portrait)
         return $pdf->download('Invoice-SmolieGift-'.$transaction->id.'.pdf');
     }
+
+    // Mengupdate status menjadi dikirim beserta estimasi tibanya
+    public function updatePengiriman(Request $request, $id)
+    {
+        $request->validate([
+            'estimasi_tiba' => 'required|date'
+        ]);
+
+        $transaksi = Transaksi::findOrFail($id);
+        
+        $transaksi->update([
+            'status' => 'dikirim',
+            'estimasi_tiba' => $request->estimasi_tiba
+        ]);
+
+        return redirect()->back()->with('success', 'Status pesanan diubah menjadi DIKIRIM ke ekspedisi!');
+    }
 }
