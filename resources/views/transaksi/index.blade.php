@@ -190,12 +190,35 @@
                                 @else
                                     <span class="badge bg-success rounded-pill px-3"><i class="bi bi-check-circle me-1"></i> Selesai</span>
                                 @endif
+                                
+                                {{-- Status Pembayaran (QRIS) --}}
+                                @if($data->metode_pembayaran == 'qris')
+                                    <br><small class="mt-1 d-block">
+                                        @if($data->status_pembayaran === 'berhasil')
+                                            <span class="badge bg-success text-white">Pembayaran OK</span>
+                                        @elseif($data->status_pembayaran === 'gagal')
+                                            <span class="badge bg-danger">Pembayaran Gagal</span>
+                                        @else
+                                            <span class="badge bg-info">Menunggu Bayar</span>
+                                        @endif
+                                    </small>
+                                @endif
                             </td>
                             
                             {{-- Aksi --}}
                             <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2">
+                                <div class="d-flex justify-content-center gap-2 flex-wrap">
                                     
+                                    {{-- TOMBOL LIHAT BUKTI PEMBAYARAN (QRIS) --}}
+                                    @if($data->metode_pembayaran == 'qris' && $data->bukti_pembayaran)
+                                        <a href="javascript:void(0)" 
+                                           onclick="showProofModal({{ $data->id }}, '{{ $data->bukti_pembayaran }}', '{{ $data->status_pembayaran }}')"
+                                           class="btn btn-info btn-action-circle shadow-sm text-white" 
+                                           title="Lihat Bukti Pembayaran">
+                                            <i class="bi bi-receipt"></i>
+                                        </a>
+                                    @endif
+
                                     {{-- LOGIKA WHATSAPP (SAMA PERSIS DENGAN KODE ANDA) --}}
                                     @php
                                         $nomor = $data->no_hp;
@@ -250,4 +273,98 @@
         </div>
     </div>
 </div>
+
+{{-- MODAL LIHAT BUKTI PEMBAYARAN --}}
+<div class="modal fade" id="proofModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold">Bukti Pembayaran QRIS</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="proofContent"></div>
+            </div>
+            <div class="modal-footer bg-light border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <a id="downloadLink" href="#" class="btn btn-primary">
+                    <i class="bi bi-download me-2"></i>Download
+                </a>
+                <form id="verifyForm" method="POST" style="display: inline;">
+                    @csrf
+                    <div class="btn-group ms-2" role="group">
+                        <button type="button" class="btn btn-success" onclick="verifyPayment('berhasil')">
+                            <i class="bi bi-check-circle me-1"></i>Setujui
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="verifyPayment('gagal')">
+                            <i class="bi bi-x-circle me-1"></i>Tolak
+                        </button>
+                    </div>
+                    <input type="hidden" name="status_pembayaran" id="statusInput" value="">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- SCRIPT --}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function showProofModal(transaksiId, fileName, status) {
+        const modal = new bootstrap.Modal(document.getElementById('proofModal'));
+        const proofContent = document.getElementById('proofContent');
+        const downloadLink = document.getElementById('downloadLink');
+        const verifyForm = document.getElementById('verifyForm');
+        const statusInput = document.getElementById('statusInput');
+
+        // Set form action
+        verifyForm.action = `/admin/pembayaran/${transaksiId}/verify`;
+        downloadLink.href = `/pembayaran/${transaksiId}/download-proof`;
+
+        // Determine file type and show preview
+        const extension = fileName.split('.').pop().toLowerCase();
+        const filePath = `/storage/bukti_pembayaran/${fileName}`;
+
+        let previewHtml = '';
+        
+        if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
+            previewHtml = `
+                <div class="text-center mb-3">
+                    <img src="${filePath}" alt="Bukti Pembayaran" class="img-fluid rounded" style="max-height: 400px;">
+                </div>
+            `;
+        } else if (extension === 'pdf') {
+            previewHtml = `
+                <div class="text-center mb-3">
+                    <i class="bi bi-file-pdf text-danger" style="font-size: 64px;"></i>
+                    <p class="mt-2 text-muted">File PDF</p>
+                </div>
+            `;
+        } else {
+            previewHtml = `
+                <div class="alert alert-info">
+                    <i class="bi bi-file-earmark me-2"></i>File: ${fileName}
+                </div>
+            `;
+        }
+
+        // Add status badge
+        let statusBadge = '';
+        if (status === 'berhasil') {
+            statusBadge = '<span class="badge bg-success mb-3"><i class="bi bi-check-circle me-1"></i> Telah Diverifikasi</span>';
+        } else if (status === 'gagal') {
+            statusBadge = '<span class="badge bg-danger mb-3"><i class="bi bi-x-circle me-1"></i> Ditolak</span>';
+        } else {
+            statusBadge = '<span class="badge bg-warning mb-3"><i class="bi bi-clock me-1"></i> Menunggu Verifikasi</span>';
+        }
+
+        proofContent.innerHTML = statusBadge + previewHtml;
+        modal.show();
+    }
+
+    function verifyPayment(status) {
+        document.getElementById('statusInput').value = status;
+        document.getElementById('verifyForm').submit();
+    }
+</script>
 @endsection

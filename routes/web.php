@@ -13,6 +13,16 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AksesAdmin;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\FacebookAuthController;
+use App\Http\Controllers\PaymentController;
+
+
+// =========================================================================
+#  ROUTING SOCIAL LOGIN (FACEBOOK)
+# =========================================================================
+// Facebook Routes
+Route::get('/auth/facebook', [FacebookAuthController::class, 'redirect'])->name('facebook.redirect');
+Route::get('/auth/facebook/callback', [FacebookAuthController::class, 'callback'])->name('facebook.callback');
 
 
 // Rute untuk Admin
@@ -193,6 +203,25 @@ Route::middleware(['auth'])->group(function () {
     
     // TAMBAHAN: Update Jumlah Keranjang
     Route::patch('/update-cart', [PembeliController::class, 'updateCart'])->name('update.cart');
+});
+
+// =========================================================================
+#  ROUTING PEMBAYARAN (QRIS & BUKTI PEMBAYARAN)
+# =========================================================================
+Route::middleware(['auth'])->group(function () {
+    // Tampilkan halaman pembayaran dengan QRIS
+    Route::get('/pembayaran/{id}', [PaymentController::class, 'show'])->name('pembayaran.show');
+    
+    // Upload bukti pembayaran
+    Route::post('/pembayaran/{id}/upload-proof', [PaymentController::class, 'uploadProof'])->name('pembayaran.uploadProof');
+    
+    // Download bukti pembayaran
+    Route::get('/pembayaran/{id}/download-proof', [PaymentController::class, 'downloadProof'])->name('pembayaran.downloadProof');
+});
+
+// Admin verifikasi pembayaran
+Route::middleware(['auth'])->group(function () {
+    Route::post('/admin/pembayaran/{id}/verify', [PaymentController::class, 'verifyPayment'])->name('pembayaran.verify');
 });
 
 Route::middleware(['auth'])->group(function () {

@@ -281,7 +281,7 @@ class PembeliController extends Controller
 
             DB::commit(); 
 
-            return redirect()->route('pembeli.index')->with('success', 'Pesanan Berhasil! Silakan selesaikan pembayaran.');
+            return redirect()->route('pembayaran.show', $id_transaksi)->with('success', 'Pesanan berhasil dibuat! Silakan lakukan pembayaran.');
 
         } catch (Exception $e) {
             DB::rollBack(); 

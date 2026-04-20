@@ -100,6 +100,73 @@
                             </div>
                         </div>
 
+                        {{-- 2A. WHATSAPP (KHUSUS ADMIN) --}}
+                        @if(auth()->user()->usertype === 'admin')
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Nomor WhatsApp</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-whatsapp text-success"></i></span>
+                                    <input type="tel" name="whatsapp" class="form-control border-start-0 ps-0 @error('whatsapp') is-invalid @enderror" 
+                                           value="{{ old('whatsapp', $user->whatsapp) }}" 
+                                           placeholder="+62812345678">
+                                    
+                                    @error('whatsapp')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <small class="text-muted d-block mt-1">Gunakan format internasional: +62...</small>
+                            </div>
+                        </div>
+
+                        {{-- 2B. REKENING BANK (KHUSUS ADMIN) --}}
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Nama Bank</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-bank text-danger"></i></span>
+                                    <input type="text" name="nama_bank" class="form-control border-start-0 ps-0 @error('nama_bank') is-invalid @enderror" 
+                                           value="{{ old('nama_bank', $user->nama_bank) }}" 
+                                           placeholder="BRI, BCA, Mandiri, dll">
+                                    
+                                    @error('nama_bank')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Nomor Rekening</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-credit-card-2-back text-danger"></i></span>
+                                    <input type="text" name="nomor_rekening" class="form-control border-start-0 ps-0 @error('nomor_rekening') is-invalid @enderror" 
+                                           value="{{ old('nomor_rekening', $user->nomor_rekening) }}" 
+                                           placeholder="Contoh: 1234567890">
+                                    
+                                    @error('nomor_rekening')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Nama Pemilik Rekening</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-person-vcard text-danger"></i></span>
+                                    <input type="text" name="nama_pemilik_rekening" class="form-control border-start-0 ps-0 @error('nama_pemilik_rekening') is-invalid @enderror" 
+                                           value="{{ old('nama_pemilik_rekening', $user->nama_pemilik_rekening) }}" 
+                                           placeholder="Nama pemilik rekening">
+                                    
+                                    @error('nama_pemilik_rekening')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <small class="text-muted d-block mt-1">Data ini akan ditampilkan kepada pembeli saat melakukan pembayaran QRIS</small>
+                            </div>
+                        </div>
+                        @endif
+
                         <hr class="my-4 text-muted opacity-25">
 
                         {{-- 3. GANTI PASSWORD --}}

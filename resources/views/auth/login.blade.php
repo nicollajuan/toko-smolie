@@ -230,19 +230,11 @@
                 </div>
 
                 {{-- Opsi Login Sosmed --}}
+                {{-- Opsi Login Sosmed --}}
                 <div class="divider-text mt-2">ATAU MASUK DENGAN</div>
-                <div class="row g-3">
-                    <div class="col-6">
-                        <button type="button" class="btn-social shadow-sm">
-                            <i class="bi bi-google text-danger me-2"></i> Google
-                        </button>
-                    </div>
-                    <div class="col-6">
-                        <button type="button" class="btn-social shadow-sm">
-                            <i class="bi bi-facebook text-primary me-2"></i> Facebook
-                        </button>
-                    </div>
-                </div>
+                <a href="{{ route('facebook.redirect') }}" class="btn-social shadow-sm" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 100%;">
+                    <i class="bi bi-facebook text-primary me-2"></i> Facebook
+                </a>
 
             </div>
         </div>
