@@ -198,20 +198,24 @@
                             </div>
                             
                             {{-- Pengecekan Stok dan Hak Akses Admin --}}
-@if($p->stok <= 0)
+                            @if($p->stock <= 0)
+                                {{-- JIKA STOK HABIS --}}
+                                <button type="button" class="btn w-100 btn-sm rounded-pill fw-bold text-white" disabled style="background-color: #dc3545; opacity: 0.6; border:none; padding: 8px 0;">
+                                    <i class="bi bi-x-circle me-1"></i> Stok Habis
+                                </button>
 
-@elseif(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir']))
-    {{-- JIKA YANG LOGIN ADALAH ADMIN/KASIR --}}
-    <button type="button" class="btn w-100 btn-sm rounded-pill fw-bold text-white" disabled style="background-color: #94a3b8; border:none; padding: 8px 0;" title="Admin hanya bisa melihat katalog">
-        <i class="bi bi-eye me-1"></i> Preview Admin
-    </button>
+                            @elseif(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir']))
+                                {{-- JIKA YANG LOGIN ADALAH ADMIN/KASIR --}}
+                                <button type="button" class="btn w-100 btn-sm rounded-pill fw-bold text-white" disabled style="background-color: #94a3b8; border:none; padding: 8px 0;" title="Admin hanya bisa melihat katalog">
+                                    <i class="bi bi-eye me-1"></i> Preview Admin
+                                </button>
 
-@else
-    {{-- JIKA PEMBELI BIASA (Membuka Modal Order) --}}
-    <button type="button" class="btn-add btn w-100 btn-sm rounded-pill fw-bold text-white bg-danger" data-bs-toggle="modal" data-bs-target="#modalOrder-{{ $p->id }}" style="border:none; padding: 8px 0;">
-        <i class="bi bi-plus-circle me-1"></i> Pesan
-    </button>
-@endif
+                            @else
+                                {{-- JIKA PEMBELI BIASA (Membuka Modal Order) --}}
+                                <button type="button" class="btn-add btn w-100 btn-sm rounded-pill fw-bold text-white bg-danger" data-bs-toggle="modal" data-bs-target="#modalOrder-{{ $p->id }}" style="border:none; padding: 8px 0;">
+                                    <i class="bi bi-plus-circle me-1"></i> Pesan
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
