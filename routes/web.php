@@ -254,3 +254,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
+
+# =========================================================================
+#  API ROUTES - ADMIN CONTACT INFO (NEW FEATURE)
+# =========================================================================
+Route::prefix('api')->group(function () {
+    Route::get('/admin/contact-info', [App\Http\Controllers\Api\AdminContactApiController::class, 'getContactInfo'])->name('api.admin.contact-info');
+    Route::get('/admin/whatsapp', [App\Http\Controllers\Api\AdminContactApiController::class, 'getWhatsApp'])->name('api.admin.whatsapp');
+    Route::get('/admin/whatsapp-link', [App\Http\Controllers\Api\AdminContactApiController::class, 'getWhatsAppLink'])->name('api.admin.whatsapp-link');
+    Route::get('/admin/has-whatsapp', [App\Http\Controllers\Api\AdminContactApiController::class, 'hasWhatsApp'])->name('api.admin.has-whatsapp');
+    
+    // Memerlukan autentikasi
+    Route::middleware(['auth'])->get('/admin/info', [App\Http\Controllers\Api\AdminContactApiController::class, 'getAdminInfo'])->name('api.admin.info');
+});

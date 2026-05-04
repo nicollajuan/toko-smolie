@@ -107,17 +107,38 @@
                                 <label class="form-label fw-bold small text-uppercase text-muted">Nomor WhatsApp</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-whatsapp text-success"></i></span>
-                                    <input type="tel" name="whatsapp" class="form-control border-start-0 ps-0 @error('whatsapp') is-invalid @enderror" 
-                                           value="{{ old('whatsapp', $user->whatsapp) }}" 
-                                           placeholder="+62812345678">
+                                    <span class="input-group-text bg-light border-0" style="border-radius: 0; font-weight: bold; color: #666;">+62</span>
+                                    <input type="tel" name="whatsapp" class="form-control border-start-0 ps-2 @error('whatsapp') is-invalid @enderror" 
+                                           id="whatsappInput"
+                                           value="{{ old('whatsapp', $user->whatsapp ? preg_replace('/[^0-9]/', '', str_replace('+62', '', $user->whatsapp)) : '') }}" 
+                                           placeholder="812345678 (8-12 digit)"
+                                           maxlength="12"
+                                           inputmode="numeric"
+                                           pattern="[0-9]*">
                                     
                                     @error('whatsapp')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <small class="text-muted d-block mt-1">Gunakan format internasional: +62...</small>
+                                <small class="text-muted d-block mt-2">
+                                    <i class="bi bi-info-circle"></i> Cukup masukkan nomor tanpa +62 (otomatis ditambahkan)<br>
+                                    <strong>Contoh:</strong> 8573193271 → +628573193271
+                                </small>
                             </div>
                         </div>
+                        
+                        <script>
+                            // Auto-format WhatsApp input
+                            document.getElementById('whatsappInput').addEventListener('input', function(e) {
+                                // Remove semua karakter non-digit
+                                this.value = this.value.replace(/[^0-9]/g, '');
+                                
+                                // Limit maksimal 12 digit (tanpa +62)
+                                if (this.value.length > 12) {
+                                    this.value = this.value.substring(0, 12);
+                                }
+                            });
+                        </script>
 
                         {{-- 2B. REKENING BANK (KHUSUS ADMIN) --}}
                         <div class="row g-3 mb-3">

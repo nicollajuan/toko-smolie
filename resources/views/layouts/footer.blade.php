@@ -52,9 +52,13 @@
 
                 <div class="bg-dark p-3 rounded border border-secondary">
                     <h6 class="text-white mb-2">Pesan Cepat via WhatsApp?</h6>
-                    <a href="https://wa.me/62895395810940" class="btn btn-success btn-sm w-100 fw-bold">
-                        <i class="bi bi-whatsapp me-1"></i> Chat Sekarang
-                    </a>
+                    @if(\App\Helpers\AdminHelper::hasAdminWhatsApp())
+                        <a href="{{ \App\Helpers\AdminHelper::getAdminWhatsAppLink('Halo, saya ingin bertanya tentang produk') }}" target="_blank" class="btn btn-success btn-sm w-100 fw-bold">
+                            <i class="bi bi-whatsapp me-1"></i> Chat Sekarang
+                        </a>
+                    @else
+                        <div class="text-white-50 small">Admin belum menambahkan nomor WhatsApp</div>
+                    @endif
                 </div>
             </div>
         </div>
