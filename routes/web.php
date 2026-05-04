@@ -16,6 +16,10 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\FacebookAuthController;
 use App\Http\Controllers\PaymentController;
 
+Route::get('/ping', function () {
+    return 'Server Laravel Aman!';
+});
+
 
 // =========================================================================
 #  ROUTING SOCIAL LOGIN (FACEBOOK)

@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('produk', function (Blueprint $table) {
-            // Menghapus ->after('stock') agar tidak error saat di-migrate.
-            // (Opsional: Jika Anda yakin nama kolomnya bahasa Indonesia, Anda bisa ubah menjadi ->after('stok'))
-            $table->enum('status', ['aktif', 'non-aktif'])->default('aktif');
+            // Menambahkan kolom deskripsi (tipe 'text' karena deskripsi biasanya panjang)
+            // 'nullable()' artinya kolom ini boleh kosong jika user tidak mengisinya
+            $table->text('deskripsi')->nullable()->after('status');
         });
     }
 
@@ -24,8 +24,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('produk', function (Blueprint $table) {
-            // Wajib ditambahkan agar migration bisa di-rollback
-            $table->dropColumn('status');
+            // Menghapus kolom jika di-rollback
+            $table->dropColumn('deskripsi');
         });
     }
 };
