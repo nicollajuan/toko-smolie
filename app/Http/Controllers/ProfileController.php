@@ -33,6 +33,7 @@ class ProfileController extends Controller
             // Validasi email ini penting agar tidak error duplicate entry milik sendiri
             'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'foto'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'whatsapp' => 'nullable|string|max:20',
             'password' => 'nullable|min:8|confirmed',
         ], [
             // Custom pesan error (Opsional, agar lebih jelas)
@@ -44,6 +45,10 @@ class ProfileController extends Controller
         // 2. Update Data Dasar
         $user->name = $request->name;
         $user->email = $request->email;
+
+        if (auth()->user()->usertype === 'admin') {
+            $user->whatsapp = $request->whatsapp;
+        }
 
         // 3. Update Password (Hanya jika diisi)
         if ($request->filled('password')) {

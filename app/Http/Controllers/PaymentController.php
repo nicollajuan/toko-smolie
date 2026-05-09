@@ -24,8 +24,10 @@ class PaymentController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        // Ambil data rekening admin
-        $admin = \App\Models\User::where('usertype', 'admin')->first();
+        // Ambil data rekening admin (Dipastikan mengambil admin yang sudah mengisi nomor rekening)
+        $admin = \App\Models\User::where('usertype', 'admin')
+                                 ->whereNotNull('nomor_rekening')
+                                 ->first();
 
         // Generate QRIS data
         $qrisUrl = $this->generateQrisUrl($transaksi, $admin);
@@ -48,25 +50,19 @@ class PaymentController extends Controller
     }
 
     /**
-     * Generate QRIS URL berdasarkan nominal dan data rekening admin
-     * Format: https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=<data>
-     * Atau menggunakan static QRIS untuk demo
+     * Generate QRIS data berdasarkan nominal dan data rekening admin
      */
     private function generateQrisUrl(Transaksi $transaksi, $admin = null)
     {
-        // QRIS Payload - Format berdasarkan spesifikasi EMV Co
-        // Untuk implementasi real, gunakan library seperti php-qris
-        
         $nominal = intval($transaksi->total_harga);
         $merchantName = $admin && $admin->nama_pemilik_rekening 
             ? strtoupper($admin->nama_pemilik_rekening) 
             : 'Smolie Gift';
-        $merchantCity = 'Jakarta';
         $nomorRekening = $admin && $admin->nomor_rekening 
             ? $admin->nomor_rekening 
             : 'UNKNOWN';
         
-        // Format QRIS dengan informasi admin
+        // Format QRIS Mockup dengan informasi admin
         // Struktur: DATA ADMIN | NOMOR REKENING | NOMINAL | KODE TRANSAKSI
         $qrisData = json_encode([
             'merchant' => $merchantName,
@@ -78,7 +74,6 @@ class PaymentController extends Controller
             'timestamp' => now()->toIso8601String(),
         ]);
         
-        // Return QRIS string yang berisi informasi admin
         return $qrisData;
     }
 
@@ -95,7 +90,6 @@ class PaymentController extends Controller
             // Convert ke base64 untuk inline display
             return base64_encode($result->getString());
         } catch (\Exception $e) {
-            // Jika gagal, return error image
             return null;
         }
     }
@@ -123,7 +117,7 @@ class PaymentController extends Controller
         }
 
         try {
-            // Hapus file lama jika ada
+            // Hapus file lama jika ada menggunakan Storage
             if ($transaksi->bukti_pembayaran && Storage::disk('public')->exists('bukti_pembayaran/' . $transaksi->bukti_pembayaran)) {
                 Storage::disk('public')->delete('bukti_pembayaran/' . $transaksi->bukti_pembayaran);
             }
@@ -166,6 +160,8 @@ class PaymentController extends Controller
 
         $transaksi = Transaksi::findOrFail($id);
         
+        // Update status pembayaran
+        // Catatan: Jika ada update status pesanan (misal dari 'pending' ke 'diproses'), bisa ditambahkan di sini
         $transaksi->update([
             'status_pembayaran' => $request->status_pembayaran,
         ]);
@@ -191,12 +187,13 @@ class PaymentController extends Controller
             return redirect()->back()->with('error', 'Bukti pembayaran tidak tersedia');
         }
 
-        $path = storage_path('app/public/bukti_pembayaran/' . $transaksi->bukti_pembayaran);
+        // Menggunakan Storage Facade (Best Practice Laravel)
+        $path = 'bukti_pembayaran/' . $transaksi->bukti_pembayaran;
 
-        if (!file_exists($path)) {
-            return redirect()->back()->with('error', 'File tidak ditemukan');
+        if (!Storage::disk('public')->exists($path)) {
+            return redirect()->back()->with('error', 'File tidak ditemukan di server');
         }
 
-        return response()->download($path);
+        return Storage::disk('public')->download($path);
     }
 }
