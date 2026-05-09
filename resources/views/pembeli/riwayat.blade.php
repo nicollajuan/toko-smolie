@@ -443,9 +443,17 @@
                     </div>
 
                     <h6 class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.75rem;">PESAN CEPAT VIA WHATSAPP?</h6>
+<<<<<<< HEAD
                     <a href="https://wa.me/{{ $site_whatsapp }}" target="_blank" class="btn btn-danger w-100 fw-bold rounded-pill py-2 shadow-sm" style="background-color: #e4002b; border: none;">
                         <i class="bi bi-whatsapp me-2"></i> CHAT SEKARANG
                     </a>
+=======
+                    @if(\App\Helpers\AdminHelper::hasAdminWhatsApp())
+                        <a href="{{ \App\Helpers\AdminHelper::getAdminWhatsAppLink('Saya ingin menanyakan status pesanan') }}" target="_blank" class="btn btn-danger w-100 fw-bold rounded-pill py-2 shadow-sm" style="background-color: #e4002b; border: none;">
+                            <i class="bi bi-whatsapp me-2"></i> CHAT SEKARANG
+                        </a>
+                    @endif
+>>>>>>> 84ed82107fd7076eab5ddc4f9f127b11af859ed2
                 </div>
             </div>
         </div>
