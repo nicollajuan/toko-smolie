@@ -22,7 +22,8 @@
             </li>
 
             @auth
-                @if(Auth::user()->usertype == 'admin' || Auth::user()->usertype == 'kasir')
+                {{-- MENU KHUSUS ADMIN (FULL AKSES) --}}
+                @if(Auth::user()->usertype == 'admin')
                     <li class="nav-header ps-3 mt-3 mb-2 text-uppercase fw-bold text-muted" style="font-size: 0.75rem; letter-spacing: 1px;">Menu Admin</li>
                         
                     <li>
@@ -40,17 +41,30 @@
                             <i class="bi bi-file-earmark-bar-graph-fill me-3 fs-5"></i> Laporan
                         </a>
                     </li>
+                @endif
+
+                {{-- MENU UNTUK ADMIN DAN KASIR (AKSES BERSAMA) --}}
+                @if(Auth::user()->usertype == 'admin' || Auth::user()->usertype == 'kasir')
+                    
+                    {{-- Judul untuk Kasir agar rapi --}}
+                    @if(Auth::user()->usertype == 'kasir')
+                        <li class="nav-header ps-3 mt-3 mb-2 text-uppercase fw-bold text-muted" style="font-size: 0.75rem; letter-spacing: 1px;">Menu Kasir</li>
+                    @endif
+
                     <li>
                         <a href="{{ url('/transaksi') }}" class="nav-link d-flex align-items-center {{ Request::is('transaksi*') ? 'active-smolie' : 'text-secondary' }}">
                             <i class="bi bi-receipt me-3 fs-5"></i> Transaksi
                         </a>
                     </li>
+                @endif
+
+                {{-- FITUR TAMBAHAN KHUSUS ADMIN --}}
+                @if(Auth::user()->usertype == 'admin')
                     <li>
                         <a href="{{ route('admin.reviews') }}" class="nav-link d-flex align-items-center {{ Request::is('admin/ulasan*') ? 'active-smolie' : 'text-secondary' }}">
                             <i class="bi bi-star-half me-3 fs-5"></i> Ulasan
                         </a>
                     </li>
-
                     <li>
                         <a href="{{ route('admin.chat') }}" class="nav-link d-flex align-items-center {{ Request::is('admin/chat*') ? 'active-smolie' : 'text-secondary' }}">
                             <i class="bi bi-chat-dots-fill me-3 fs-5"></i> Chat Pelanggan
@@ -58,13 +72,6 @@
                     </li>
                 @endif
             @endauth
-
-            <li class="mt-4">
-                <a href="{{ route('pembeli.index') }}" target="_blank" class="btn w-100 shadow-sm d-flex align-items-center justify-content-center" 
-                   style="background-color: #2D3142; color: white; border-radius: 50px;">
-                    <i class="bi bi-cart-fill me-2"></i> BUKA MENU
-                </a>
-            </li>
         </ul>
     </div>
 

@@ -10,9 +10,29 @@ use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\File;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth; // <-- TAMBAHKAN INI UNTUK CEK LOGIN
 
 class ProdukController extends Controller
 {
+    // =========================================================
+    // PENJAGA PINTU UTAMA (MIDDLEWARE)
+    // =========================================================
+    public function __construct()
+    {
+        // Mengecek setiap kali ada yang mau akses fungsi di file ini
+        $this->middleware(function ($request, $next) {
+            // Jika yang login BUKAN admin (misal: kasir atau user biasa), TENDANG!
+            if (Auth::check() && Auth::user()->usertype !== 'admin') {
+                abort(403, 'AKSES DITOLAK! Hanya Admin yang boleh mengelola Produk.');
+            }
+            return $next($request);
+        });
+    }
+
+    // =========================================================
+    // FUNGSI-FUNGSI DI BAWAH INI SEKARANG 100% AMAN
+    // =========================================================
+
     public function index(){
         $data = Produk::all();
         $kategori = Kategori::all();
@@ -50,9 +70,6 @@ class ProdukController extends Controller
         $data->stock = $request->stock;
         $data->status = 'aktif'; 
         
-        // --- KOREKSI: Tambahkan nilai default untuk deskripsi ---
-        // Anda bisa mengambilnya dari form jika ada form input 'deskripsi', 
-        // tapi jika tidak ada di form, kita isi string kosong '-' agar DB tidak error.
         $data->deskripsi = $request->has('deskripsi') ? $request->deskripsi : '-';
 
         if ($request->hasFile('gambar')) {
@@ -83,7 +100,6 @@ class ProdukController extends Controller
         $produk->harga = $request->harga;
         $produk->stock = $request->stock;
 
-        // --- KOREKSI UPDATE: Pastikan deskripsi juga ditangkap (opsional) ---
         if($request->has('deskripsi')){
             $produk->deskripsi = $request->deskripsi;
         }

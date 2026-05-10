@@ -23,19 +23,18 @@ class AppServiceProvider extends ServiceProvider
     {
         //masukkan key dan value yang akan dishare
         view()->share('nilai', 300000);
-<<<<<<< HEAD
-
-        // Share nomor WhatsApp admin ke semua view agar tautan WhatsApp otomatis mengikuti data admin
+        
+        // --- GABUNGAN KODE LOKAL & GITHUB ---
+        
+        // 1. Share nomor WhatsApp admin (Versi Lokalmu)
         $adminWhatsApp = User::where('usertype', 'admin')->first()?->whatsapp;
         view()->share('site_whatsapp', $adminWhatsApp ?: '62895395810940');
-=======
         
-        // Share admin helper ke semua view
+        // 2. Share admin helper (Versi dari GitHub)
         view()->share([
             'adminHelper' => new AdminHelper(),
             'adminWhatsApp' => AdminHelper::getAdminWhatsApp(),
             'adminContactInfo' => AdminHelper::getAdminContactInfo(),
         ]);
->>>>>>> 84ed82107fd7076eab5ddc4f9f127b11af859ed2
     }
 }
