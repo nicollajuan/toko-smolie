@@ -183,7 +183,13 @@
                     <button class="btn btn-outline-secondary border-0 shadow-sm me-3 rounded-circle" id="menu-toggle" style="width: 45px; height: 45px; padding: 0;">
                         <i class="bi bi-list fs-4 m-0"></i>
                     </button>
-                    <span class="fw-bold d-none d-md-block theme-font fs-5" style="color: var(--theme-primary);">Dashboard Admin</span>
+                                    <h5 class="m-0 fw-bold ms-2" style="color: #DD3827; font-family: 'Poppins', sans-serif;">
+                    @if(Auth::user()->usertype == 'kasir')
+                        Dashboard Kasir
+                    @else
+                        Dashboard Admin
+                    @endif
+                </h5>
                 </div>
             </nav>
 

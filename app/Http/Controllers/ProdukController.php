@@ -10,41 +10,42 @@ use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\File;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Auth; // <-- TAMBAHKAN INI UNTUK CEK LOGIN
+use Illuminate\Support\Facades\Auth;
 
 class ProdukController extends Controller
 {
     // =========================================================
-    // PENJAGA PINTU UTAMA (MIDDLEWARE)
+    // FUNGSI PENJAGA PINTU (MENGGANTIKAN MIDDLEWARE)
     // =========================================================
-    public function __construct()
+    private function cekAdmin()
     {
-        // Mengecek setiap kali ada yang mau akses fungsi di file ini
-        $this->middleware(function ($request, $next) {
-            // Jika yang login BUKAN admin (misal: kasir atau user biasa), TENDANG!
-            if (Auth::check() && Auth::user()->usertype !== 'admin') {
-                abort(403, 'AKSES DITOLAK! Hanya Admin yang boleh mengelola Produk.');
-            }
-            return $next($request);
-        });
+        if (!Auth::check() || Auth::user()->usertype !== 'admin') {
+            abort(403, 'AKSES DITOLAK! Hanya Admin yang boleh mengelola halaman ini.');
+        }
     }
 
     // =========================================================
-    // FUNGSI-FUNGSI DI BAWAH INI SEKARANG 100% AMAN
+    // FUNGSI UTAMA
     // =========================================================
 
     public function index(){
+        $this->cekAdmin(); // Panggil penjaga pintu
+
         $data = Produk::all();
         $kategori = Kategori::all();
         return view('produk.index', ['dataProduk' => $data, 'kategori' => $kategori]);
     }
 
     public function create(){
+        $this->cekAdmin();
+
         $kategori = Kategori::all();
         return view('produk.create', compact('kategori'));
     }
 
     public function store(Request $request){
+        $this->cekAdmin();
+
         $message = [
             'required' => ':attribute tidak boleh kosong',
             'unique'   => ':attribute sudah digunakan, pakai kode lain', 
@@ -86,6 +87,8 @@ class ProdukController extends Controller
 
     public function update(Request $request, $id)
     {
+        $this->cekAdmin();
+
         $produk = Produk::findOrFail($id);
         
         $request->validate([
@@ -128,6 +131,8 @@ class ProdukController extends Controller
 
     public function destroy($id)
     {
+        $this->cekAdmin();
+
         $produk = Produk::findOrFail($id);
         
         try {
@@ -157,11 +162,13 @@ class ProdukController extends Controller
     }
 
     public function excel(){
+        $this->cekAdmin();
         return Excel::download(new ProdukExport, 'produk.xlsx');
     }
 
     public function pdf()
     {
+        $this->cekAdmin();
         $data = Produk::all();
         $pdf = PDF::loadView('produk.pdfproduk', ['dataProduk' => $data]);
         $pdf->setPaper('A4', 'portrait');
@@ -169,6 +176,7 @@ class ProdukController extends Controller
     }
 
     public function chart(){
+        $this->cekAdmin();
         $dataLabel = Produk::orderBy('nama_produk', 'asc')->pluck('nama_produk')->toArray();
         $dataStock = Produk::orderBy('nama_produk', 'asc')->pluck('stock')->toArray();
         return view('produk.chart', compact('dataLabel', 'dataStock'));
