@@ -373,66 +373,82 @@
                         @endif
                     </div>
 
-                    {{-- KOLOM KANAN: UPLOAD BUKTI PEMBAYARAN --}}
+                    {{-- KOLOM KANAN: UPLOAD BUKTI PEMBAYARAN (HANYA UNTUK QRIS) --}}
                     <div class="col-lg-6">
-                        <h5 class="fw-bold text-dark mb-4">Upload Bukti Pembayaran</h5>
+                        @if($transaksi->metode_pembayaran !== 'tunai')
+                            <h5 class="fw-bold text-dark mb-4">Upload Bukti Pembayaran</h5>
 
-                        @if($transaksi->bukti_pembayaran)
-                            <div class="proof-preview">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-check-circle text-success me-2" style="font-size: 20px;"></i>
-                                    <span class="fw-bold text-success">Bukti Pembayaran Sudah Diupload</span>
+                            @if($transaksi->bukti_pembayaran)
+                                <div class="proof-preview">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-check-circle text-success me-2" style="font-size: 20px;"></i>
+                                        <span class="fw-bold text-success">Bukti Pembayaran Sudah Diupload</span>
+                                    </div>
+                                    <p class="mb-2 text-muted">File: <strong>{{ $transaksi->bukti_pembayaran }}</strong></p>
+                                    <p class="mb-3 text-muted">Status: 
+                                        @if($transaksi->status_pembayaran === 'berhasil')
+                                            <span class="badge bg-success">Terverifikasi</span>
+                                        @elseif($transaksi->status_pembayaran === 'gagal')
+                                            <span class="badge bg-danger">Ditolak</span>
+                                        @else
+                                            <span class="badge bg-warning">Menunggu Verifikasi</span>
+                                        @endif
+                                    </p>
+                                    <a href="{{ route('pembayaran.downloadProof', $transaksi->id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-download me-1"></i> Download
+                                    </a>
                                 </div>
-                                <p class="mb-2 text-muted">File: <strong>{{ $transaksi->bukti_pembayaran }}</strong></p>
-                                <p class="mb-3 text-muted">Status: 
-                                    @if($transaksi->status_pembayaran === 'berhasil')
-                                        <span class="badge bg-success">Terverifikasi</span>
-                                    @elseif($transaksi->status_pembayaran === 'gagal')
-                                        <span class="badge bg-danger">Ditolak</span>
-                                    @else
-                                        <span class="badge bg-warning">Menunggu Verifikasi</span>
-                                    @endif
-                                </p>
-                                <a href="{{ route('pembayaran.downloadProof', $transaksi->id) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-download me-1"></i> Download
-                                </a>
-                            </div>
+                            @else
+                                <div class="upload-section">
+                                    <div class="text-center mb-4">
+                                        <i class="bi bi-cloud-upload fs-1 text-muted mb-3 d-block"></i>
+                                        <h6 class="text-dark fw-bold">Upload Bukti Pembayaran</h6>
+                                        <p class="text-muted mb-0">Silakan upload screenshot/bukti transfer pembayaran Anda</p>
+                                    </div>
+
+                                    <form action="{{ route('pembayaran.uploadProof', $transaksi->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+
+                                        <div class="file-input-wrapper mb-3">
+                                            <input type="file" id="buktiFile" name="bukti_pembayaran" accept=".jpg,.jpeg,.png,.pdf" required>
+                                            <label for="buktiFile" class="btn btn-upload w-100">
+                                                <i class="bi bi-plus-circle me-2"></i>Pilih File
+                                            </label>
+                                        </div>
+
+                                        <div id="fileInfo" class="text-center mb-3" style="display: none;">
+                                            <small id="fileName" class="text-muted"></small>
+                                        </div>
+
+                                        <div class="instruction-box">
+                                            <h6><i class="bi bi-checklist me-2"></i>Persyaratan File</h6>
+                                            <ul>
+                                                <li>Format: <strong>JPG, PNG, atau PDF</strong></li>
+                                                <li>Ukuran maksimal: <strong>2MB</strong></li>
+                                                <li>Pastikan bukti pembayaran jelas dan terbaca</li>
+                                                <li>Sertakan nama pemesan & nominal di bukti</li>
+                                            </ul>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-upload w-100 mt-3">
+                                            <i class="bi bi-upload me-2"></i>Upload Bukti
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
+
                         @else
-                            <div class="upload-section">
-                                <div class="text-center mb-4">
-                                    <i class="bi bi-cloud-upload fs-1 text-muted mb-3 d-block"></i>
-                                    <h6 class="text-dark fw-bold">Upload Bukti Pembayaran</h6>
-                                    <p class="text-muted mb-0">Silakan upload screenshot/bukti transfer pembayaran Anda</p>
+                            {{-- PESAN UNTUK PEMBAYARAN TUNAI/COD --}}
+                            <div class="d-flex align-items-start justify-content-center h-100">
+                                <div class="text-center p-4">
+                                    <i class="bi bi-cash-coin text-success mb-3" style="font-size: 60px;"></i>
+                                    <h5 class="fw-bold text-dark">Pembayaran Tunai / COD</h5>
+                                    <p class="text-muted">Tidak perlu upload bukti pembayaran.<br>Bayar langsung kepada kasir saat pesanan diterima.</p>
+                                    <div class="alert alert-success mt-3">
+                                        <i class="bi bi-check-circle-fill me-2"></i>
+                                        Pesanan Anda sudah tercatat. Silakan tunggu konfirmasi dari admin.
+                                    </div>
                                 </div>
-
-                                <form action="{{ route('pembayaran.uploadProof', $transaksi->id) }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-
-                                    <div class="file-input-wrapper mb-3">
-                                        <input type="file" id="buktiFile" name="bukti_pembayaran" accept=".jpg,.jpeg,.png,.pdf" required>
-                                        <label for="buktiFile" class="btn btn-upload w-100">
-                                            <i class="bi bi-plus-circle me-2"></i>Pilih File
-                                        </label>
-                                    </div>
-
-                                    <div id="fileInfo" class="text-center mb-3" style="display: none;">
-                                        <small id="fileName" class="text-muted"></small>
-                                    </div>
-
-                                    <div class="instruction-box">
-                                        <h6><i class="bi bi-checklist me-2"></i>Persyaratan File</h6>
-                                        <ul>
-                                            <li>Format: <strong>JPG, PNG, atau PDF</strong></li>
-                                            <li>Ukuran maksimal: <strong>2MB</strong></li>
-                                            <li>Pastikan bukti pembayaran jelas dan terbaca</li>
-                                            <li>Sertakan nama pemesan & nominal di bukti</li>
-                                        </ul>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-upload w-100 mt-3">
-                                        <i class="bi bi-upload me-2"></i>Upload Bukti
-                                    </button>
-                                </form>
                             </div>
                         @endif
                     </div>
