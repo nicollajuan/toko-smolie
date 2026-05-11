@@ -2,7 +2,7 @@
     
     {{-- 1. HEADER LOGO --}}
     <a href="/" class="d-flex align-items-center mb-4 text-decoration-none">
-        <img src="{{ asset('public/template/img/Smolie2.jpg') }}" alt="Logo" width="50" height="50" class="me-3 rounded-circle border border-2 p-1" style="border-color: #DD3827 !important;">
+        <img src="{{ asset('template/img/smolie.jpg') }}" alt="Logo" width="50" height="50" class="me-3 rounded-circle border border-2 p-1" style="border-color: #DD3827 !important;">
         <div class="d-flex flex-column">
             <span class="fs-4 fw-bold text-uppercase" style="font-family: 'Poppins', sans-serif; color: #DD3827; line-height: 1;">Smolie</span>
             <span class="fs-5 fw-bold text-dark text-uppercase" style="font-family: 'Poppins', sans-serif; line-height: 1;">Gift</span>
