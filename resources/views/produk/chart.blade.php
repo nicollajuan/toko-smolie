@@ -1,7 +1,7 @@
 
 
 @extends('layouts.master')
-@section('title', 'Aplikasi Toko Skincare')
+@section('title', 'Smolie Gift')
 @section('content')
 
 <div class="container">

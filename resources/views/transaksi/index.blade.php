@@ -175,6 +175,15 @@
                                         <i class="bi bi-bag me-1"></i> Takeaway
                                     </span>
                                 @endif
+
+                                {{-- TAMBAHKAN KODE INI DI BAWAHNYA --}}
+                                @if($data->catatan)
+                                    <div class="mt-1">
+                                        <small class="text-muted italic">
+                                            <i class="bi bi-pencil-square"></i> Note: {{ $data->catatan }}
+                                        </small>
+                                    </div>
+                                @endif
                             </td>
                             
                             {{-- Metode Pembayaran --}}

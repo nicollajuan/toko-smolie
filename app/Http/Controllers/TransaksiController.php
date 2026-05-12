@@ -109,6 +109,7 @@ class TransaksiController extends Controller
                 'total_harga' => $subtotal,
                 'status' => 'selesai',
                 'status_pembayaran' => 'berhasil',
+                'catatan' => $request->input('catatan'),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
