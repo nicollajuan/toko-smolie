@@ -13,9 +13,11 @@ class Transaksi extends Model
     protected $fillable = [
         'user_id',
         'nama_pembeli',
+        'no_hp',
         'kode_transaksi',
         'total_harga',
         'metode_pembayaran',
+        'jenis_pesanan',
         'status',
         'status_pembayaran',
         'bukti_pembayaran',
@@ -23,6 +25,7 @@ class Transaksi extends Model
         'catatan',
         'tipe_pengambilan',
         'alamat_pengiriman',
+        'detail_rumah',
     ];
 
     // RELASI KE USER

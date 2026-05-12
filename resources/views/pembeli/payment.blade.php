@@ -212,9 +212,15 @@
 <div class="payment-container">
     {{-- HEADER --}}
     <div class="text-white mb-4">
-        <a href="/" class="text-white text-decoration-none">
-            <i class="bi bi-arrow-left me-2"></i> Kembali
-        </a>
+        @if(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir']))
+            <a href="{{ route('transaksi.index') }}" class="text-white text-decoration-none fw-bold">
+                <i class="bi bi-arrow-left me-2"></i> Kembali ke Daftar Transaksi
+            </a>
+        @else
+            <a href="/" class="text-white text-decoration-none fw-bold">
+                <i class="bi bi-arrow-left me-2"></i> Kembali ke Menu Utama
+            </a>
+        @endif
         <h1 class="fw-bold mt-3">Pembayaran Pesanan</h1>
     </div>
 
@@ -364,18 +370,13 @@
                             </div>
                             @endif
                         </div>
-                        @else
-                        <div class="alert alert-info mt-4">
-                            <i class="bi bi-info-circle me-2"></i>
-                            <strong>Metode Pembayaran Tunai</strong><br>
-                            <small>Anda akan membayar langsung saat pesanan diterima.</small>
-                        </div>
                         @endif
                     </div>
 
-                    {{-- KOLOM KANAN: UPLOAD BUKTI PEMBAYARAN (HANYA UNTUK QRIS) --}}
+                    {{-- KOLOM KANAN: UPLOAD BUKTI / INFO COD DINAMIS --}}
                     <div class="col-lg-6">
-                        @if($transaksi->metode_pembayaran !== 'tunai')
+                        @if($transaksi->metode_pembayaran === 'qris')
+                            {{-- TAMPILAN JIKA QRIS: FORM UPLOAD --}}
                             <h5 class="fw-bold text-dark mb-4">Upload Bukti Pembayaran</h5>
 
                             @if($transaksi->bukti_pembayaran)
@@ -391,7 +392,7 @@
                                         @elseif($transaksi->status_pembayaran === 'gagal')
                                             <span class="badge bg-danger">Ditolak</span>
                                         @else
-                                            <span class="badge bg-warning">Menunggu Verifikasi</span>
+                                            <span class="badge bg-warning text-dark">Menunggu Verifikasi</span>
                                         @endif
                                     </p>
                                     <a href="{{ route('pembayaran.downloadProof', $transaksi->id) }}" class="btn btn-sm btn-outline-primary">
@@ -436,19 +437,23 @@
                                     </form>
                                 </div>
                             @endif
-
-                        @else
-                            {{-- PESAN UNTUK PEMBAYARAN TUNAI/COD --}}
-                            <div class="d-flex align-items-start justify-content-center h-100">
+                        @elseif($transaksi->metode_pembayaran === 'tunai')
+                            {{-- TAMPILAN JIKA TUNAI: PESAN COD BESAR KARYAMU --}}
+                            <div class="d-flex align-items-center justify-content-center h-100" style="min-height: 350px;">
                                 <div class="text-center p-4">
-                                    <i class="bi bi-cash-coin text-success mb-3" style="font-size: 60px;"></i>
-                                    <h5 class="fw-bold text-dark">Pembayaran Tunai / COD</h5>
-                                    <p class="text-muted">Tidak perlu upload bukti pembayaran.<br>Bayar langsung kepada kasir saat pesanan diterima.</p>
-                                    <div class="alert alert-success mt-3">
-                                        <i class="bi bi-check-circle-fill me-2"></i>
-                                        Pesanan Anda sudah tercatat. Silakan tunggu konfirmasi dari admin.
+                                    <i class="bi bi-cash-coin text-success mb-3" style="font-size: 80px;"></i>
+                                    <h4 class="fw-bold text-dark">Pembayaran Tunai / COD</h4>
+                                    <p class="text-muted mt-2">Tidak perlu upload bukti pembayaran.<br>Silakan bayar langsung kepada kasir saat pesanan Anda terima.</p>
+                                    <div class="alert alert-success mt-4 border-0 shadow-sm" style="background-color: #d1e7dd; color: #0f5132; border-radius: 12px;">
+                                        <i class="bi bi-check-circle-fill me-2 fs-5 align-middle"></i>
+                                        <span class="align-middle">Pesanan Anda sudah tercatat. Silakan tunggu konfirmasi dari admin.</span>
                                     </div>
                                 </div>
+                            </div>
+                        @else
+                            <div class="alert alert-secondary mt-4">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Metode pembayaran tidak dikenali. Silakan hubungi admin untuk konfirmasi.
                             </div>
                         @endif
                     </div>
@@ -456,13 +461,29 @@
             </div>
 
             {{-- FOOTER BUTTONS --}}
-            <div class="p-4 border-top d-flex gap-2 justify-content-between">
-                <a href="{{ route('pembeli.riwayat') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>Kembali ke Riwayat
-                </a>
+            <div class="p-4 border-top d-flex gap-2 justify-content-between align-items-center">
+                
+                @if(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir']))
+                    {{-- Tombol untuk Kasir / Admin --}}
+                    <a href="{{ route('transaksi.index') }}" class="btn btn-outline-secondary fw-bold">
+                        <i class="bi bi-arrow-left me-2"></i>Daftar Transaksi
+                    </a>
+                @else
+                    {{-- Tombol untuk Pembeli --}}
+                    <a href="{{ route('pembeli.riwayat') }}" class="btn btn-outline-secondary fw-bold">
+                        <i class="bi bi-arrow-left me-2"></i>Kembali ke Riwayat
+                    </a>
+                @endif
+
                 @if($transaksi->metode_pembayaran === 'qris' && !$transaksi->bukti_pembayaran && $transaksi->status_pembayaran === 'pending')
-                    <div class="text-muted small">
-                        <i class="bi bi-info-circle me-1"></i> Setelah melakukan pembayaran, upload bukti pembayaran
+                    <div class="text-muted small text-end">
+                        <i class="bi bi-info-circle me-1"></i> Setelah bayar, jangan lupa Upload Bukti
+                    </div>
+                @endif
+            </div>
+                @if($transaksi->metode_pembayaran === 'qris' && !$transaksi->bukti_pembayaran && $transaksi->status_pembayaran === 'pending')
+                    <div class="text-muted small align-self-center">
+                        <i class="bi bi-info-circle me-1"></i> Setelah melakukan pembayaran, pastikan Anda menekan tombol Upload Bukti
                     </div>
                 @endif
             </div>

@@ -213,11 +213,16 @@ class PembeliController extends Controller
 
         // Validasi Input Form
         $jenis_pesanan = session()->get('jenis_pesanan', 'takeaway'); 
+        $isKasir = Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir']);
         
         $rules = [
             'no_hp' => 'required|numeric',
-            'metode_pembayaran' => 'required|in:tunai,qris',
+            'metode_pembayaran' => 'required|in:' . ($isKasir ? 'qris,tunai' : 'qris'),
         ];
+        
+        if ($isKasir) {
+            $rules['nama_pembeli'] = 'required|string|max:255';
+        }
         
         if ($jenis_pesanan == 'delivery') {
             $rules['alamat_pengiriman'] = 'required|string|max:255';
@@ -225,6 +230,16 @@ class PembeliController extends Controller
         }
         
         $request->validate($rules);
+
+        $namaPembeli = $request->input('nama_pembeli', Auth::user()->name);
+        $metode = $request->input('metode_pembayaran');
+        $status = 'pending';
+        $statusPembayaran = null;
+
+        if ($isKasir && $metode === 'tunai') {
+            $status = 'selesai';
+            $statusPembayaran = 'berhasil';
+        }
 
         // Hitung Total Harga
         $total = 0;
@@ -238,15 +253,16 @@ class PembeliController extends Controller
             // 1. Buat Header Transaksi
             $id_transaksi = DB::table('transaksi')->insertGetId([
                 'user_id' => Auth::id(),
-                'nama_pembeli' => Auth::user()->name,
+                'nama_pembeli' => $namaPembeli,
                 'no_hp' => $request->no_hp,
-                'metode_pembayaran' => $request->metode_pembayaran,
+                'metode_pembayaran' => $metode,
                 'jenis_pesanan' => $jenis_pesanan,
                 'alamat_pengiriman' => ($jenis_pesanan == 'delivery') ? $request->alamat_pengiriman : null,
                 'detail_rumah' => ($jenis_pesanan == 'delivery') ? $request->detail_rumah : null,
                 'kode_transaksi' => 'TRX-' . time() . rand(100,999), 
                 'total_harga' => $total,
-                'status' => 'pending', 
+                'status' => $status,
+                'status_pembayaran' => $statusPembayaran,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -280,6 +296,10 @@ class PembeliController extends Controller
             session()->forget('jenis_pesanan'); 
 
             DB::commit(); 
+
+            if ($isKasir && $metode === 'tunai') {
+                return redirect()->route('transaksi.index')->with('success', 'Pesanan tunai kasir berhasil dibuat!');
+            }
 
             return redirect()->route('pembayaran.show', $id_transaksi)->with('success', 'Pesanan berhasil dibuat! Silakan lakukan pembayaran.');
 

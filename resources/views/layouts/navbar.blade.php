@@ -39,6 +39,11 @@
                 @if(Auth::user()->usertype == 'kasir')
                     <li class="nav-header ps-3 mt-3 mb-2 text-uppercase fw-bold text-muted" style="font-size: 0.75rem; letter-spacing: 1px;">Menu Kasir</li>
                     <li>
+                        <a href="{{ route('transaksi.kasir.menu') }}" class="nav-link d-flex align-items-center {{ Request::is('kasir/menu') ? 'active-smolie' : 'text-secondary' }}">
+                            <i class="bi bi-shop-window me-3 fs-5"></i> Katalog
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ url('/transaksi') }}" class="nav-link d-flex align-items-center {{ Request::is('transaksi*') ? 'active-smolie' : 'text-secondary' }}">
                             <i class="bi bi-receipt me-3 fs-5"></i> Transaksi
                         </a>

@@ -100,6 +100,16 @@
         </div>
     </div>
 
+    @if(in_array(Auth::user()->usertype, ['admin', 'kasir']))
+        <div class="row mb-4">
+            <div class="col-12">
+                <a href="{{ route('transaksi.kasir.menu') }}" class="btn btn-success btn-lg">
+                    <i class="bi bi-cart-plus me-2"></i> Buka Katalog Kasir
+                </a>
+            </div>
+        </div>
+    @endif
+
     {{-- CARD UTAMA --}}
     <div class="card card-kfc">
         <div class="card-body p-0">

@@ -12,7 +12,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AksesAdmin;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\FacebookAuthController;
 use App\Http\Controllers\PaymentController;
 
@@ -37,8 +36,8 @@ Route::patch('/admin/transaksi/{id}/selesai', [TransaksiController::class, 'sele
 Route::get('/admin/transaksi/{id}/struk', [TransaksiController::class, 'cetakStruk'])->name('admin.transaksi.struk');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/riwayat-pesanan', [TransactionController::class, 'history'])->name('pembeli.history');
-    Route::get('/cetak-invoice/{id}', [TransactionController::class, 'cetakPdf'])->name('pembeli.cetak_pdf');
+    // Riwayat pesanan pembeli & cetak invoice sudah disediakan melalui PembeliController / TransaksiController.
+    // Route legacy TransactionController dihapus karena kelas tidak ada dalam aplikasi.
 });
 
 //hai
@@ -171,6 +170,13 @@ Route::middleware(['auth'])->group(function () {
     // Halaman Transaksi
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::post('/transaksi/selesai/{id}', [TransaksiController::class, 'selesai'])->name('transaksi.selesai');
+});
+
+// Route Kasir: Halaman Katalog input produk & transaksi tunai kasir
+Route::middleware(['auth', AksesAdmin::class])->group(function () {
+    Route::get('/kasir/menu', [TransaksiController::class, 'kasirMenu'])->name('transaksi.kasir.menu');
+    Route::get('/transaksi/manual', [TransaksiController::class, 'createKasir'])->name('transaksi.kasir.create');
+    Route::post('/transaksi/manual', [TransaksiController::class, 'storeKasir'])->name('transaksi.kasir.store');
 });
     
 
