@@ -1,105 +1,101 @@
-<footer class="mt-auto pt-5 pb-4" style="background-color: #202124; color: #b0b0b0; border-top: 4px solid #E4002B;">
-    <div class="container-fluid px-4">
-        <div class="row gy-4">
-            
-            {{-- KOLOM 1: BRAND & ALAMAT --}}
-            <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                <div class="d-flex align-items-center mb-3">
-                    {{-- Ganti src sesuai lokasi logo Anda --}}
-                    <img src="{{ asset('template/img/tahu.png') }}" alt="Logo" width="40" height="40" class="me-2 rounded-circle bg-white p-1">
-                    <span class="fs-4 fw-bold text-white text-uppercase" style="font-family: 'Oswald'; letter-spacing: 1px;">Smolie Gift</span>
-                </div>
-                <p class="small mb-2">
-                    Melayani custom pembuatan souvenir dengan harga murah.
+{{--
+    FOOTER TUNGGAL — @include('layouts.footer')
+    Pakai ini di view pembeli (index, riwayat, dll).
+    JANGAN di-include di layouts/master.blade.php.
+--}}
+
+<footer style="background-color: #202124; color: #b0b0b0; font-family: 'Nunito', sans-serif;">
+    <div style="height: 5px; background-color: #E4002B; width: 100%;"></div>
+
+    <div class="container py-5">
+        <div class="row g-4">
+
+            {{-- KOLOM 1: BRAND --}}
+            <div class="col-lg-4 col-md-6">
+                <h5 class="text-white fw-bold mb-3 d-flex align-items-center" style="font-family: 'Poppins', sans-serif;">
+                    <img src="{{ asset('template/img/smolie.jpg') }}" alt="Smolie Gift" width="45" height="45"
+                         class="me-2 rounded-circle border border-2 border-white shadow-sm object-fit-cover">
+                    SMOLIE GIFT
+                </h5>
+                <p class="small mb-4" style="line-height: 1.7;">
+                    Pusat pemesanan custom souvenir eksklusif, terpercaya, dan harga bersahabat
+                    untuk menyempurnakan hari bahagia Anda.
                 </p>
-                <ul class="list-unstyled text-small">
-                    <li class="mb-1"><i class="bi bi-geo-alt-fill me-2 text-danger"></i>Jl. Pogot V, Surabaya Utara, Jawa Timur</li>
-                    <li class="mb-1"><i class="bi bi-clock-fill me-2 text-danger"></i> Buka: 10.00 - 21.00 WIB</li>
-                    <li><i class="bi bi-envelope-fill me-2 text-danger"></i> admin@smoliegift.com</li>
+                <ul class="list-unstyled small">
+                    <li class="mb-2 d-flex align-items-start">
+                        <i class="bi bi-geo-alt-fill me-2 mt-1" style="color:#E4002B;"></i>
+                        <span>Surabaya, Jawa Timur</span>
+                    </li>
+                    <li class="mb-2 d-flex align-items-center">
+                        <i class="bi bi-clock-fill me-2" style="color:#E4002B;"></i>
+                        <span>Buka: Senin – Sabtu, 08.00 – 16.00 WIB</span>
+                    </li>
+                    <li class="d-flex align-items-center">
+                        <i class="bi bi-envelope-fill me-2" style="color:#E4002B;"></i>
+                        <span>admin@smoliegift.com</span>
+                    </li>
                 </ul>
             </div>
 
-            {{-- KOLOM 2: MENU FAVORIT --}}
-            <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
-                <h5 class="text-white text-uppercase mb-3 fw-bold" style="font-family: 'Oswald';">Menu Favorit</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Gantungan Kunci</a></li>
-                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Piring</a></li>
-                    
+            {{-- KOLOM 2: MENU --}}
+            <div class="col-lg-2 col-md-3 col-6">
+                <h6 class="text-white fw-bold mb-3 text-uppercase small" style="font-family: 'Poppins', sans-serif;">Menu Favorit</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="{{ url('/') }}#katalog" class="text-decoration-none footer-link">Gantungan Kunci</a></li>
+                    <li class="mb-2"><a href="{{ url('/') }}#katalog" class="text-decoration-none footer-link">Piring Custom</a></li>
+                    <li class="mb-2"><a href="{{ url('/') }}#katalog" class="text-decoration-none footer-link">Mug Custom</a></li>
+                    <li><a href="{{ url('/') }}" class="text-decoration-none footer-link">Lihat Semua</a></li>
                 </ul>
             </div>
 
             {{-- KOLOM 3: LAYANAN --}}
-            <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
-                <h5 class="text-white text-uppercase mb-3 fw-bold" style="font-family: 'Oswald';">Layanan</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Pesan Ambil (COD)</a></li>
-                    <li class="mb-2"><a href="#" class="text-decoration-none footer-link">Pesan Antar</a></li>
+            <div class="col-lg-2 col-md-3 col-6">
+                <h6 class="text-white fw-bold mb-3 text-uppercase small" style="font-family: 'Poppins', sans-serif;">Layanan</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2">Pesan Ambil (COD)</li>
+                    <li class="mb-2">Pesan Antar</li>
+                    <li>Custom Desain</li>
                 </ul>
             </div>
 
-            {{-- KOLOM 4: SOSIAL MEDIA & CTA --}}
-            <div class="col-lg-4 col-md-6">
-                <h5 class="text-white text-uppercase mb-3 fw-bold" style="font-family: 'Oswald';">Ikuti Kami</h5>
-                <p class="small">Dapatkan promo terbaru dan info menarik lewat sosial media kami.</p>
-                
+            {{-- KOLOM 4: SOSMED & WA --}}
+            <div class="col-lg-4 col-md-12">
+                <h6 class="text-white fw-bold mb-3 text-uppercase small" style="font-family: 'Poppins', sans-serif;">Ikuti Kami</h6>
+                <p class="small mb-3">Dapatkan promo terbaru dan info menarik lewat sosial media kami.</p>
                 <div class="d-flex gap-2 mb-4">
-                    <a href="#" class="social-btn"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="social-btn"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="social-btn"><i class="bi bi-tiktok"></i></a>
-                    <a href="#" class="social-btn"><i class="bi bi-whatsapp"></i></a>
-                </div>
-
-                <div class="bg-dark p-3 rounded border border-secondary">
-                    <h6 class="text-white mb-2">Pesan Cepat via WhatsApp?</h6>
-                    <a href="https://wa.me/{{ $site_whatsapp }}" class="btn btn-success btn-sm w-100 fw-bold">
-                        <i class="bi bi-whatsapp me-1"></i> Chat Sekarang
+                    {{-- Ganti href="#" dengan URL akun sosmed yang nyata --}}
+                    <a href="#" class="footer-social-btn" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="footer-social-btn" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="footer-social-btn" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+                    <a href="https://wa.me/{{ $site_whatsapp ?? '' }}" target="_blank" class="footer-social-btn" aria-label="WhatsApp">
+                        <i class="bi bi-whatsapp"></i>
                     </a>
                 </div>
+                <a href="https://wa.me/{{ $site_whatsapp ?? '' }}" target="_blank"
+                   class="btn w-100 fw-bold rounded-pill py-2 text-white shadow-sm"
+                   style="background-color:#E4002B; border:none; font-family:'Poppins',sans-serif;">
+                    <i class="bi bi-whatsapp me-2"></i> CHAT WHATSAPP KAMI
+                </a>
             </div>
+
         </div>
-        
-        <hr class="my-4 border-secondary">
-        
-        {{-- BAGIAN COPYRIGHT BAWAH --}}
-        <div class="row align-items-center">
-            <div class="col-md-6 text-center text-md-start small">
-                &copy; {{ date('Y') }} <strong>Smolie Gift</strong>. All Rights Reserved.
-            </div>
-            <div class="col-md-6 text-center text-md-end small">
-                <a href="#" class="text-decoration-none text-muted me-3">Privacy Policy</a>
-                <a href="#" class="text-decoration-none text-muted">Terms of Service</a>
-            </div>
-        </div>
+    </div>
+
+    <div class="py-3 text-center border-top" style="border-color:#2e2e2e !important; background-color:#1a1a1a;">
+        <small style="color:#888;">
+            &copy; {{ date('Y') }} <strong style="color:#fff;">Smolie Gift</strong>. All Rights Reserved.
+        </small>
     </div>
 </footer>
 
 <style>
-    /* CSS Khusus Footer (Simpan disini atau di master) */
-    .footer-link {
-        color: #b0b0b0;
-        transition: 0.2s;
-        font-size: 0.9rem;
-    }
-    .footer-link:hover {
-        color: #E4002B; /* Merah KFC */
-        padding-left: 5px;
-    }
-    
-    .social-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 35px; height: 35px;
-        background-color: #333;
-        color: white;
-        border-radius: 50%;
-        text-decoration: none;
-        transition: 0.3s;
-    }
-    .social-btn:hover {
-        background-color: #E4002B;
-        color: white;
-        transform: translateY(-3px);
-    }
+.footer-link { color: #b0b0b0; transition: color 0.2s, padding-left 0.2s; }
+.footer-link:hover { color: #E4002B; padding-left: 5px; }
+.footer-social-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; background-color: #333; color: #fff;
+    border-radius: 50%; text-decoration: none; font-size: 1rem;
+    transition: background-color 0.3s, transform 0.3s;
+}
+.footer-social-btn:hover { background-color: #E4002B; color: #fff; transform: translateY(-3px); }
 </style>

@@ -230,9 +230,6 @@
             <footer class="bg-transparent py-4 mt-auto">
                 <div class="container-fluid text-center text-muted small" style="font-family: 'Poppins', sans-serif;">
                     &copy; {{ date('Y') }} <strong style="color: var(--theme-primary);">Smolie Gift</strong>. All Rights Reserved.
-                    @if(View::exists('layouts.footer'))
-                        @include('layouts.footer')
-                    @endif
                 </div>
             </footer>
 

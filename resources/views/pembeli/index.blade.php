@@ -323,33 +323,7 @@
         </div>
     </div>
     
-    {{-- ================= FOOTER BARU SMOLIE GIFT ================= --}}
-    <footer style="background-color: var(--text-dark); color: #b0b0b0; font-family: 'Nunito', sans-serif; padding-bottom: 120px;">
-        <div style="height: 6px; background-color: var(--primary-color); width: 100%;"></div>
-
-        <div class="container py-5">
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
-                    <h5 class="text-white fw-bold mb-3 d-flex align-items-center" style="font-family: 'Poppins', sans-serif;">
-                        <img src="{{ asset('template/img/smolie.jpg') }}" width="45" height="45" class="me-2 rounded-circle border border-2 border-white shadow-sm">
-                        SMOLIE GIFT
-                    </h5>
-                    <p class="small mb-4">Pusat pemesanan custom souvenir eksklusif, terpercaya, dan harga bersahabat untuk menyempurnakan hari bahagia Anda.</p>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2 d-flex align-items-start"><i class="bi bi-geo-alt-fill me-2 mt-1" style="color: var(--primary-color);"></i> <span>Mojokerto, Jawa Timur</span></li>
-                        <li class="mb-2 d-flex align-items-center"><i class="bi bi-clock-fill me-2" style="color: var(--primary-color);"></i> <span>Buka: Senin - Sabtu (08.00 - 16.00 WIB)</span></li>
-                    </ul>
-                </div>
-                
-                <div class="col-lg-4 col-md-12 ms-auto">
-                    <h6 class="text-white fw-bold mb-3 text-uppercase small" style="font-family: 'Poppins', sans-serif;">Konsultasi Desain & Pesanan?</h6>
-                    <a href="https://wa.me/{{ $site_whatsapp }}" target="_blank" class="btn w-100 fw-bold rounded-pill py-3 shadow-sm text-white" style="background-color: var(--primary-color); border: none; font-family: 'Poppins', sans-serif;">
-                        <i class="bi bi-whatsapp me-2 fs-5"></i> CHAT WHATSAPP KAMI
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    @include('layouts.footer')
 
     {{-- Floating Cart --}}
     @if(session('cart') && count((array) session('cart')) > 0)

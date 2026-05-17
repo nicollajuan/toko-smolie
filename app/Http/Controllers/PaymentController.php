@@ -16,24 +16,24 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        // Ambil transaksi
         $transaksi = Transaksi::with('user')->findOrFail($id);
 
-        // Validasi: hanya user pemilik transaksi atau admin yang bisa akses
         if (Auth::user()->id !== $transaksi->user_id && Auth::user()->usertype !== 'admin') {
             abort(403, 'Unauthorized');
         }
 
-        // Ambil data rekening admin (Dipastikan mengambil admin yang sudah mengisi nomor rekening)
+        // Ambil admin — prioritaskan yang sudah upload gambar QRIS
         $admin = \App\Models\User::where('usertype', 'admin')
-                                 ->whereNotNull('nomor_rekening')
-                                 ->first();
+                                ->where(function($q) {
+                                    $q->whereNotNull('gambar_qris')
+                                    ->orWhereNotNull('nomor_rekening');
+                                })
+                                ->first();
 
-        // Generate QRIS data
+        // Generate QR otomatis sebagai fallback
         $qrisUrl = $this->generateQrisUrl($transaksi, $admin);
         $qrCodeImage = $this->generateQrCode($qrisUrl);
 
-        // Simpan QRIS data ke transaksi
         if ($transaksi->metode_pembayaran === 'qris' && !$transaksi->qris_data) {
             $transaksi->update([
                 'qris_data' => $qrisUrl,
@@ -42,10 +42,13 @@ class PaymentController extends Controller
         }
 
         return view('pembeli.payment', [
-            'transaksi' => $transaksi,
-            'qrCode' => $qrCodeImage,
-            'qrisUrl' => $qrisUrl,
-            'admin' => $admin,
+            'transaksi'  => $transaksi,
+            'qrCode'     => $qrCodeImage,
+            'qrisUrl'    => $qrisUrl,
+            'admin'      => $admin,
+            'gambarQris' => $admin?->gambar_qris
+                                ? asset('img/qris/' . $admin->gambar_qris)
+                                : null,
         ]);
     }
 

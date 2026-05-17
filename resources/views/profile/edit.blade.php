@@ -186,6 +186,63 @@
                                 <small class="text-muted d-block mt-1">Data ini akan ditampilkan kepada pembeli saat melakukan pembayaran QRIS</small>
                             </div>
                         </div>
+
+                        {{-- UPLOAD GAMBAR QRIS --}}
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold small text-uppercase text-muted">
+                                    <i class="bi bi-qr-code text-danger me-1"></i> Gambar QRIS Toko
+                                </label>
+
+                                {{-- Preview QRIS yang sudah ada --}}
+                                @if($user->gambar_qris && file_exists(public_path('img/qris/' . $user->gambar_qris)))
+                                    <div class="mb-3 p-3 border rounded-3 bg-light d-flex align-items-center gap-3">
+                                        <img src="{{ asset('img/qris/' . $user->gambar_qris) }}"
+                                             alt="QRIS Toko"
+                                             style="width:80px; height:80px; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
+                                        <div>
+                                            <div class="fw-bold small text-success mb-1">
+                                                <i class="bi bi-check-circle-fill me-1"></i>QRIS sudah diupload
+                                            </div>
+                                            <div class="text-muted small">Upload gambar baru untuk mengganti</div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <input type="file" name="gambar_qris" id="gambarQrisInput"
+                                       class="form-control @error('gambar_qris') is-invalid @enderror"
+                                       accept=".jpg,.jpeg,.png">
+
+                                @error('gambar_qris')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+
+                                <small class="text-muted d-block mt-1">
+                                    Format JPG/PNG, maks 2MB. Gambar ini akan ditampilkan ke pembeli yang memilih QRIS.
+                                </small>
+
+                                {{-- Preview sebelum upload --}}
+                                <div id="qrisPreviewBox" class="mt-2" style="display:none;">
+                                    <p class="small text-muted mb-1">Preview:</p>
+                                    <img id="qrisPreview" src="" alt="Preview QRIS"
+                                         style="max-width:150px; border-radius:8px; border:1px solid #ddd; padding:4px;">
+                                </div>
+
+                                <script>
+                                    document.getElementById('gambarQrisInput').addEventListener('change', function() {
+                                        const file = this.files[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onload = e => {
+                                                document.getElementById('qrisPreview').src = e.target.result;
+                                                document.getElementById('qrisPreviewBox').style.display = 'block';
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    });
+                                </script>
+                            </div>
+                        </div>
                         @endif
 
                         <hr class="my-4 text-muted opacity-25">

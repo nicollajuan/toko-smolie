@@ -238,7 +238,7 @@
                     <i class="bi bi-receipt"></i>
                 </div>
                 <h4 class="fw-bold text-secondary">Belum ada pesanan</h4>
-                <p class="text-muted">Yuk pesan makanan enak sekarang!</p>
+                <p class="text-muted">Yuk pesan souvenir cantik sekarang!</p>
                 <a href="/" class="btn btn-danger rounded-pill px-4 py-2 mt-2 fw-bold" style="background-color: var(--primary-color); border:none;">
                     Pesan Sekarang
                 </a>
@@ -331,7 +331,7 @@
                                     <input type="hidden" name="transaksi_id" value="{{ $data->id }}">
                                     
                                     <div class="modal-body text-center">
-                                        <h6 class="fw-bold mb-3">Bagaimana pengalaman makan Anda?</h6>
+                                        <h6 class="fw-bold mb-3">Bagaimana pengalaman pesanan Anda?</h6>
                                         
                                         {{-- BINTANG RATING (Urutan 5 ke 1 untuk logic CSS Reverse) --}}
                                         <div class="rating-css">
@@ -355,7 +355,7 @@
 
                                         <div class="mt-3 text-start">
                                             <label class="form-label fw-bold small text-muted">Kritik & Saran (Opsional)</label>
-                                            <textarea name="komentar" class="form-control" rows="3" placeholder="Contoh: Harga terjangkau dan rasanya nikmat..."></textarea>
+                                            <textarea name="komentar" class="form-control" rows="3" placeholder="Contoh: Souvenir cantik, pengerjaan rapi, dan pengiriman cepat...""></textarea>
                                         </div>
                                     </div>
                                     
@@ -374,96 +374,7 @@
             </div>
         @endif
     </div>
-    {{-- ================= FOOTER ================= --}}
-    <footer style="background-color: #181818; color: #b0b0b0; font-family: 'Poppins', sans-serif;">
-        
-        {{-- Garis Merah di Atas --}}
-        <div style="height: 5px; background-color: #e4002b; width: 100%;"></div>
-
-        <div class="container py-5">
-            <div class="row g-4">
-                
-                {{-- KOLOM 1: BRAND & INFO --}}
-                <div class="col-lg-4 col-md-6">
-                    <h5 class="text-white fw-bold mb-3 d-flex align-items-center" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px;">
-                        <img src="{{ asset('template/img/tahu.png') }}" alt="Logo" width="35" height="35" class="me-2 rounded-circle bg-white p-1">
-                        SMOLIE GIFT
-                    </h5>
-                    <p class="small mb-4" style="line-height: 1.6;">
-                        Menyajikan Tahu Lontong & Tahu Tek dengan resep bumbu petis legendaris sejak 2010. Rasakan kenikmatan asli Jawa Timur.
-                    </p>
-                    
-                    <ul class="list-unstyled small">
-                        <li class="mb-2 d-flex align-items-start">
-                            <i class="bi bi-geo-alt-fill text-danger me-2 mt-1"></i> 
-                            <span>Jl. Sukorejo Indah No. 314, Katang</span>
-                        </li>
-                        <li class="mb-2 d-flex align-items-center">
-                            <i class="bi bi-clock-fill text-danger me-2"></i> 
-                            <span>Buka: 10.00 - 16.00 WIB</span>
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <i class="bi bi-envelope-fill text-danger me-2"></i> 
-                            <span>admin@warungtahu.com</span>
-                        </li>
-                    </ul>
-                </div>
-
-                {{-- KOLOM 2: MENU FAVORIT --}}
-                <div class="col-lg-2 col-md-3 col-6">
-                    <h6 class="text-white fw-bold mb-3 text-uppercase small">Menu Favorit</h6>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary hover-text-white">Tahu Lontong Biasa</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary hover-text-white">Tahu Telur Spesial</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary hover-text-white">Tahu Tek</a></li>
-                        <li><a href="#" class="text-decoration-none text-secondary hover-text-white">Es Campur</a></li>
-                    </ul>
-                </div>
-
-                {{-- KOLOM 3: LAYANAN --}}
-                <div class="col-lg-2 col-md-3 col-6">
-                    <h6 class="text-white fw-bold mb-3 text-uppercase small">Layanan</h6>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2">Dine-in (Makan di Tempat)</li>
-                        <li class="mb-2">Take Away (Bungkus)</li>
-                        <li class="mb-2">Menerima Pesanan (Catering)</li>
-                    </ul>
-                </div>
-
-                {{-- KOLOM 4: IKUTI KAMI & WA --}}
-                <div class="col-lg-4 col-md-12">
-                    <h6 class="text-white fw-bold mb-3 text-uppercase small">Ikuti Kami</h6>
-                    <p class="small mb-3">Dapatkan promo terbaru dan info menarik lewat sosial media kami.</p>
-                    
-                    <div class="d-flex gap-3 mb-4">
-                        <a href="#" class="text-white fs-5"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="text-white fs-5"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="text-white fs-5"><i class="bi bi-tiktok"></i></a>
-                        <a href="#" class="text-white fs-5"><i class="bi bi-whatsapp"></i></a>
-                    </div>
-
-                    <h6 class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.75rem;">PESAN CEPAT VIA WHATSAPP?</h6>
-                    <a href="https://wa.me/{{ $site_whatsapp }}" target="_blank" class="btn btn-danger w-100 fw-bold rounded-pill py-2 shadow-sm" style="background-color: #e4002b; border: none;">
-                        <i class="bi bi-whatsapp me-2"></i> CHAT SEKARANG
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        {{-- COPYRIGHT --}}
-        <div class="py-3 text-center border-top border-secondary border-opacity-10" style="background-color: #ffff;">
-            <small class="text-muted">&copy; 2026 Smolie Gift. All Rights Reserved.</small>
-        </div>
-    </footer>
-
-    {{-- Tambahan CSS Khusus untuk Footer Hover Effect --}}
-    <style>
-        footer a.hover-text-white:hover {
-            color: white !important;
-            padding-left: 5px;
-            transition: all 0.2s ease;
-        }
-    </style>
+    @include('layouts.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

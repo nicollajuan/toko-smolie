@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Belanja</title>
+    <title>Keranjang Belanja - Smolie Gift</title>
     
-    {{-- Bootstrap 5 & Icons --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,7 +21,7 @@
         .form-check-input:checked { background-color: var(--primary-color); border-color: var(--primary-color); }
         .btn-qty-cart {
             border: 1px solid #ddd; background: white; color: #555;
-            width: 32px; height: 32px; border-radius: 50%; 
+            width: 32px; height: 32px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 0.9rem; transition: 0.2s;
         }
@@ -37,20 +36,28 @@
 {{-- NAVBAR --}}
 <nav class="navbar navbar-light bg-white shadow-sm mb-4">
     <div class="container-fluid px-4 px-lg-5">
-        <a href="/" class="btn-back fs-5">
-            <i class="bi bi-arrow-left me-2"></i> Kembali ke Menu
-        </a>
+        @if(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir']))
+            <a href="{{ route('transaksi.kasir.menu') }}" class="btn-back fs-5">
+                <i class="bi bi-arrow-left me-2"></i> Kembali ke Katalog Kasir
+            </a>
+        @else
+            <a href="/" class="btn-back fs-5">
+                <i class="bi bi-arrow-left me-2"></i> Kembali ke Menu Utama
+            </a>
+        @endif
         <span class="fw-bold text-dark fs-5">Keranjang Saya</span>
     </div>
 </nav>
 
+{{-- CONTAINER --}}
 <div class="container-fluid px-4 px-lg-5 pb-5">
     <div class="row g-4">
-        
+
         {{-- KOLOM KIRI: DAFTAR PRODUK --}}
         <div class="col-lg-7 mb-4">
             <div class="card shadow-sm p-2">
-                
+
+                {{-- NOTIFIKASI --}}
                 @if(session('error'))
                     <div class="alert alert-danger alert-dismissible fade show shadow-sm m-3" role="alert">
                         <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
@@ -82,13 +89,13 @@
                             @php $total_awal = 0 @endphp
                             @if(session('cart'))
                                 @foreach(session('cart') as $id => $details)
-                                    @php 
+                                    @php
                                         $subtotal = $details['price'] * $details['quantity'];
                                         $total_awal += $subtotal;
                                     @endphp
                                     <tr data-id="{{ $id }}">
                                         <td class="text-center">
-                                            <input class="form-check-input item-checkbox" style="transform: scale(1.2);" type="checkbox" 
+                                            <input class="form-check-input item-checkbox" style="transform: scale(1.2);" type="checkbox"
                                                    value="{{ $id }}" data-subtotal="{{ $subtotal }}" checked>
                                         </td>
                                         <td>
@@ -118,16 +125,22 @@
                                         </td>
                                         <td class="text-end fw-bold text-danger fs-6">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
                                         <td class="text-end">
-                                            <button class="btn btn-light text-danger btn-sm remove-from-cart rounded-circle shadow-sm" style="width: 35px; height: 35px;"><i class="bi bi-trash"></i></button>
+                                            <button class="btn btn-light text-danger btn-sm remove-from-cart rounded-circle shadow-sm" style="width: 35px; height: 35px;">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
                                     <td colspan="6" class="text-center py-5 text-muted">
-                                        <i class="bi bi-cart-x fs-1 d-block mb-3"></i> 
-                                        <h5 class="text-muted">Keranjang Anda kosong</h5>
-                                        <a href="/" class="btn btn-danger rounded-pill px-5 mt-2 shadow-sm" style="background-color: var(--primary-color);">Belanja Sekarang</a>
+                                        <i class="bi bi-cart-x fs-1 d-block mb-3"></i>
+                                        <h5 class="text-muted mb-3">Keranjang Anda kosong</h5>
+                                        @if(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir']))
+                                            <a href="{{ route('transaksi.kasir.menu') }}" class="btn btn-danger rounded-pill px-5 shadow-sm" style="background-color: var(--primary-color);">Kembali ke Katalog Kasir</a>
+                                        @else
+                                            <a href="/" class="btn btn-danger rounded-pill px-5 shadow-sm" style="background-color: var(--primary-color);">Belanja Sekarang</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endif
@@ -146,7 +159,8 @@
 
                 <div class="card shadow p-4 sticky-top" style="top: 20px;">
                     <h4 class="fw-bold mb-4 text-dark">Rincian Pembayaran</h4>
-                    
+
+                    {{-- TOTAL HARGA --}}
                     <div class="d-flex justify-content-between align-items-center mb-4 pb-4 border-bottom">
                         <span class="text-secondary fs-5">Total Bayar</span>
                         <span class="fw-bold fs-3 text-danger" id="displayTotal">
@@ -164,142 +178,179 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-secondary">ALAMAT PENGIRIMAN <span class="text-danger">*</span></label>
-                            <textarea name="alamat_pengiriman" class="form-control bg-light" rows="3" placeholder="Jl. Mawar No. 12, RT/RW..." required></textarea>
+                            <label class="form-label fw-bold text-secondary small">ALAMAT PENGIRIMAN <span class="text-danger">*</span></label>
+                            <textarea name="alamat_pengiriman" class="form-control bg-light" rows="3" placeholder="Jalan, RT/RW, Nomor Rumah..." required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-secondary">CATATAN RUMAH / PATOKAN</label>
+                            <label class="form-label fw-bold text-secondary small">DETAIL RUMAH / PATOKAN</label>
                             <input type="text" name="detail_rumah" class="form-control bg-light" placeholder="Contoh: Pagar hitam, depan toko">
+                        </div>
+                        <hr class="my-4">
+                    @elseif(session('jenis_pesanan') == 'dine_in')
+                        <div class="alert alert-warning border-0 d-flex align-items-center mb-4 text-dark">
+                            <i class="bi bi-shop fs-2 me-3 text-danger"></i>
+                            <div>
+                                <strong>Makan Ditempat (Dine In)</strong><br>
+                                <small>Silakan tunggu di meja yang tersedia</small>
+                            </div>
                         </div>
                         <hr class="my-4">
                     @else
                         <div class="alert alert-light border d-flex align-items-center mb-4">
-                            @if(session('jenis_pesanan') == 'dine_in')
-                                <i class="bi bi-shop fs-2 me-3 text-danger"></i>
-                                <div><strong>Makan Ditempat (Dine In)</strong><br><small>Silakan tunggu di meja yang tersedia</small></div>
-                            @else
-                                <i class="bi bi-bag-check fs-2 me-3 text-danger"></i>
-                                <div><strong>Bawa Pulang (Takeaway)</strong><br><small>Ambil pesanan di kasir saat sudah siap.</small></div>
-                            @endif
+                            <i class="bi bi-bag-check fs-2 me-3 text-danger"></i>
+                            <div>
+                                <strong>Ambil di Toko (Pickup)</strong><br>
+                                <small>Ambil pesanan di toko saat sudah siap.</small>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                    @endif
+
+                    {{-- FORM DATA DIRI --}}
+                    @if(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir']))
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary small">NAMA PELANGGAN <span class="text-danger">*</span></label>
+                            <input type="text" name="nama_pembeli" class="form-control" value="{{ old('nama_pembeli', 'Pelanggan Toko') }}" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary small">NOMOR WHATSAPP PELANGGAN</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-success text-white border-0"><i class="bi bi-whatsapp"></i></span>
+                                <input type="number" name="no_hp" class="form-control" 
+                                    value="{{ Auth::user()->no_hp ?? Auth::user()->whatsapp ?? '' }}"
+                                    placeholder="08xxxxxxxxxx" required>
+                            </div>
+                            <div class="form-text small">Opsional. Isi jika pelanggan ingin menerima nota digital.</div>
+                        </div>
+                    @else
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary small">NAMA PEMESAN</label>
+                            <input type="text" class="form-control bg-light" value="{{ Auth::user()->name ?? 'Tamu' }}" readonly>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary small">NOMOR WHATSAPP (AKTIF) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-success text-white border-0"><i class="bi bi-whatsapp"></i></span>
+                                <input type="number" name="no_hp" class="form-control" 
+                                    value="{{ Auth::user()->no_hp ?? Auth::user()->whatsapp ?? '' }}"
+                                    placeholder="08xxxxxxxxxx" required>
+                            </div>
+                            <div class="form-text small">Nota pesanan akan dikirim ke nomor ini.</div>
                         </div>
                     @endif
 
-                    {{-- NAMA PEMESAN --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-bold text-secondary">NAMA PEMESAN</label>
-                        <input type="text" class="form-control form-control-lg bg-light" value="{{ Auth::user()->name ?? 'Tamu' }}" readonly>
-                    </div>
-
-                    {{-- NOMOR WHATSAPP - OTOMATIS TERISI DARI DATA USER --}}
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-secondary">NOMOR WHATSAPP (AKTIF) <span class="text-danger">*</span></label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-success text-white border-0"><i class="bi bi-whatsapp"></i></span>
-                            <input type="number" name="no_hp" class="form-control" 
-                                   value="{{ Auth::user()->whatsapp ?? Auth::user()->no_hp ?? '' }}" 
-                                   placeholder="08xxxxxxxxxx" required>
-                        </div>
-                        <div class="form-text">Nota pesanan akan dikirim ke nomor ini.</div>
-                    </div>
-
                     {{-- METODE PEMBAYARAN --}}
                     <div class="mb-4">
-                        <label class="form-label fw-bold text-secondary">METODE PEMBAYARAN <span class="text-danger">*</span></label>
-                        <div class="d-flex gap-3">
-                            <input type="radio" class="btn-check" name="metode_pembayaran" id="bayarTunai" value="tunai" checked onclick="toggleQR(false)">
-                            <label class="btn btn-outline-primary w-100 py-3 fw-bold rounded-3 border-2" for="bayarTunai">
-                                <i class="bi bi-cash-stack me-2 fs-5"></i> Tunai
-                            </label>
-                            <input type="radio" class="btn-check" name="metode_pembayaran" id="bayarQRIS" value="qris" onclick="toggleQR(true)">
-                            <label class="btn btn-outline-dark w-100 py-3 fw-bold rounded-3 border-2" for="bayarQRIS">
-                                <i class="bi bi-qr-code me-2 fs-5"></i> QRIS
-                            </label>
-                        </div>
+                        <label class="form-label fw-bold text-secondary small">METODE PEMBAYARAN <span class="text-danger">*</span></label>
+
+                        @if(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir']))
+                            {{-- KASIR: bisa tunai atau QRIS --}}
+                            <div class="d-flex gap-3 mb-3">
+                                <input type="radio" class="btn-check" name="metode_pembayaran" id="bayarTunai" value="tunai" checked onclick="toggleQR(false)">
+                                <label class="btn btn-outline-success w-100 py-3 fw-bold rounded-3 border-2" for="bayarTunai">
+                                    <i class="bi bi-cash-stack me-2 fs-5"></i> Tunai
+                                </label>
+                                <input type="radio" class="btn-check" name="metode_pembayaran" id="bayarQRIS" value="qris" onclick="toggleQR(true)">
+                                <label class="btn btn-outline-primary w-100 py-3 fw-bold rounded-3 border-2" for="bayarQRIS">
+                                    <i class="bi bi-qr-code-scan me-2 fs-5"></i> QRIS
+                                </label>
+                            </div>
+                            <div id="areaQR" class="alert alert-light border text-center mb-0 shadow-sm" style="display: none;">
+                                <p class="fw-bold mb-2 text-dark">Pembayaran QRIS dipilih.</p>
+                                <small class="text-muted">Pembeli dapat scan QRIS pada halaman selanjutnya.</small>
+                            </div>
+                        @else
+                            {{-- PEMBELI: hanya QRIS --}}
+                            <input type="hidden" name="metode_pembayaran" value="qris">
+                            <div class="alert alert-warning py-3 mb-0">
+                                <div class="fw-semibold mb-2"><i class="bi bi-info-circle-fill me-2"></i>QRIS (Pembayaran Online)</div>
+                                <small>Pembayaran tunai hanya tersedia jika membeli langsung di toko.</small>
+                            </div>
+                        @endif
                     </div>
 
-                    <div id="areaQR" class="alert alert-light border text-center mb-3 shadow-sm" style="display: none;">
-                        <p class="fw-bold mb-2">Scan QRIS Toko:</p>
-                        <img src="{{ asset('img/qris.jpeg') }}" alt="QRIS Code" class="img-fluid border rounded shadow-sm mb-2" style="max-width: 200px;">
-                    </div>
-                    
-                    <button type="submit" class="btn btn-danger w-100 py-3 rounded-pill fw-bold shadow fs-5" style="background-color: var(--primary-color); border:none;" id="btnCheckout">
+                    <button type="submit" class="btn btn-danger w-100 py-3 rounded-pill fw-bold shadow" style="background-color: var(--primary-color); border:none;" id="btnCheckout">
                         Konfirmasi Pesanan <i class="bi bi-arrow-right-circle ms-2"></i>
                     </button>
                 </div>
             </form>
         </div>
         @endif
+
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@include('layouts.footer')
+
+{{-- SCRIPTS --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script type="text/javascript">
-    
     // 1. UPDATE QUANTITY
     $(".change-qty").click(function (e) {
         e.preventDefault();
-        var ele = $(this);
-        var id = ele.data("id");
-        var action = ele.data("action");
+        var id = $(this).data("id");
+        var action = $(this).data("action");
         var input = $("#qty-disp-" + id);
-        var currentQty = parseInt(input.val());
-        var newQty = action === "increase" ? currentQty + 1 : currentQty - 1;
-        if(newQty < 1) return;
+        var newQty = action === "increase" ? parseInt(input.val()) + 1 : parseInt(input.val()) - 1;
+        if (newQty < 1) return;
         $.ajax({
             url: '{{ route('update.cart') }}',
             method: "PATCH",
             data: { _token: '{{ csrf_token() }}', id: id, quantity: newQty },
-            success: function (response) { window.location.reload(); }
+            success: function () { window.location.reload(); }
         });
     });
 
-    // 2. Hitung Total Checkbox
-    $(document).ready(function() {
+    // 2. HITUNG TOTAL CHECKBOX
+    $(document).ready(function () {
         function hitungTotal() {
             let total = 0;
             let selectedIds = [];
-            $('.item-checkbox:checked').each(function() {
+            $('.item-checkbox:checked').each(function () {
                 total += parseFloat($(this).data('subtotal'));
                 selectedIds.push($(this).val());
             });
             $('#displayTotal').text('Rp ' + new Intl.NumberFormat('id-ID').format(total));
             $('#selectedItemsInput').val(selectedIds.join(','));
-            if(selectedIds.length === 0) {
+            if (selectedIds.length === 0) {
                 $('#btnCheckout').prop('disabled', true).text('Pilih Produk Dulu');
             } else {
                 $('#btnCheckout').prop('disabled', false).html('Konfirmasi Pesanan <i class="bi bi-arrow-right-circle ms-2"></i>');
             }
         }
-        $('.item-checkbox').change(function() {
+        $('.item-checkbox').change(function () {
             hitungTotal();
-            let allChecked = $('.item-checkbox:checked').length === $('.item-checkbox').length;
-            $('#checkAll').prop('checked', allChecked);
+            $('#checkAll').prop('checked', $('.item-checkbox:checked').length === $('.item-checkbox').length);
         });
-        $('#checkAll').change(function() {
+        $('#checkAll').change(function () {
             $('.item-checkbox').prop('checked', $(this).prop('checked'));
             hitungTotal();
         });
         hitungTotal();
     });
 
-    // 3. Hapus Item
+    // 3. HAPUS ITEM
     $(".remove-from-cart").click(function (e) {
         e.preventDefault();
-        var ele = $(this);
-        if(confirm("Yakin ingin menghapus produk ini?")) {
+        var id = $(this).parents("tr").attr("data-id");
+        if (confirm("Yakin ingin menghapus produk ini?")) {
             $.ajax({
                 url: '{{ route('remove.from.cart') }}',
                 method: "DELETE",
-                data: { _token: '{{ csrf_token() }}', id: ele.parents("tr").attr("data-id") },
-                success: function (response) { window.location.reload(); }
+                data: { _token: '{{ csrf_token() }}', id: id },
+                success: function () { window.location.reload(); }
             });
         }
     });
 
+    // 4. TOGGLE QRIS (KHUSUS KASIR)
     function toggleQR(show) {
         var qrBox = document.getElementById('areaQR');
-        if(show) { qrBox.style.display = 'block'; } else { qrBox.style.display = 'none'; }
+        if (qrBox) {
+            qrBox.style.display = show ? 'block' : 'none';
+        }
     }
 </script>
 

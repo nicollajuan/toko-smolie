@@ -100,6 +100,16 @@
         </div>
     </div>
 
+    @if(in_array(Auth::user()->usertype, ['admin', 'kasir']))
+        <div class="row mb-4">
+            <div class="col-12">
+                <a href="{{ route('transaksi.kasir.menu') }}" class="btn btn-success btn-lg">
+                    <i class="bi bi-cart-plus me-2"></i> Buka Katalog Kasir
+                </a>
+            </div>
+        </div>
+    @endif
+
     {{-- CARD UTAMA --}}
     <div class="card card-kfc">
         <div class="card-body p-0">
@@ -164,6 +174,15 @@
                                     <span class="badge badge-service bg-warning text-dark">
                                         <i class="bi bi-bag me-1"></i> Takeaway
                                     </span>
+                                @endif
+
+                                {{-- TAMBAHKAN KODE INI DI BAWAHNYA --}}
+                                @if($data->catatan)
+                                    <div class="mt-1">
+                                        <small class="text-muted italic">
+                                            <i class="bi bi-pencil-square"></i> Note: {{ $data->catatan }}
+                                        </small>
+                                    </div>
                                 @endif
                             </td>
                             
