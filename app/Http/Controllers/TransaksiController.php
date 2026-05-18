@@ -42,16 +42,21 @@ class TransaksiController extends Controller
         return view('transaksi.manual', compact('produk'));
     }
 
-    public function kasirMenu()
+    public function kasirMenu(Request $request)
     {
         if (!Auth::check() || !in_array(Auth::user()->usertype, ['admin', 'kasir'])) {
             abort(403, 'Akses ditolak. Hanya admin atau kasir yang dapat mengakses halaman ini.');
         }
 
-        $produk = Produk::where('status', 'aktif')
-                        ->where('stock', '>', 0)
-                        ->orderBy('nama_produk', 'asc')
-                        ->get();
+        $query = Produk::where('status', 'aktif')
+                    ->where('stock', '>', 0);
+
+        // Filter pencarian
+        if ($request->filled('cari')) {
+            $query->where('nama_produk', 'LIKE', '%' . $request->cari . '%');
+        }
+
+        $produk = $query->orderBy('nama_produk', 'asc')->get();
         $kategori = Kategori::all();
 
         return view('transaksi.kasir_menu', compact('produk', 'kategori'));
