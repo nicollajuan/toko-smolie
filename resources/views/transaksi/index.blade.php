@@ -257,7 +257,7 @@
                                             $nomor = '62' . substr($nomor, 1);
                                         }
                                         
-                                        $pesan = "Halo kak *" . $data->nama_pembeli . "*! 👋%0a%0a";
+                                        $pesan = "Halo kak *" . $data->nama_pembeli . "*!%0a%0a";
                                         $pesan .= "Pesanan: *" . strtoupper(str_replace('_', ' ', $data->jenis_pesanan)) . "*%0a"; 
                                         $pesan .= "Kode: " . $data->kode_transaksi . "%0a";
                                         $pesan .= "Total: Rp " . number_format($data->total_harga, 0, ',', '.') . "%0a%0a";

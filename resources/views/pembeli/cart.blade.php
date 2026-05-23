@@ -259,6 +259,27 @@
                                 <p class="fw-bold mb-2 text-dark">Pembayaran QRIS dipilih.</p>
                                 <small class="text-muted">Pembeli dapat scan QRIS pada halaman selanjutnya.</small>
                             </div>
+                            {{-- TAMBAHKAN KODE INI DI BAWAH AREA QR --}}
+                            <div id="areaTunai" class="mt-3 p-3 bg-light rounded-3 border">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold text-secondary small">UANG DITERIMA DARI PELANGGAN <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white fw-bold">Rp</span>
+                                        <input type="number" name="uang_diterima" id="uangDiterima" class="form-control form-control-lg fw-bold" placeholder="0" required>
+                                    </div>
+                                    <small id="warningUang" class="text-danger fw-bold mt-1" style="display: none;">
+                                        <i class="bi bi-exclamation-triangle"></i> Uang yang diterima kurang!
+                                    </small>
+                                </div>
+                                <div class="mb-1">
+                                    <label class="form-label fw-bold text-secondary small">KEMBALIAN</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white fw-bold">Rp</span>
+                                        <input type="text" id="uangKembalian" class="form-control form-control-lg fw-bold text-success bg-white" value="0" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- BATAS AKHIR TAMBAHAN --}}
                         @else
                             {{-- PEMBELI: hanya QRIS --}}
                             <input type="hidden" name="metode_pembayaran" value="qris">
@@ -287,71 +308,127 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script type="text/javascript">
-    // 1. UPDATE QUANTITY
-    $(".change-qty").click(function (e) {
-        e.preventDefault();
-        var id = $(this).data("id");
-        var action = $(this).data("action");
-        var input = $("#qty-disp-" + id);
-        var newQty = action === "increase" ? parseInt(input.val()) + 1 : parseInt(input.val()) - 1;
-        if (newQty < 1) return;
-        $.ajax({
-            url: '{{ route('update.cart') }}',
-            method: "PATCH",
-            data: { _token: '{{ csrf_token() }}', id: id, quantity: newQty },
-            success: function () { window.location.reload(); }
-        });
-    });
+    // ==========================================
+    // DEKLARASI FUNGSI GLOBAL
+    // ==========================================
+    let currentTotal = 0; // Menyimpan total belanja saat ini
 
-    // 2. HITUNG TOTAL CHECKBOX
-    $(document).ready(function () {
-        function hitungTotal() {
-            let total = 0;
-            let selectedIds = [];
-            $('.item-checkbox:checked').each(function () {
-                total += parseFloat($(this).data('subtotal'));
-                selectedIds.push($(this).val());
-            });
-            $('#displayTotal').text('Rp ' + new Intl.NumberFormat('id-ID').format(total));
-            $('#selectedItemsInput').val(selectedIds.join(','));
-            if (selectedIds.length === 0) {
-                $('#btnCheckout').prop('disabled', true).text('Pilih Produk Dulu');
-            } else {
-                $('#btnCheckout').prop('disabled', false).html('Konfirmasi Pesanan <i class="bi bi-arrow-right-circle ms-2"></i>');
+    // Fungsi 1: Menghitung Kembalian Otomatis
+    function hitungKembalian() {
+        let uang = parseFloat($('#uangDiterima').val()) || 0;
+        let kembalian = uang - currentTotal;
+        
+        // Jika pembeli bayar tunai & uangnya kurang
+        if ($('#areaTunai').is(':visible') && uang > 0 && kembalian < 0) {
+            $('#warningUang').show();
+            $('#uangKembalian').val('Kurang!');
+            $('#uangKembalian').removeClass('text-success').addClass('text-danger');
+            $('#btnCheckout').prop('disabled', true); // Kunci tombol
+        } else {
+            $('#warningUang').hide();
+            $('#uangKembalian').removeClass('text-danger').addClass('text-success');
+            $('#uangKembalian').val(new Intl.NumberFormat('id-ID').format(kembalian > 0 ? kembalian : 0));
+            
+            // Buka kunci jika keranjang tidak kosong
+            if (currentTotal > 0) {
+                $('#btnCheckout').prop('disabled', false);
             }
         }
+    }
+
+    // Fungsi 2: Menghitung Total Belanja (Checkbox)
+    function hitungTotal() {
+        let total = 0;
+        let selectedIds = [];
+        $('.item-checkbox:checked').each(function () {
+            total += parseFloat($(this).data('subtotal'));
+            selectedIds.push($(this).val());
+        });
+        
+        currentTotal = total;
+        
+        $('#displayTotal').text('Rp ' + new Intl.NumberFormat('id-ID').format(total));
+        $('#selectedItemsInput').val(selectedIds.join(','));
+        
+        if (selectedIds.length === 0) {
+            $('#btnCheckout').prop('disabled', true).text('Pilih Produk Dulu');
+        } else {
+            $('#btnCheckout').prop('disabled', false).html('Konfirmasi Pesanan <i class="bi bi-arrow-right-circle ms-2"></i>');
+            hitungKembalian(); // Update kembalian setiap kali total berubah
+        }
+    }
+
+    // Fungsi 3: Toggle QRIS / Tunai
+    function toggleQR(isQris) {
+        if (isQris) {
+            $('#areaQR').show();
+            $('#areaTunai').hide();
+            $('#uangDiterima').removeAttr('required');
+            // Abaikan peringatan uang kurang jika pilih QRIS
+            if (currentTotal > 0) $('#btnCheckout').prop('disabled', false); 
+        } else {
+            $('#areaQR').hide();
+            $('#areaTunai').show();
+            $('#uangDiterima').attr('required', true);
+            hitungKembalian(); // Cek lagi kecukupan uang tunai
+        }
+    }
+
+    // ==========================================
+    // JQUERY DOCUMENT READY (Aksi saat halaman dimuat)
+    // ==========================================
+    $(document).ready(function () {
+        
+        // A. Trigger Kembalian saat Kasir mengetik nominal
+        $('#uangDiterima').on('input', hitungKembalian);
+
+        // B. Update Quantity (AJAX)
+        $(".change-qty").click(function (e) {
+            e.preventDefault();
+            var id = $(this).data("id");
+            var action = $(this).data("action");
+            var input = $("#qty-disp-" + id);
+            var newQty = action === "increase" ? parseInt(input.val()) + 1 : parseInt(input.val()) - 1;
+            
+            if (newQty < 1) return;
+            
+            $.ajax({
+                url: '{{ route('update.cart') }}',
+                method: "PATCH",
+                data: { _token: '{{ csrf_token() }}', id: id, quantity: newQty },
+                success: function () { window.location.reload(); }
+            });
+        });
+
+        // C. Hapus Item (AJAX)
+        $(".remove-from-cart").click(function (e) {
+            e.preventDefault();
+            var id = $(this).parents("tr").attr("data-id");
+            if (confirm("Yakin ingin menghapus produk ini?")) {
+                $.ajax({
+                    url: '{{ route('remove.from.cart') }}',
+                    method: "DELETE",
+                    data: { _token: '{{ csrf_token() }}', id: id },
+                    success: function () { window.location.reload(); }
+                });
+            }
+        });
+
+        // D. Event Listener Checkbox Item
         $('.item-checkbox').change(function () {
             hitungTotal();
             $('#checkAll').prop('checked', $('.item-checkbox:checked').length === $('.item-checkbox').length);
         });
+
+        // E. Event Listener Checkbox Pilih Semua
         $('#checkAll').change(function () {
             $('.item-checkbox').prop('checked', $(this).prop('checked'));
             hitungTotal();
         });
+
+        // F. Hitung total saat halaman pertama kali dimuat
         hitungTotal();
     });
-
-    // 3. HAPUS ITEM
-    $(".remove-from-cart").click(function (e) {
-        e.preventDefault();
-        var id = $(this).parents("tr").attr("data-id");
-        if (confirm("Yakin ingin menghapus produk ini?")) {
-            $.ajax({
-                url: '{{ route('remove.from.cart') }}',
-                method: "DELETE",
-                data: { _token: '{{ csrf_token() }}', id: id },
-                success: function () { window.location.reload(); }
-            });
-        }
-    });
-
-    // 4. TOGGLE QRIS (KHUSUS KASIR)
-    function toggleQR(show) {
-        var qrBox = document.getElementById('areaQR');
-        if (qrBox) {
-            qrBox.style.display = show ? 'block' : 'none';
-        }
-    }
 </script>
 
 </body>

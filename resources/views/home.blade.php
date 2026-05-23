@@ -74,11 +74,8 @@
         <div class="col-12">
             <div class="hero-banner">
                 <div class="position-relative z-1">
-                    <h1 class="display-4 fw-bold mb-2">Halo, {{ explode(' ', Auth::user()->name)[0] }}! 👋</h1>
+                    <h1 class="display-4 fw-bold mb-2">Halo, {{ explode(' ', Auth::user()->name)[0] }}!</h1>
                     <p class="fs-4 mt-2 opacity-75 fw-bold" style="letter-spacing: 1px;">DASHBOARD ADMIN SMOLIE GIFT</p>
-                </div>
-                <i class="bi bi-gift-fill hero-pattern"></i>
-            </div>
         </div>
     </div>
 
@@ -87,7 +84,7 @@
         <div class="col-12">
             <div class="card border-0 p-4 bg-white" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
                 <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-                    <h3 class="fw-bold text-dark m-0"><i class="bi bi-lightning-charge-fill text-warning me-2"></i> Akses Cepat</h3>
+                    <h4 class="theme-font text-dark m-0">Akses Cepat</h4>
                 </div>
                 
                 <div class="d-flex gap-3 flex-wrap">

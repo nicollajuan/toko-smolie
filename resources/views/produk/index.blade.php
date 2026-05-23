@@ -63,7 +63,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="mb-0 text-uppercase fw-bold" style="color: #202124; font-family: 'Oswald', sans-serif;">Daftar Produk</h2>
-            <p class="text-muted fs-6">Kelola menu makanan dan minuman warung Anda.</p>
+            <p class="text-muted fs-6">Kelola produk souvenir di toko Anda.</p>
         </div>
         
         <div>

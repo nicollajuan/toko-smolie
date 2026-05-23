@@ -12,7 +12,7 @@
         th { background-color: #f2f2f2; font-weight: bold; text-align: center; padding: 8px; }
         td { padding: 6px 8px; vertical-align: top; }
 
-        /* CSS untuk Badge (Label Warna) agar mirip Bootstrap */
+        /* CSS untuk Badge */
         .badge {
             display: inline-block;
             padding: 3px 6px;
@@ -23,13 +23,13 @@
             text-transform: capitalize;
             margin-bottom: 2px;
         }
-        .bg-danger { background-color: #dc3545; } /* Merah (Delivery) */
-        .bg-info { background-color: #0dcaf0; color: #000; } /* Biru Muda (Dine In) */
-        .bg-warning { background-color: #ffc107; color: #000; } /* Kuning (Takeaway) */
-        .bg-primary { background-color: #0d6efd; } /* Biru (Tunai) */
-        .bg-dark { background-color: #212529; } /* Hitam (QRIS) */
-        .bg-success { background-color: #198754; } /* Hijau (Selesai) */
-        .bg-secondary { background-color: #6c757d; } /* Abu (Pending) */
+        .bg-danger { background-color: #dc3545; }
+        .bg-info { background-color: #0dcaf0; color: #000; }
+        .bg-warning { background-color: #ffc107; color: #000; }
+        .bg-primary { background-color: #0d6efd; }
+        .bg-dark { background-color: #212529; }
+        .bg-success { background-color: #198754; }
+        .bg-secondary { background-color: #6c757d; }
 
         /* Utility Text */
         .text-bold { font-weight: bold; }
@@ -49,7 +49,9 @@
     </style>
 </head>
 <body>
-    <h2>Laporan Penjualan Smolie Gift</p>
+    {{-- PERBAIKAN: Tag <h2> ditutup dengan </h2> (sebelumnya </p>) --}}
+    <h2>Laporan Penjualan Smolie Gift</h2>
+    <p>Dicetak pada: {{ date('d/m/Y H:i') }}</p>
     
     <table>
         <thead>
@@ -58,8 +60,8 @@
                 <th width="12%">Tanggal</th>
                 <th width="12%">Kode TRX</th>
                 <th width="15%">Pembeli</th>
-                <th width="20%">Layanan</th> {{-- KOLOM BARU --}}
-                <th width="10%">Metode</th> {{-- KOLOM BARU --}}
+                <th width="20%">Layanan</th>
+                <th width="10%">Metode</th>
                 <th width="13%">Total</th>
                 <th width="10%">Status</th>
             </tr>
@@ -76,7 +78,7 @@
                     <span class="text-small">{{ $data->no_hp ?? '-' }}</span>
                 </td>
 
-                {{-- KOLOM LAYANAN (DENGAN ALAMAT) --}}
+                {{-- KOLOM LAYANAN --}}
                 <td>
                     @if($data->jenis_pesanan == 'delivery')
                         <span class="badge bg-danger">Delivery</span>
@@ -117,7 +119,7 @@
         <tfoot>
             <tr>
                 <td colspan="6" class="text-right text-bold" style="padding: 10px;">Total Pendapatan:</td>
-                <td colspan="2" class="text-bold" style="padding: 10px; font-size: 13px;">
+                <td colspan="2" class="text-bold text-right" style="padding: 10px; font-size: 13px;">
                     Rp {{ number_format($laporan->sum('total_harga'), 0, ',', '.') }}
                 </td>
             </tr>
