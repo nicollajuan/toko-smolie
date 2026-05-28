@@ -1,28 +1,28 @@
-<!DOCTYPE html>
-<html lang="id">
 <head>
-    <link rel="icon" href="{{ asset('template/img/smolie.jpg') }}" type="image/jpeg">
+    {{-- 1. Metadata paling dasar dan krusial --}}
     <meta charset="UTF-8">
-    {{-- 1. META VIEWPORT (PENTING UNTUK RESPONSIVE HP) --}}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    {{-- 2. CSRF TOKEN (PENTING UNTUK AJAX) --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <meta name="description" content="Katalog online Smolie Gift. Pusat souvenir pernikahan, kado ulang tahun, dan barang lucu estetik area Kediri dan sekitarnya.">
+    
     <title>@yield('title', 'Smolie Gift')</title>
 
-    {{-- FONTS: Diganti ke Poppins dan Nunito untuk kesan playful & modern --}}
+    {{-- Favicon --}}
+    <link rel="icon" href="{{ asset('template/img/smolie.jpg') }}" type="image/jpeg">
+
+    {{-- 2. Preconnect untuk mempercepat loading font dari Google --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    {{-- BOOTSTRAP 5 --}}
+    {{-- 3. CSS Libraries --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-    {{-- 3. DATATABLES (VERSI BOOTSTRAP 5 AGAR LEBIH RAPI) --}}
+    
+    {{-- Datatables --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
+</head>
 
     <style>
         /* --- TIMBUKTOON THEME VARIABLES --- */

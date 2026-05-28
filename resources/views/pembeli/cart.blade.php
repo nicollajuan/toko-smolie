@@ -86,7 +86,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php $total_awal = 0 @endphp
+                            @php
+                                $checkoutSummary = session('checkout_summary');
+                                $total_awal = 0;
+                            @endphp
                             @if(session('cart'))
                                 @foreach(session('cart') as $id => $details)
                                     @php
@@ -101,7 +104,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 @if($details['image'])
-                                                    <img src="{{ asset('img/produk/'.$details['image']) }}" width="70" height="70" class="rounded-3 me-3 object-fit-cover shadow-sm">
+                                                    <img src="{{ asset('img/produk/'.$details['image']) }}" alt="Foto produk {{ $details['nama_produk'] ?? 'pesanan' }}" width="70" height="70" class="rounded-3 me-3 object-fit-cover shadow-sm">
                                                 @endif
                                                 <div>
                                                     <div class="fw-bold text-dark fs-6">{{ $details['name'] }}</div>
@@ -131,6 +134,40 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                            @elseif($checkoutSummary && isset($checkoutSummary['items']))
+                                @foreach($checkoutSummary['items'] as $id => $details)
+                                    @php
+                                        $subtotal = $details['price'] * $details['quantity'];
+                                        $total_awal += $subtotal;
+                                    @endphp
+                                    <tr data-id="{{ $id }}">
+                                        <td class="text-center">
+                                            <input class="form-check-input item-checkbox" style="transform: scale(1.2);" type="checkbox"
+                                                   value="{{ $id }}" data-subtotal="{{ $subtotal }}" checked disabled>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                @if($details['image'])
+                                                    <img src="{{ asset('img/produk/'.$details['image']) }}" alt="Foto produk {{ $details['nama_produk'] ?? 'pesanan' }}" width="70" height="70" class="rounded-3 me-3 object-fit-cover shadow-sm">
+                                                @endif
+                                                <div>
+                                                    <div class="fw-bold text-dark fs-6">{{ $details['name'] }}</div>
+                                                    @if(isset($details['note']) && $details['note'] != '')
+                                                        <div class="product-note"><i class="bi bi-pencil-fill me-1"></i> {{ $details['note'] }}</div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted">Rp {{ number_format($details['price'], 0, ',', '.') }}</td>
+                                        <td class="text-center fw-bold">{{ $details['quantity'] }}</td>
+                                        <td class="text-end fw-bold text-danger fs-6">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
+                                        <td class="text-end">
+                                            <button class="btn btn-light text-danger btn-sm remove-from-cart rounded-circle shadow-sm" style="width: 35px; height: 35px;" disabled>
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             @else
                                 <tr>
                                     <td colspan="6" class="text-center py-5 text-muted">
@@ -151,8 +188,57 @@
         </div>
 
         {{-- KOLOM KANAN: FORM PEMBAYARAN --}}
-        @if(session('cart'))
+        @if(session('cart') || session('checkout_summary'))
         <div class="col-lg-5">
+            @if($checkoutSummary)
+                <div class="card shadow-sm p-4 mb-4 sticky-top" style="top: 20px;">
+                    <h4 class="fw-bold mb-3 text-dark">Ringkasan Checkout Terakhir</h4>
+                    <div class="d-flex align-items-start gap-2 mb-3">
+                        <div class="alert alert-success mb-0 flex-grow-1" role="alert">
+                            Pesanan berhasil dibuat. Berikut ringkasan data checkout terakhir.
+                        </div>
+                        @if(!empty($checkoutSummary['transaksi_id']))
+                            <a href="{{ route('transaksi.struk', $checkoutSummary['transaksi_id']) }}" target="_blank" class="btn btn-outline-primary mb-0">
+                                <i class="bi bi-printer me-1"></i> Cetak Struk
+                            </a>
+                        @endif
+                    </div>
+                    <div class="mb-3">
+                        <strong>Total Bayar:</strong> Rp {{ number_format($checkoutSummary['total'], 0, ',', '.') }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Metode Pembayaran:</strong> {{ strtoupper($checkoutSummary['metode']) }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Jenis Pesanan:</strong> {{ ucfirst(str_replace('_', ' ', $checkoutSummary['jenis_pesanan'])) }}
+                    </div>
+                    @if($checkoutSummary['jenis_pesanan'] === 'delivery')
+                        <div class="mb-3">
+                            <strong>Alamat Pengiriman:</strong> {{ $checkoutSummary['alamat_pengiriman'] }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Detail Rumah:</strong> {{ $checkoutSummary['detail_rumah'] ?? '-' }}
+                        </div>
+                    @endif
+                    <div class="mb-3">
+                        <strong>Nama Pelanggan:</strong> {{ $checkoutSummary['nama_pembeli'] }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>No. HP:</strong> {{ $checkoutSummary['no_hp'] }}
+                    </div>
+                    @if(isset($checkoutSummary['items']) && count($checkoutSummary['items']))
+                        <div class="mb-3">
+                            <strong>Produk di Checkout:</strong>
+                            <ul class="ps-3 mb-0">
+                                @foreach($checkoutSummary['items'] as $item)
+                                    <li>{{ $item['name'] }} x{{ $item['quantity'] }} — Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
+            @endif
+            @if(!$checkoutSummary || session('cart'))
             <form action="{{ route('checkout') }}" method="POST" id="checkoutForm">
                 @csrf
                 <input type="hidden" name="selected_items" id="selectedItemsInput">
@@ -295,6 +381,13 @@
                     </button>
                 </div>
             </form>
+            @else
+                <div class="card shadow-sm p-4 sticky-top" style="top: 20px;">
+                    <div class="alert alert-info mb-0">
+                        Keranjang sudah dikosongkan setelah checkout. Ringkasan pembayaran terakhir ditampilkan di atas.
+                    </div>
+                </div>
+            @endif
         </div>
         @endif
 
@@ -311,28 +404,23 @@
     // ==========================================
     // DEKLARASI FUNGSI GLOBAL
     // ==========================================
-    let currentTotal = 0; // Menyimpan total belanja saat ini
+    let currentTotal = 0; // akan dihitung dari checkbox terpilih
 
     // Fungsi 1: Menghitung Kembalian Otomatis
     function hitungKembalian() {
         let uang = parseFloat($('#uangDiterima').val()) || 0;
         let kembalian = uang - currentTotal;
-        
-        // Jika pembeli bayar tunai & uangnya kurang
+
         if ($('#areaTunai').is(':visible') && uang > 0 && kembalian < 0) {
             $('#warningUang').show();
             $('#uangKembalian').val('Kurang!');
             $('#uangKembalian').removeClass('text-success').addClass('text-danger');
-            $('#btnCheckout').prop('disabled', true); // Kunci tombol
+            $('#btnCheckout').prop('disabled', true);
         } else {
             $('#warningUang').hide();
             $('#uangKembalian').removeClass('text-danger').addClass('text-success');
             $('#uangKembalian').val(new Intl.NumberFormat('id-ID').format(kembalian > 0 ? kembalian : 0));
-            
-            // Buka kunci jika keranjang tidak kosong
-            if (currentTotal > 0) {
-                $('#btnCheckout').prop('disabled', false);
-            }
+            if (currentTotal > 0) $('#btnCheckout').prop('disabled', false);
         }
     }
 
@@ -341,36 +429,34 @@
         let total = 0;
         let selectedIds = [];
         $('.item-checkbox:checked').each(function () {
-            total += parseFloat($(this).data('subtotal'));
+            total += parseFloat($(this).data('subtotal')) || 0;
             selectedIds.push($(this).val());
         });
-        
+
         currentTotal = total;
-        
         $('#displayTotal').text('Rp ' + new Intl.NumberFormat('id-ID').format(total));
         $('#selectedItemsInput').val(selectedIds.join(','));
-        
+
         if (selectedIds.length === 0) {
             $('#btnCheckout').prop('disabled', true).text('Pilih Produk Dulu');
         } else {
             $('#btnCheckout').prop('disabled', false).html('Konfirmasi Pesanan <i class="bi bi-arrow-right-circle ms-2"></i>');
-            hitungKembalian(); // Update kembalian setiap kali total berubah
+            hitungKembalian();
         }
     }
 
-    // Fungsi 3: Toggle QRIS / Tunai
+    // Fungsi Toggle QRIS / Tunai
     function toggleQR(isQris) {
         if (isQris) {
             $('#areaQR').show();
             $('#areaTunai').hide();
             $('#uangDiterima').removeAttr('required');
-            // Abaikan peringatan uang kurang jika pilih QRIS
-            if (currentTotal > 0) $('#btnCheckout').prop('disabled', false); 
+            if (currentTotal > 0) $('#btnCheckout').prop('disabled', false);
         } else {
             $('#areaQR').hide();
             $('#areaTunai').show();
             $('#uangDiterima').attr('required', true);
-            hitungKembalian(); // Cek lagi kecukupan uang tunai
+            hitungKembalian();
         }
     }
 
@@ -383,15 +469,14 @@
         $('#uangDiterima').on('input', hitungKembalian);
 
         // B. Update Quantity (AJAX)
-        $(".change-qty").click(function (e) {
+        $(document).on('click', '.change-qty', function (e) {
             e.preventDefault();
-            var id = $(this).data("id");
-            var action = $(this).data("action");
+            var id = $(this).data('id');
+            var action = $(this).data('action');
             var input = $("#qty-disp-" + id);
             var newQty = action === "increase" ? parseInt(input.val()) + 1 : parseInt(input.val()) - 1;
-            
             if (newQty < 1) return;
-            
+
             $.ajax({
                 url: '{{ route('update.cart') }}',
                 method: "PATCH",
@@ -401,7 +486,7 @@
         });
 
         // C. Hapus Item (AJAX)
-        $(".remove-from-cart").click(function (e) {
+        $(document).on('click', '.remove-from-cart', function (e) {
             e.preventDefault();
             var id = $(this).parents("tr").attr("data-id");
             if (confirm("Yakin ingin menghapus produk ini?")) {
@@ -415,7 +500,7 @@
         });
 
         // D. Event Listener Checkbox Item
-        $('.item-checkbox').change(function () {
+        $(document).on('change', '.item-checkbox', function () {
             hitungTotal();
             $('#checkAll').prop('checked', $('.item-checkbox:checked').length === $('.item-checkbox').length);
         });

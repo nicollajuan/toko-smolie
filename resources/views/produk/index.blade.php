@@ -126,7 +126,9 @@
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="position-relative">
                                         @if($data->gambar)
-                                            <img src="{{ asset('img/produk/'.$data->gambar) }}" class="img-produk-besar">
+                                           <img src="{{ asset('img/produk/'.$data->gambar) }}" 
+     alt="Foto detail produk {{ $data->nama_produk }}" 
+     class="img-produk-besar">
                                         @else
                                             <div class="bg-light d-flex align-items-center justify-content-center text-muted img-produk-besar" style="border: 2px dashed #ccc;">
                                                 <i class="bi bi-image" style="font-size: 2rem;"></i>

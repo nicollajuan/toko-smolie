@@ -42,7 +42,9 @@
                     {{-- Area Gambar --}}
                     <div class="ratio ratio-4x3 bg-light">
                         @if($item->gambar)
-                            <img src="{{ asset('img/produk/'.$item->gambar) }}" alt="{{ $item->nama_produk }}" class="w-100 h-100 object-fit-cover">
+                            <img src="{{ asset('img/produk/'.$item->gambar) }}" 
+     alt="Foto produk {{ $item->nama_produk }}" 
+     class="w-100 h-100 object-fit-cover">
                         @else
                             <div class="d-flex align-items-center justify-content-center h-100 text-muted">
                                 <i class="bi bi-image fs-1"></i>

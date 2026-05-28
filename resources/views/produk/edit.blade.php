@@ -72,7 +72,10 @@
                         <div class="d-flex align-items-center gap-3">
                             <small class="text-muted">Gambar saat ini:</small>
                             @if($data->gambar)
-                                <img src="{{ asset('img/produk/'.$data->gambar) }}" width="60" height="60" class="rounded border object-fit-cover">
+                                <img src="{{ asset('img/produk/'.$data->gambar) }}" 
+     alt="Foto {{ $data->nama_produk }}" 
+     width="60" height="60" 
+     class="rounded border object-fit-cover">
                             @else
                                 <span class="badge bg-secondary">Belum ada gambar</span>
                             @endif

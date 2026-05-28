@@ -32,7 +32,7 @@
             </tr>
             <tr>
                 <td>Tanggal</td>
-                <td class="text-right">{{ date('d-m-Y H:i', strtotime($transaksi->created_at)) }}</td>
+                <td class="text-right">{{ \Carbon\Carbon::parse($transaksi->created_at)->setTimezone('Asia/Jakarta')->format('d-m-Y H:i') }}</td>
             </tr>
             <tr>
                 <td>Pelanggan</td>
@@ -83,15 +83,15 @@
                 <td>Metode</td>
                 <td class="text-right">{{ strtoupper($transaksi->metode_pembayaran) }}</td>
             </tr>
-            
+
             @if(strtolower($transaksi->metode_pembayaran) == 'tunai')
                 <tr>
-                    <td>Tunai</td>
-                    <td class="text-right">Rp {{ number_format($transaksi->uang_diterima ?? $transaksi->total_harga, 0, ',', '.') }}</td>
+                    <td>Diterima</td>
+                    <td class="text-right">Rp {{ number_format($transaksi->uang_diterima ?? 0, 0, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>Kembalian</td>
-                    <td class="text-right">Rp {{ number_format(($transaksi->uang_diterima ?? $transaksi->total_harga) - $transaksi->total_harga, 0, ',', '.') }}</td>
+                    <td class="text-right">Rp {{ number_format($transaksi->kembalian ?? 0, 0, ',', '.') }}</td>
                 </tr>
             @else
                 <tr>

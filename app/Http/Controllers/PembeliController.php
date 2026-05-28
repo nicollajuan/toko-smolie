@@ -214,6 +214,12 @@ class PembeliController extends Controller
         // Validasi Input Form
         $jenis_pesanan = session()->get('jenis_pesanan', 'takeaway'); 
         $isKasir = Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir']);
+
+        // Hitung Total Harga agar validasi tunai dapat memeriksa jumlah yang diterima
+        $total = 0;
+        foreach($checkoutItems as $id => $details){
+            $total += $details['price'] * $details['quantity'];
+        }
         
         $rules = [
             'no_hp' => 'required|numeric',
@@ -228,6 +234,10 @@ class PembeliController extends Controller
             $rules['alamat_pengiriman'] = 'required|string|max:255';
             $rules['detail_rumah'] = 'nullable|string|max:255';
         }
+
+        if ($request->input('metode_pembayaran') === 'tunai') {
+            $rules['uang_diterima'] = 'required|numeric|min:' . $total;
+        }
         
         $request->validate($rules);
 
@@ -241,10 +251,11 @@ class PembeliController extends Controller
             $statusPembayaran = 'berhasil';
         }
 
-        // Hitung Total Harga
-        $total = 0;
-        foreach($checkoutItems as $id => $details){
-            $total += $details['price'] * $details['quantity'];
+        $uangDiterima = 0;
+        $kembalian = 0;
+        if ($request->input('metode_pembayaran') === 'tunai') {
+            $uangDiterima = floatval($request->input('uang_diterima', 0));
+            $kembalian = max(0, $uangDiterima - $total);
         }
 
         try {
@@ -256,6 +267,8 @@ class PembeliController extends Controller
                 'nama_pembeli' => $namaPembeli,
                 'no_hp' => $request->no_hp,
                 'metode_pembayaran' => $metode,
+                'uang_diterima' => $uangDiterima,
+                'kembalian' => $kembalian,
                 'jenis_pesanan' => $jenis_pesanan,
                 'alamat_pengiriman' => ($jenis_pesanan == 'delivery') ? $request->alamat_pengiriman : null,
                 'detail_rumah' => ($jenis_pesanan == 'delivery') ? $request->detail_rumah : null,
@@ -295,13 +308,24 @@ class PembeliController extends Controller
             session()->put('cart', $fullCart);
             session()->forget('jenis_pesanan'); 
 
+            // Simpan ringkasan checkout agar tetap bisa ditampilkan di halaman cart
+            session()->flash('checkout_summary', [
+                'items' => $checkoutItems,
+                'total' => $total,
+                'nama_pembeli' => $namaPembeli,
+                'no_hp' => $request->no_hp,
+                'metode' => $metode,
+                'jenis_pesanan' => $jenis_pesanan,
+                'transaksi_id' => $id_transaksi,
+                'uang_diterima' => $uangDiterima,
+                'kembalian' => $kembalian,
+                'alamat_pengiriman' => $request->alamat_pengiriman,
+                'detail_rumah' => $request->detail_rumah,
+            ]);
+
             DB::commit(); 
 
-            if ($isKasir && $metode === 'tunai') {
-                return redirect()->route('transaksi.index')->with('success', 'Pesanan tunai kasir berhasil dibuat!');
-            }
-
-            return redirect()->route('pembayaran.show', $id_transaksi)->with('success', 'Pesanan berhasil dibuat! Silakan lakukan pembayaran.');
+            return redirect()->route('cart')->with('success', 'Pesanan berhasil dibuat! Silakan lihat ringkasan di bawah.');
 
         } catch (Exception $e) {
             DB::rollBack(); 

@@ -175,7 +175,10 @@
                         
                         <div class="product-img-wrapper position-relative">
                             @if($p->gambar) 
-                                <img src="{{ asset('img/produk/'.$p->gambar) }}" class="product-img" style="{{ $isNonAktif ? 'filter: grayscale(100%);' : '' }}"> 
+                                <img src="{{ asset('img/produk/'.$p->gambar) }}" 
+     alt="Foto produk {{ $p->nama_produk }}" 
+     class="product-img" 
+     style="{{ $isNonAktif ? 'filter: grayscale(100%);' : '' }}"> 
                             @else 
                                 <div class="d-flex align-items-center justify-content-center h-100 bg-light text-muted"><i class="bi bi-image fs-1"></i></div> 
                             @endif
@@ -347,8 +350,7 @@
     @endif
 
     {{-- ================= FLOATING CHAT PELANGGAN ================= --}}
-    <button id="btn-chat-toggle" class="btn shadow-lg d-flex justify-content-center align-items-center" 
-            style="position: fixed; bottom: 30px; right: 30px; z-index: 1060; background-color: #DD3827; color: white; border-radius: 50%; width: 60px; height: 60px; transition: 0.3s;">
+    <button id="btn-chat-toggle" aria-label="Buka live chat admin" class="btn shadow-lg d-flex justify-content-center align-items-center" style="position: fixed; bottom: 30px; right: 30px; z-index: 1060;">
         <i class="bi bi-chat-dots-fill fs-3"></i>
     </button>
 
