@@ -86,7 +86,7 @@ class ProdukController extends Controller
 
         $file     = $request->file('image');
         $filename = 'produk_' . time() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('images'), $filename);
+        $file->move(public_path('img/produk'), $filename); // ← ganti dari 'images' ke 'img/produk'
 
         return response()->json([
             'status'   => 'success',
