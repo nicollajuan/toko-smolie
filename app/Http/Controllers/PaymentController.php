@@ -153,8 +153,8 @@ class PaymentController extends Controller
     public function verifyPayment(Request $request, $id)
     {
         // Hanya admin yang bisa verifikasi
-        if (Auth::user()->usertype !== 'admin') {
-            abort(403, 'Unauthorized');
+        if (!in_array(Auth::user()->usertype, ['admin', 'kasir'])) {
+            abort(403, 'Unauthorized. Hanya admin atau kasir yang dapat menyetujui pembayaran.');
         }
 
         $request->validate([
@@ -164,7 +164,6 @@ class PaymentController extends Controller
         $transaksi = Transaksi::findOrFail($id);
         
         // Update status pembayaran
-        // Catatan: Jika ada update status pesanan (misal dari 'pending' ke 'diproses'), bisa ditambahkan di sini
         $transaksi->update([
             'status_pembayaran' => $request->status_pembayaran,
         ]);
@@ -181,8 +180,8 @@ class PaymentController extends Controller
     {
         $transaksi = Transaksi::findOrFail($id);
 
-        // Validasi: hanya admin atau pemilik yang bisa download
-        if (Auth::user()->id !== $transaksi->user_id && Auth::user()->usertype !== 'admin') {
+        // Validasi: hanya admin, kasir, atau pemilik yang bisa download
+        if (Auth::user()->id !== $transaksi->user_id && !in_array(Auth::user()->usertype, ['admin', 'kasir'])) {
             abort(403, 'Unauthorized');
         }
 

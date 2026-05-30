@@ -11,6 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\File;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ProdukController extends Controller
 {
@@ -53,8 +54,8 @@ class ProdukController extends Controller
             'image'    => ':attribute harus berupa gambar',
         ];
 
+        // VALIDASI DIUBAH: Hapus validasi 'id' karena sekarang otomatis
         $request->validate([
-            'id'          => 'required|numeric|unique:produk,id', 
             'nama_produk' => 'required|unique:produk,nama_produk',
             'kategori_id' => 'required',
             'harga'       => 'required|numeric',
@@ -64,7 +65,20 @@ class ProdukController extends Controller
 
         $data = new Produk();
         
-        $data->id = $request->id; 
+        // its NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWwwwWWWWWWWWWWWWWWWWWW
+        // -------------------------------------------------------------
+        // LOGIKA AUTO-GENERATE KODE PRODUK ALFANUMERIK (Contoh: SML-X9B2A)
+        // -------------------------------------------------------------
+        $kode_baru = 'SML-' . strtoupper(Str::random(5)); // Membuat 5 huruf/angka acak
+        
+        // Memastikan kode benar-benar unik dan belum ada di database
+        while (Produk::where('kode_produk', $kode_baru)->exists()) {
+            $kode_baru = 'SML-' . strtoupper(Str::random(5));
+        }
+        $data->kode_produk = $kode_baru; 
+        // (Baris $data->id dihapus karena database akan auto-increment otomatis)
+        // -------------------------------------------------------------
+        
         $data->nama_produk = $request->nama_produk;
         $data->kategori_id = $request->kategori_id; 
         $data->harga = $request->harga;
@@ -82,7 +96,7 @@ class ProdukController extends Controller
         }
 
         $data->save();
-        return redirect('/tampil-produk')->with('success','Data berhasil disimpan');
+        return redirect('/tampil-produk')->with('success','Data berhasil disimpan dengan Kode: ' . $kode_baru);
     }
 
     public function update(Request $request, $id)

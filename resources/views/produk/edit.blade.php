@@ -14,10 +14,10 @@
                 
                 <div class="modal-body text-start">
                     
-                    {{-- Kode Produk (Read Only) --}}
+                    {{-- Kode Produk (Read Only) DIUBAH MENJADI MENGAMBIL kode_produk --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kode Produk</label>
-                        <input type="text" class="form-control bg-light" value="{{ $data->id }}" readonly>
+                        <input type="text" class="form-control bg-light" value="{{ $data->kode_produk ?? $data->id }}" readonly>
                     </div>
 
                     {{-- Nama Produk --}}
@@ -52,7 +52,6 @@
                     </div>
 
                     {{-- === BAGIAN PENTING: STATUS PRODUK === --}}
-                    {{-- Ini solusi untuk produk yang tidak bisa dihapus --}}
                     <div class="mb-3 p-3 bg-light border rounded">
                         <label class="form-label fw-bold text-primary">Status Produk</label>
                         <select class="form-select border-primary" name="status">

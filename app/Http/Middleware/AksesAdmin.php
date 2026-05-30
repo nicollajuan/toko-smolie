@@ -5,18 +5,34 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 
 class AksesAdmin
 {
-    public function handle(Request $request, Closure $next): Response
+    /**
+     * Handle an incoming request.
+     */
+    public function handle(Request $request, Closure $next)
     {
-        // Jika yang login adalah admin atau kasir, silakan masuk!
-        if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'kasir'])) {
-            return $next($request);
+        // 1. Pastikan user sudah login
+        if (!Auth::check()) {
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        // Jika yang login adalah user/pembeli biasa, usir (redirect) ke halaman katalog depan!
-        return redirect('/')->with('error', 'Maaf, halaman tersebut khusus Admin/Kasir.');
+        // 2. KUNCI RBAC UNTUK PEMBELI (USERTYPE == 'user')
+        if (Auth::user()->usertype == 'user') {
+            
+            // CEK JALUR: Jika sistem default Laravel melempar ke '/home' setelah login
+            if ($request->is('home')) {
+                // Pindahkan ke beranda dengan mulus TANPA pesan error
+                return redirect('/'); 
+            }
+
+            // CEK JALUR: Jika user mencoba memaksa masuk ke rute admin lainnya (/transaksi, dll)
+            // Lemparkan pesan error merah!
+            return redirect('/')->with('error', 'Akses Ditolak! Halaman tersebut hanya untuk Admin dan Kasir.');
+        }
+
+        // 3. Jika lolos (berarti dia admin atau kasir), izinkan masuk
+        return $next($request);
     }
 }

@@ -247,4 +247,99 @@ class TransaksiController extends Controller
         // Tapi jika ada di luar, cukup tulis view('manual'))
         return view('transaksi.manual', compact('produk'));
     }
+
+    // =========================================================================
+    // FITUR CHECKOUT DARI KERANJANG (CART)
+    // =========================================================================
+    
+    public function checkout(Request $request)
+    {
+        // 1. Validasi Data Input Kasir/Pembeli
+        $request->validate([
+            'nama_pelanggan' => 'required|string|max:255',
+            'no_hp' => 'nullable|numeric',
+            'metode_pembayaran' => 'required|in:tunai,qris',
+            'jenis_pesanan' => 'required|in:takeaway,delivery,dine_in', 
+        ]);
+
+        // 2. Ambil data keranjang dari session (asumsi session bernama 'cart')
+        $cart = session()->get('cart');
+
+        if (!$cart || count($cart) == 0) {
+            return redirect()->back()->with('error', 'Keranjang kosong. Tidak dapat melakukan checkout.');
+        }
+
+        // 3. HITUNG TOTAL HARGA MURNI DULU
+        $totalHarga = 0;
+        foreach ($cart as $item) {
+            $totalHarga += $item['price'] * $item['quantity'];
+        }
+
+        // 4. LOGIKA DISKON 10% (Ditaruh di sini, pastikan cek Auth dulu)
+        if (Auth::check() && Auth::user()->usertype == 'user') {
+            $totalHarga = $totalHarga * 0.90; // Terapkan diskon 10% khusus member
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // 5. Simpan ke tabel Transaksi
+            $transaksi = Transaksi::create([
+                'user_id' => Auth::id() ?? null, 
+                'nama_pembeli' => $request->nama_pelanggan,
+                'no_hp' => $request->no_hp,
+                'kode_transaksi' => 'TRX-' . time() . rand(100, 999),
+                'total_harga' => $totalHarga, // Total harga yang dimasukkan ke DB sudah didiskon
+                'metode_pembayaran' => $request->metode_pembayaran,
+                'jenis_pesanan' => $request->jenis_pesanan ?? 'takeaway',
+                'status' => 'pending', 
+                'status_pembayaran' => 'pending', 
+            ]);
+
+            // 6. Simpan detail produk ke tabel detail_transaksi & Kurangi Stok
+            foreach ($cart as $id => $details) {
+                DB::table('detail_transaksi')->insert([
+                    'transaksi_id' => $transaksi->id,
+                    'produk_id' => $id,
+                    'jumlah' => $details['quantity'],
+                    'subtotal' => $details['price'] * $details['quantity'], // Subtotal per barang tetap harga normal
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                // Opsional: Kurangi stok produk
+                Produk::where('id', $id)->decrement('stock', $details['quantity']);
+            }
+
+            // 7. Kosongkan keranjang session setelah sukses menyimpan
+            session()->forget('cart');
+
+            DB::commit();
+
+            // =========================================================
+            // 8. LOGIKA REDIRECT BERDASARKAN METODE PEMBAYARAN (QRIS)
+            // =========================================================
+            if ($transaksi->metode_pembayaran == 'qris') {
+                return redirect()->route('pembayaran.show', $transaksi->id)
+                                 ->with('success', 'Pesanan berhasil dibuat! Silakan scan QRIS dan upload bukti pembayaran.');
+            } else {
+                session()->flash('checkout_summary', [
+                    'transaksi_id' => $transaksi->id,
+                    'total' => $totalHarga,
+                    'metode' => 'tunai',
+                    'jenis_pesanan' => $request->jenis_pesanan ?? 'takeaway',
+                    'nama_pembeli' => $request->nama_pelanggan,
+                    'no_hp' => $request->no_hp,
+                    'items' => $cart
+                ]);
+
+                return redirect()->back()
+                                 ->with('success', 'Pesanan Tunai berhasil dibuat! Silakan cetak struk.');
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses checkout: ' . $e->getMessage());
+        }
+    }
 }

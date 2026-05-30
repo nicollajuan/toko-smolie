@@ -47,6 +47,13 @@
                             <i class="bi bi-chat-dots-fill me-3 fs-4"></i> Chat
                         </a>
                     </li>
+
+                    <li class="nav-header ps-3 mt-4 mb-2 text-uppercase fw-bold" style="font-size: 0.85rem; letter-spacing: 1.5px; color: #999;">Pengaturan</li>
+                    <li>
+                        <a href="{{ route('admin.staf.index') }}" class="nav-link d-flex align-items-center {{ Request::is('admin/staf*') ? 'active-smolie' : 'text-secondary' }}">
+                            <i class="bi bi-people-fill me-3 fs-4"></i> Kelola Staf
+                        </a>
+                    </li>
                 @endif
 
                 {{-- MENU KHUSUS KASIR --}}
@@ -92,65 +99,53 @@
                 <li><a class="dropdown-item py-2 fw-bold rounded-3" href="{{ route('profile.edit') }}"><i class="bi bi-pencil-square me-3 text-success"></i> Edit</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                    <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Yakin ingin keluar?');">
-                        @csrf
-                        <button type="submit" class="dropdown-item text-danger fw-bold py-2 rounded-3">
-                            <i class="bi bi-box-arrow-right me-3"></i> Logout
-                        </button>
-                    </form>
+                    <button type="button" class="dropdown-item text-danger fw-bold py-2 rounded-3" data-bs-toggle="modal" data-bs-target="#modalLogoutKonfirmasi">
+                        <i class="bi bi-box-arrow-right me-3"></i> Logout
+                    </button>
                 </li>
             </ul>
         </div>
     </div>
 </div>
 
+{{-- 4. MODAL KONFIRMASI LOGOUT --}}
+<div class="modal fade" id="modalLogoutKonfirmasi" tabindex="-1" aria-labelledby="modalLogoutLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-body p-4 text-center">
+                <div class="mb-3">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-light text-danger rounded-circle" style="width: 70px; height: 70px;">
+                        <i class="bi bi-box-arrow-right fs-1"></i>
+                    </div>
+                </div>
+                <h5 class="fw-bold mb-2 text-dark" id="modalLogoutLabel">Yakin ingin keluar?</h5>
+                <p class="text-muted mb-4 small">Sesi Anda saat ini akan diakhiri.</p>
+                
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Batal</button>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-danger fw-bold px-4 shadow-sm" style="background-color: #DD3827; border: none; border-radius: 12px;">
+                            Ya, Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
-    /* 1. Sidebar Wrapper - Kunci tinggi layar */
-    .sidebar-wrapper {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        position: sticky;
-        top: 0;
-    }
-
-    /* 2. Menu Link - Ramah Lansia (Teks Besar & Jelas) */
-    .nav-link {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-        font-size: 1.1rem;
-        padding: 15px 20px;
-        border-radius: 12px !important;
-        transition: all 0.2s ease-in-out;
-        color: #555 !important;
-    }
-    
-    .nav-link:hover {
-        background-color: #FDE8E5; 
-        color: #DD3827 !important;
-        transform: translateY(-2px); /* Efek bergerak sedikit */
-    }
-
-    /* Status Aktif */
-    .active-smolie {
-        background-color: #DD3827 !important; 
-        color: white !important;
-        box-shadow: 0 4px 12px rgba(221, 56, 39, 0.3);
-    }
+    .sidebar-wrapper { height: 100vh; display: flex; flex-direction: column; width: 100%; position: sticky; top: 0; }
+    .nav-link { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.1rem; padding: 15px 20px; border-radius: 12px !important; transition: all 0.2s ease-in-out; color: #555 !important; }
+    .nav-link:hover { background-color: #FDE8E5; color: #DD3827 !important; transform: translateY(-2px); }
+    .active-smolie { background-color: #DD3827 !important; color: white !important; box-shadow: 0 4px 12px rgba(221, 56, 39, 0.3); }
     .active-smolie i { color: white !important; }
-
-    /* 3. Scrollbar Minimalis ala Gemini */
     .custom-scrollbar::-webkit-scrollbar { width: 5px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #eee; border-radius: 10px; }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #ddd; }
-
-    /* Efek Profil Hover */
-    #tombolProfil:hover {
-        border-color: #DD3827 !important;
-        background-color: #fff9f8 !important;
-    }
+    #tombolProfil:hover { border-color: #DD3827 !important; background-color: #fff9f8 !important; }
 </style>
 
 <script>
@@ -162,13 +157,19 @@
         ikon.style.transform = open ? "rotate(0deg)" : "rotate(180deg)";
     }
 
-    // Tutup menu jika klik di luar area profil
     document.addEventListener('click', function(event) {
         var tombol = document.getElementById("tombolProfil");
         var menu = document.getElementById("menuProfilDropdown");
         if (tombol && menu && !tombol.contains(event.target) && !menu.contains(event.target)) {
             menu.style.display = "none";
             document.getElementById("ikonPanah").style.transform = "rotate(0deg)";
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var modalLogout = document.getElementById('modalLogoutKonfirmasi');
+        if(modalLogout) {
+            document.body.appendChild(modalLogout);
         }
     });
 </script>

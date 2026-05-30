@@ -3,129 +3,123 @@
 
 @section('content')
 
-{{-- STYLE KHUSUS KFC THEME --}}
+{{-- STYLE KONSISTEN DENGAN TEMA SMOLIE GIFT --}}
 <style>
     :root {
-        --kfc-red: #E4002B;
-        --kfc-black: #202124;
-        --gray-bg: #f8f9fa;
+        --smolie-red: #DD3827;
+        --text-dark: #202124;
     }
-    body { background-color: var(--gray-bg); }
     
-    .text-kfc { color: var(--kfc-red) !important; }
+    /* Penyederhanaan warna header dan jarak dalam tabel */
+    .table-ramah-lansia th {
+        font-size: 14px;
+        background-color: #f8f9fa; 
+        color: #495057;
+        padding: 15px; 
+        white-space: nowrap;
+        font-family: 'Poppins', sans-serif;
+        border-bottom: 2px solid #e9ecef;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table-ramah-lansia td {
+        padding: 15px; 
+        font-size: 14px;
+        color: #333;
+        font-family: 'Poppins', sans-serif;
+        vertical-align: middle;
+        border-bottom: 1px solid #f8f9fa;
+    }
     
-    .card-kfc {
+    .card-utama {
         border: none;
-        border-radius: 16px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         overflow: hidden;
     }
-    
-    .btn-back-kfc {
-        border: 2px solid #e0e0e0;
-        color: var(--kfc-black);
-        font-weight: 700;
-        border-radius: 50px;
-        padding: 8px 20px;
-        transition: all 0.3s;
-    }
-    .btn-back-kfc:hover {
-        border-color: var(--kfc-black);
-        background-color: var(--kfc-black);
-        color: white;
-    }
 
-    .table-kfc thead th {
-        background-color: white;
-        color: #999;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        letter-spacing: 1px;
-        border-bottom: 2px solid #eee;
-        padding: 1.5rem 1rem;
-    }
-    
-    .table-kfc tbody td {
-        padding: 1.5rem 1rem;
-        vertical-align: middle;
-        border-bottom: 1px solid #f0f0f0;
-        background-color: white;
-    }
-    
+    /* Modifikasi Kode TRX agar lebih soft */
     .trx-code {
         font-family: 'Courier New', monospace;
-        letter-spacing: -0.5px;
-        background: #fff5f5;
-        color: var(--kfc-red);
+        background: #FFF0ED;
+        color: var(--smolie-red);
         padding: 4px 8px;
-        border-radius: 4px;
+        border-radius: 6px;
         font-weight: bold;
+        font-size: 0.85rem;
     }
 
-    .badge-service {
-        font-size: 0.75rem;
-        padding: 6px 12px;
-        border-radius: 20px;
-        text-transform: uppercase;
-        font-weight: 800;
-    }
-    
-    .btn-action-circle {
-        width: 35px;
-        height: 35px;
+    /* Tombol Aksi Bulat yang Elegan */
+    .btn-aksi-bulat {
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        transition: transform 0.2s;
+        transition: 0.2s;
         border: none;
     }
-    .btn-action-circle:hover { transform: scale(1.1); }
+    .btn-aksi-bulat:hover { 
+        transform: translateY(-2px); 
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+    }
 </style>
 
-<div class="container py-5">
+<div class="container-fluid mt-2 px-lg-4">
     
-    {{-- HEADER SECTION --}}
-    <div class="row align-items-center mb-4">
-        <div class="col-md-8">
-            <h2 class="fw-bold mb-1" style="color: var(--kfc-black);">
-                <i class="bi bi-receipt-cutoff text-kfc me-2"></i>RIWAYAT PESANAN
+    {{-- 1. HEADER HALAMAN & TOMBOL (DIGABUNG) --}}
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h2 class="mb-1 text-uppercase fw-bold" style="color: var(--text-dark); font-family: 'Oswald', sans-serif;">
+                <i class="bi bi-receipt-cutoff me-2" style="color: var(--smolie-red);"></i>Riwayat Pesanan
             </h2>
-            <p class="text-muted mb-0">Pantau status pesanan pelanggan secara real-time.</p>
+            <p class="text-muted fs-6 mb-0">Pantau status pesanan pelanggan secara real-time.</p>
         </div>
-        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <a href="{{ url('/home') }}" class="btn btn-back-kfc">
-                <i class="bi bi-arrow-left"></i> KEMBALI
+        
+        {{-- Kelompok Tombol Aksi disatukan di kanan atas --}}
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url('/home') }}" class="btn btn-outline-secondary rounded-pill px-3 fw-bold d-flex align-items-center">
+                <i class="bi bi-arrow-left me-1"></i> Kembali
             </a>
+            @if(in_array(Auth::user()->usertype, ['admin', 'kasir']))
+                <a href="{{ route('transaksi.kasir.menu') }}" class="btn text-white rounded-pill px-3 fw-bold d-flex align-items-center shadow-sm" style="background-color: var(--smolie-red);">
+                    <i class="bi bi-bag-plus me-1"></i> Buka Katalog Kasir
+                </a>
+            @endif
         </div>
     </div>
 
-    @if(in_array(Auth::user()->usertype, ['admin', 'kasir']))
-        <div class="row mb-4">
-            <div class="col-12">
-                <a href="{{ route('transaksi.kasir.menu') }}" class="btn btn-success btn-lg">
-                    <i class="bi bi-cart-plus me-2"></i> Buka Katalog Kasir
-                </a>
-            </div>
+    {{-- NOTIFIKASI --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3 border-0" role="alert" style="background-color: #E8F5E9; color: #2E7D32;">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm rounded-3 border-0" role="alert" style="background-color: #FFEBEE; color: #C62828;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    {{-- CARD UTAMA --}}
-    <div class="card card-kfc">
+    {{-- 2. TABEL DATA --}}
+    <div class="card card-utama">
         <div class="card-body p-0">
-            <div class="table-responsive">
-                {{-- TABEL UTAMA --}}
-                <table class="table table-kfc table-hover mb-0" id="tabel-transaksi">
+            <div class="table-responsive p-3">
+                <table class="table table-hover align-middle mb-0 table-ramah-lansia" id="tabel-transaksi" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="text-center" width="5%">No</th>
-                            <th width="15%">Kode & Waktu</th>
-                            <th width="20%">Pelanggan</th>
-                            <th width="20%">Layanan & Info</th>
-                            <th width="10%">Metode</th>
-                            <th width="15%">Total Bayar</th>
-                            <th width="10%">Status</th>
-                            <th width="10%" class="text-center">Aksi</th>
+                            <th class="text-center" style="width: 5%">No.</th>
+                            <th style="width: 15%">Kode & Waktu</th>
+                            <th style="width: 15%">Pelanggan</th>
+                            <th style="width: 25%">Layanan & Info</th>
+                            <th class="text-center" style="width: 10%">Metode</th>
+                            <th style="width: 12%">Total Bayar</th>
+                            <th style="width: 10%">Status</th>
+                            <th class="text-center" style="width: 8%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,161 +130,133 @@
                             {{-- Kode TRX & Tanggal --}}
                             <td>
                                 <div class="mb-1"><span class="trx-code">{{ $data->kode_transaksi }}</span></div>
-                                <small class="text-muted fw-semibold" style="font-size: 0.8rem;">
-                                    <i class="bi bi-calendar3 me-1"></i>{{ date('d M, H:i', strtotime($data->created_at)) }}
+                                <small class="text-muted fw-semibold" style="font-size: 0.75rem;">
+                                    <i class="bi bi-calendar3 me-1"></i>{{ date('d M Y, H:i', strtotime($data->created_at)) }}
                                 </small>
                             </td>
                             
                             {{-- Info Pembeli --}}
                             <td>
-                                <h6 class="mb-0 fw-bold text-dark">{{ $data->nama_pembeli }}</h6>
-                                <small class="text-muted d-block mt-1">
-                                    <i class="bi bi-whatsapp text-success"></i> {{ $data->no_hp ?? '-' }}
+                                <div class="fw-bold text-dark" style="font-size: 15px;">{{ $data->nama_pembeli }}</div>
+                                <small class="text-muted d-flex align-items-center mt-1" style="font-size: 13px;">
+                                    <i class="bi bi-whatsapp text-success me-1"></i> {{ $data->no_hp ?? '-' }}
                                 </small>
                             </td>
 
-                            {{-- KOLOM LAYANAN (Dine In/Takeaway/Delivery) --}}
+                            {{-- KOLOM LAYANAN --}}
                             <td>
                                 @if($data->jenis_pesanan == 'delivery')
-                                    <span class="badge badge-service bg-danger mb-2">
-                                        <i class="bi bi-truck me-1"></i> Delivery
-                                    </span>
-                                    {{-- Info Alamat Delivery --}}
-                                    <div class="p-2 rounded border bg-light small" style="line-height: 1.3; font-size: 0.75rem;">
-                                        <strong class="text-dark d-block mb-1">Tujuan:</strong>
-                                        {{ Str::limit($data->alamat_pengiriman, 40) }}
+                                    <span class="badge bg-danger rounded-pill px-2 py-1 mb-1 shadow-sm"><i class="bi bi-truck me-1"></i> Delivery</span>
+                                    <div class="bg-light p-2 rounded-2 mt-1 small" style="border: 1px dashed #ccc; font-size: 12px; line-height: 1.4;">
+                                        <strong class="text-dark d-block">Tujuan:</strong> {{ Str::limit($data->alamat_pengiriman, 40) }}
                                         @if($data->detail_rumah)
                                             <div class="text-muted mt-1 fst-italic">Note: {{ $data->detail_rumah }}</div>
                                         @endif
                                     </div>
-
                                 @elseif($data->jenis_pesanan == 'dine_in')
-                                    <span class="badge badge-service bg-dark text-white">
-                                        <i class="bi bi-shop me-1"></i> Dine In
-                                    </span>
-
+                                    <span class="badge bg-dark text-white rounded-pill px-2 py-1 shadow-sm"><i class="bi bi-shop me-1"></i> Dine In</span>
                                 @else
-                                    {{-- Default Takeaway --}}
-                                    <span class="badge badge-service bg-warning text-dark">
-                                        <i class="bi bi-bag me-1"></i> Takeaway
-                                    </span>
+                                    <span class="badge bg-warning text-dark rounded-pill px-2 py-1 shadow-sm"><i class="bi bi-bag me-1"></i> Takeaway</span>
                                 @endif
 
-                                {{-- TAMBAHKAN KODE INI DI BAWAHNYA --}}
                                 @if($data->catatan)
-                                    <div class="mt-1">
-                                        <small class="text-muted italic">
-                                            <i class="bi bi-pencil-square"></i> Note: {{ $data->catatan }}
-                                        </small>
+                                    <div class="mt-1 small text-muted fst-italic" style="font-size: 12px;">
+                                        <i class="bi bi-pencil-square"></i> Note: {{ $data->catatan }}
                                     </div>
                                 @endif
                             </td>
                             
                             {{-- Metode Pembayaran --}}
-                            <td>
+                            <td class="text-center">
                                 @if($data->metode_pembayaran == 'qris')
-                                    <span class="badge rounded-1 border border-dark text-dark bg-white"><i class="bi bi-qr-code"></i> QRIS</span>
+                                    <span class="badge bg-white text-dark border shadow-sm px-2 py-1"><i class="bi bi-qr-code text-primary"></i> QRIS</span>
                                 @else
-                                    <span class="badge rounded-1 bg-success"><i class="bi bi-cash"></i> TUNAI</span>
+                                    <span class="badge bg-success shadow-sm px-2 py-1"><i class="bi bi-cash"></i> TUNAI</span>
                                 @endif
                             </td>
 
                             {{-- Total Harga --}}
                             <td>
-                                <h5 class="mb-0 fw-bold text-kfc" style="letter-spacing: -0.5px;">
+                                <div class="fw-bold" style="color: var(--smolie-red); font-size: 16px;">
                                     Rp {{ number_format($data->total_harga, 0, ',', '.') }}
-                                </h5>
+                                </div>
                             </td>
                             
                             {{-- Status --}}
-<td>
-    @if($data->status == 'pending')
-        <span class="badge bg-warning text-dark rounded-pill px-3">Pending</span>
-    @elseif($data->status == 'dikirim')
-        <span class="badge bg-info text-white rounded-pill px-3"><i class="bi bi-truck me-1"></i> Dikirim</span>
-    @else
-        <span class="badge bg-success rounded-pill px-3"><i class="bi bi-check-circle me-1"></i> Selesai</span>
-    @endif
+                            <td>
+                                @if($data->status == 'pending')
+                                    <span class="badge bg-warning text-dark rounded-pill px-2 shadow-sm">Pending</span>
+                                @elseif($data->status == 'dikirim')
+                                    <span class="badge bg-info text-white rounded-pill px-2 shadow-sm"><i class="bi bi-truck me-1"></i> Dikirim</span>
+                                @else
+                                    <span class="badge bg-success rounded-pill px-2 shadow-sm"><i class="bi bi-check-circle me-1"></i> Selesai</span>
+                                @endif
                                 
-                                {{-- Status Pembayaran (QRIS) --}}
                                 @if($data->metode_pembayaran == 'qris')
-                                    <br><small class="mt-1 d-block">
+                                    <div class="mt-1">
                                         @if($data->status_pembayaran === 'berhasil')
-                                            <span class="badge bg-success text-white">Pembayaran OK</span>
+                                            <span class="badge bg-success text-white" style="font-size: 10px;">Bayar OK</span>
                                         @elseif($data->status_pembayaran === 'gagal')
-                                            <span class="badge bg-danger">Pembayaran Gagal</span>
+                                            <span class="badge bg-danger" style="font-size: 10px;">Gagal</span>
                                         @else
-                                            <span class="badge bg-info">Menunggu Bayar</span>
+                                            <span class="badge bg-secondary" style="font-size: 10px;">Menunggu</span>
                                         @endif
-                                    </small>
+                                    </div>
                                 @endif
                             </td>
                             
                             {{-- Aksi --}}
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                                        
-                                        {{-- UBAH $trx MENJADI $data DI BAWAH INI --}}
-                                        @if($data->status != 'selesai' && $data->status != 'dikirim')
-                                            <form action="{{ route('admin.transaksi.kirim', $data->id) }}" method="POST" class="d-inline mt-2">
-                                                @csrf
-                                                <div class="input-group input-group-sm">
-                                                    <input type="date" name="estimasi_tiba" class="form-control" required title="Pilih Tanggal Estimasi">
-                                                    <button type="submit" class="btn btn-info text-white">Kirim Ekspedisi</button>
-                                                </div>
-                                            </form>
-                                        @endif
-                                    {{-- TOMBOL LIHAT BUKTI PEMBAYARAN (QRIS) --}}
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1 flex-wrap">
+                                    
+                                    {{-- Lihat Bukti (QRIS) --}}
                                     @if($data->metode_pembayaran == 'qris' && $data->bukti_pembayaran)
-                                        <a href="javascript:void(0)" 
-                                           onclick="showProofModal({{ $data->id }}, '{{ $data->bukti_pembayaran }}', '{{ $data->status_pembayaran }}')"
-                                           class="btn btn-info btn-action-circle shadow-sm text-white" 
-                                           title="Lihat Bukti Pembayaran">
+                                        <a href="javascript:void(0)" onclick="showProofModal({{ $data->id }}, '{{ $data->bukti_pembayaran }}', '{{ $data->status_pembayaran }}')" class="btn btn-info btn-aksi-bulat text-white" title="Lihat Bukti">
                                             <i class="bi bi-receipt"></i>
                                         </a>
                                     @endif
 
-                                    {{-- LOGIKA WHATSAPP (SAMA PERSIS DENGAN KODE ANDA) --}}
+                                    {{-- WhatsApp --}}
                                     @php
                                         $nomor = $data->no_hp;
-                                        if(substr($nomor, 0, 1) == '0') {
-                                            $nomor = '62' . substr($nomor, 1);
-                                        }
-                                        
-                                        $pesan = "Halo kak *" . $data->nama_pembeli . "*!%0a%0a";
-                                        $pesan .= "Pesanan: *" . strtoupper(str_replace('_', ' ', $data->jenis_pesanan)) . "*%0a"; 
-                                        $pesan .= "Kode: " . $data->kode_transaksi . "%0a";
-                                        $pesan .= "Total: Rp " . number_format($data->total_harga, 0, ',', '.') . "%0a%0a";
-                                        
-                                        if($data->jenis_pesanan == 'delivery') {
-                                            $pesan .= "Alamat: " . $data->alamat_pengiriman . "%0a";
-                                        }
-
-                                        $pesan .= "Mohon ditunggu ya! 🍳";
+                                        if(substr($nomor, 0, 1) == '0') { $nomor = '62' . substr($nomor, 1); }
+                                        $pesan = "Halo kak *" . $data->nama_pembeli . "*!%0a%0aPesanan: *" . strtoupper(str_replace('_', ' ', $data->jenis_pesanan)) . "*%0aKode: " . $data->kode_transaksi . "%0aTotal: Rp " . number_format($data->total_harga, 0, ',', '.') . "%0a%0a";
+                                        if($data->jenis_pesanan == 'delivery') { $pesan .= "Alamat: " . $data->alamat_pengiriman . "%0a"; }
+                                        $pesan .= "Mohon ditunggu ya! 🎁";
                                         $linkWA = "https://wa.me/$nomor?text=$pesan";
                                     @endphp
-
-                                    {{-- TOMBOL KIRIM NOTA --}}
                                     @if($data->no_hp)
-                                        <a href="{{ $linkWA }}" target="_blank" class="btn btn-success btn-action-circle shadow-sm" title="Chat Customer">
+                                        <a href="{{ $linkWA }}" target="_blank" class="btn btn-success btn-aksi-bulat" title="Chat Customer">
                                             <i class="bi bi-whatsapp"></i>
                                         </a>
                                     @endif
 
-                                    {{-- TOMBOL SELESAI / CETAK STRUK --}}
-@if($data->status != 'selesai')
-    <form action="{{ route('transaksi.selesai', $data->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Selesaikan pesanan ini?');">
-        @csrf
-        <button type="submit" class="btn btn-primary btn-action-circle shadow-sm" title="Selesaikan Order">
-            <i class="bi bi-check-lg"></i>
-        </button>
-    </form>
-@else
-    <a href="{{ route('transaksi.struk', $data->id) }}" target="_blank" class="btn btn-warning btn-action-circle shadow-sm text-dark" title="Cetak Struk">
-        <i class="bi bi-printer-fill"></i>
-    </a>
-@endif
+                                    {{-- Selesai / Cetak Struk --}}
+                                    @if($data->status != 'selesai')
+                                        <form action="{{ route('transaksi.selesai', $data->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Selesaikan pesanan ini?');">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary btn-aksi-bulat" title="Selesaikan Order" style="background-color: var(--smolie-red); border:none;">
+                                                <i class="bi bi-check-lg"></i>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <a href="{{ route('transaksi.struk', $data->id) }}" target="_blank" class="btn btn-warning btn-aksi-bulat text-dark" title="Cetak Struk">
+                                            <i class="bi bi-printer-fill"></i>
+                                        </a>
+                                    @endif
 
+                                    {{-- Form Pengiriman (Dibuat lebih ringkas) --}}
+                                    @if($data->status != 'selesai' && $data->status != 'dikirim' && $data->jenis_pesanan == 'delivery')
+                                        <div class="w-100 mt-1">
+                                            <form action="{{ route('admin.transaksi.kirim', $data->id) }}" method="POST">
+                                                @csrf
+                                                <div class="input-group input-group-sm shadow-sm" style="border-radius: 8px; overflow: hidden;">
+                                                    <input type="date" name="estimasi_tiba" class="form-control border-0 bg-light" required title="Estimasi Tiba">
+                                                    <button type="submit" class="btn btn-info text-white fw-bold border-0" title="Kirim Ekspedisi"><i class="bi bi-send-fill"></i></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -298,9 +264,6 @@
                     </tbody>
                 </table>
             </div>
-            
-            {{-- Footer Tabel (Opsional jika ingin pagination) --}}
-            <div class="card-footer bg-white border-top-0 py-3"></div>
         </div>
     </div>
 </div>
@@ -308,86 +271,81 @@
 {{-- MODAL LIHAT BUKTI PEMBAYARAN --}}
 <div class="modal fade" id="proofModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content rounded-4">
-            <div class="modal-header bg-light border-0">
-                <h5 class="modal-title fw-bold">Bukti Pembayaran QRIS</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header bg-light border-0 px-4 pt-4 pb-3">
+                <h5 class="modal-title fw-bold" style="font-family: 'Poppins', sans-serif;">Bukti Pembayaran QRIS</h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body p-4 text-center">
                 <div id="proofContent"></div>
             </div>
-            <div class="modal-footer bg-light border-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <a id="downloadLink" href="#" class="btn btn-primary">
-                    <i class="bi bi-download me-2"></i>Download
-                </a>
-                <form id="verifyForm" method="POST" style="display: inline;">
-                    @csrf
-                    <div class="btn-group ms-2" role="group">
-                        <button type="button" class="btn btn-success" onclick="verifyPayment('berhasil')">
-                            <i class="bi bi-check-circle me-1"></i>Setujui
+            <div class="modal-footer bg-light border-0 px-4 pb-4 pt-3 d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Tutup</button>
+                <div class="d-flex gap-2">
+                    <a id="downloadLink" href="#" class="btn btn-dark rounded-pill px-4 fw-bold d-flex align-items-center">
+                        <i class="bi bi-download me-2"></i> Unduh
+                    </a>
+                    <form id="verifyForm" method="POST" class="m-0">
+                        @csrf
+                        <button type="button" class="btn btn-danger rounded-pill fw-bold px-3" onclick="verifyPayment('gagal')" style="background-color: #dc3545; border:none;">
+                            Tolak
                         </button>
-                        <button type="button" class="btn btn-danger" onclick="verifyPayment('gagal')">
-                            <i class="bi bi-x-circle me-1"></i>Tolak
+                        <button type="button" class="btn btn-success rounded-pill fw-bold px-4" onclick="verifyPayment('berhasil')" style="background-color: #198754; border:none;">
+                            Setujui
                         </button>
-                    </div>
-                    <input type="hidden" name="status_pembayaran" id="statusInput" value="">
-                </form>
+                        <input type="hidden" name="status_pembayaran" id="statusInput" value="">
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 {{-- SCRIPT --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@push('scripts')
 <script>
+    $(document).ready(function () {
+        if ($.fn.DataTable.isDataTable('#tabel-transaksi')) {
+            $('#tabel-transaksi').DataTable().destroy();
+        }
+        $('#tabel-transaksi').DataTable({
+            "responsive": true,
+            "autoWidth": false,
+            "order": [[ 1, "desc" ]], // Urutkan berdasarkan waktu terbaru
+            "language": {
+                "search": "Cari Transaksi:",
+                "lengthMenu": "Tampilkan _MENU_ data",
+                "zeroRecords": "Transaksi tidak ditemukan",
+                "info": "Halaman _PAGE_ dari _PAGES_",
+                "infoEmpty": "Tidak ada data",
+                "paginate": { "next": ">", "previous": "<" }
+            }
+        });
+        $('.modal').appendTo("body");
+    });
+
     function showProofModal(transaksiId, fileName, status) {
         const modal = new bootstrap.Modal(document.getElementById('proofModal'));
         const proofContent = document.getElementById('proofContent');
-        const downloadLink = document.getElementById('downloadLink');
         const verifyForm = document.getElementById('verifyForm');
-        const statusInput = document.getElementById('statusInput');
-
-        // Set form action
+        
         verifyForm.action = `/admin/pembayaran/${transaksiId}/verify`;
-        downloadLink.href = `/pembayaran/${transaksiId}/download-proof`;
+        document.getElementById('downloadLink').href = `/pembayaran/${transaksiId}/download-proof`;
 
-        // Determine file type and show preview
         const extension = fileName.split('.').pop().toLowerCase();
         const filePath = `/storage/bukti_pembayaran/${fileName}`;
-
         let previewHtml = '';
         
         if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
-            previewHtml = `
-                <div class="text-center mb-3">
-                    <img src="${filePath}" alt="Bukti Pembayaran" class="img-fluid rounded" style="max-height: 400px;">
-                </div>
-            `;
+            previewHtml = `<img src="${filePath}" alt="Bukti Pembayaran" class="img-fluid rounded-3 shadow-sm border" style="max-height: 450px; object-fit: contain;">`;
         } else if (extension === 'pdf') {
-            previewHtml = `
-                <div class="text-center mb-3">
-                    <i class="bi bi-file-pdf text-danger" style="font-size: 64px;"></i>
-                    <p class="mt-2 text-muted">File PDF</p>
-                </div>
-            `;
-        } else {
-            previewHtml = `
-                <div class="alert alert-info">
-                    <i class="bi bi-file-earmark me-2"></i>File: ${fileName}
-                </div>
-            `;
+            previewHtml = `<div class="p-5 bg-white border rounded-3"><i class="bi bi-file-pdf text-danger" style="font-size: 80px;"></i><p class="mt-3 fw-bold text-muted mb-0">Dokumen PDF</p></div>`;
         }
 
-        // Add status badge
         let statusBadge = '';
-        if (status === 'berhasil') {
-            statusBadge = '<span class="badge bg-success mb-3"><i class="bi bi-check-circle me-1"></i> Telah Diverifikasi</span>';
-        } else if (status === 'gagal') {
-            statusBadge = '<span class="badge bg-danger mb-3"><i class="bi bi-x-circle me-1"></i> Ditolak</span>';
-        } else {
-            statusBadge = '<span class="badge bg-warning mb-3"><i class="bi bi-clock me-1"></i> Menunggu Verifikasi</span>';
-        }
+        if (status === 'berhasil') statusBadge = '<div class="mb-3"><span class="badge bg-success rounded-pill px-3 py-2"><i class="bi bi-check-circle me-1"></i> Telah Diverifikasi</span></div>';
+        else if (status === 'gagal') statusBadge = '<div class="mb-3"><span class="badge bg-danger rounded-pill px-3 py-2"><i class="bi bi-x-circle me-1"></i> Ditolak</span></div>';
+        else statusBadge = '<div class="mb-3"><span class="badge bg-warning text-dark rounded-pill px-3 py-2"><i class="bi bi-clock me-1"></i> Menunggu Verifikasi</span></div>';
 
         proofContent.innerHTML = statusBadge + previewHtml;
         modal.show();
@@ -398,4 +356,5 @@
         document.getElementById('verifyForm').submit();
     }
 </script>
+@endpush
 @endsection

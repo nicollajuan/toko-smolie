@@ -64,8 +64,8 @@ class ProdukController extends Controller
     {
         $produk = Produk::findOrFail($id);
 
-        // Hapus gambar dari folder public/images jika ada
-        $imagePath = public_path('images/' . $produk->gambar);
+        // ✅ UBAH 'images/' MENJADI 'img/produk/'
+        $imagePath = public_path('img/produk/' . $produk->gambar);
         if ($produk->gambar && file_exists($imagePath)) {
             unlink($imagePath);
         }
@@ -86,7 +86,9 @@ class ProdukController extends Controller
 
         $file     = $request->file('image');
         $filename = 'produk_' . time() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('images'), $filename);
+        
+        // ✅ UBAH 'images' MENJADI 'img/produk'
+        $file->move(public_path('img/produk'), $filename);
 
         return response()->json([
             'status'   => 'success',

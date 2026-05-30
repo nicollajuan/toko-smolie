@@ -307,9 +307,25 @@
                                             <i class="bi bi-file-pdf me-1"></i> Invoice
                                         </a>
                                     @else
-                                        <div class="text-muted small fst-italic text-end" style="max-width: 120px;">
-                                            Menunggu Konfirmasi Kasir
-                                        </div>
+                                        {{-- LOGIKA TOMBOL UPLOAD BUKTI QRIS --}}
+                                        @if($data->metode_pembayaran == 'qris' && empty($data->bukti_pembayaran))
+                                            <div class="text-end">
+                                                <div class="text-danger small fw-bold mb-1"><i class="bi bi-exclamation-circle-fill"></i> Menunggu Pembayaran</div>
+                                                <a href="{{ route('pembayaran.show', $data->id) }}" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm fw-bold" style="font-size: 0.8rem;">
+                                                    <i class="bi bi-upload me-1"></i> Upload Bukti
+                                                </a>
+                                            </div>
+                                        @elseif($data->metode_pembayaran == 'qris' && !empty($data->bukti_pembayaran))
+                                            <div class="text-muted small fst-italic text-end" style="max-width: 140px;">
+                                                <span class="text-success fw-bold"><i class="bi bi-check-circle"></i> Bukti Terkirim</span><br>
+                                                Menunggu Konfirmasi Kasir
+                                            </div>
+                                        @else
+                                            {{-- Kondisi untuk transaksi Tunai yang masih pending --}}
+                                            <div class="text-muted small fst-italic text-end" style="max-width: 120px;">
+                                                Menunggu Konfirmasi Kasir
+                                            </div>
+                                        @endif
                                     @endif
                                 </div>
                             </div>

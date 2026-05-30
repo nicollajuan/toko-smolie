@@ -23,7 +23,7 @@
         }
 
         .payment-container {
-            max-width: 1200px;
+            max-width: 900px; /* Dipersempit agar desain terpusat & rapi */
             width: 95%;
             margin: 0 auto;
         }
@@ -46,6 +46,7 @@
             text-align: center;
             padding: 30px;
             background: #f9f9f9;
+            border-radius: 15px;
         }
 
         .qr-code-box {
@@ -53,13 +54,7 @@
             padding: 20px;
             border-radius: 15px;
             display: inline-block;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .qr-code-img {
-            width: 300px;
-            height: 300px;
-            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
 
         .transaction-details {
@@ -67,13 +62,14 @@
             padding: 25px;
             border-radius: 15px;
             margin-bottom: 20px;
+            border: 1px solid #eee;
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
             padding: 12px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px dashed #eee;
         }
 
         .detail-row:last-child {
@@ -115,11 +111,6 @@
             border: 2px dashed #ddd;
         }
 
-        .upload-section.highlight {
-            border-color: var(--primary-color);
-            background: rgba(228, 0, 43, 0.05);
-        }
-
         .btn-upload {
             background: var(--primary-color);
             color: white;
@@ -153,6 +144,7 @@
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
+            text-align: left;
         }
 
         .instruction-box h6 { color: #0c5460; margin-bottom: 10px; font-weight: 600; }
@@ -165,28 +157,15 @@
             background: white;
             border-radius: 10px;
             border: 1px solid #ddd;
+            text-align: left;
         }
 
         @media (max-width: 576px) {
-            .payment-container { width: 100%; padding: 0 8px; }
             .card-header-payment { padding: 15px; }
             .card-header-payment h3 { font-size: 1rem; }
             .total-amount { font-size: 1.4rem; }
-            .qr-code-img { width: 200px !important; height: 200px !important; }
-            .transaction-details, .upload-section { padding: 15px; }
+            .transaction-details, .upload-section, .qris-section { padding: 15px; }
             .detail-row { flex-direction: column; gap: 3px; }
-            .qris-section { padding: 15px; }
-        }
-
-        @media (min-width: 577px) and (max-width: 991px) {
-            .payment-container { width: 98%; }
-            .qr-code-img { width: 250px !important; height: 250px !important; }
-            .card-header-payment { padding: 20px; }
-            .total-amount { font-size: 24px; }
-        }
-
-        @media (min-width: 992px) {
-            .payment-container { width: 90%; }
         }
     </style>
 </head>
@@ -213,7 +192,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <h3 class="mb-2">Kode Pesanan: {{ $transaksi->kode_transaksi }}</h3>
-                    <p class="mb-0 opacity-75">Tanggal: {{ $transaksi->created_at->format('d M Y H:i') }}</p>
+                    <p class="mb-0 opacity-75">Tanggal: {{ \Carbon\Carbon::parse($transaksi->created_at)->timezone('Asia/Jakarta')->locale('id')->translatedFormat('d F Y, H:i') }} WIB</p>
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
                     <span class="status-badge status-{{ strtolower($transaksi->status_pembayaran ?? 'pending') }}">
@@ -255,12 +234,12 @@
                 </div>
             @endif
 
-            {{-- MAIN CONTENT --}}
+            {{-- MAIN CONTENT (Layout Tengah/Stacked) --}}
             <div class="p-4">
-                <div class="row g-4">
-
-                    {{-- KOLOM KIRI: RINCIAN & QRIS --}}
-                    <div class="col-lg-6">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        
+                        {{-- 1. RINCIAN PESANAN --}}
                         <div class="transaction-details">
                             <h5 class="fw-bold text-dark mb-4">Rincian Pesanan</h5>
                             
@@ -304,162 +283,139 @@
                             </div>
                         </div>
 
-                        {{-- QRIS --}}
+                        {{-- 2. METODE QRIS (ATAS: QR, BAWAH: UPLOAD) --}}
                         @if($transaksi->metode_pembayaran === 'qris')
-                        <div class="qris-section">
-                            <h5 class="fw-bold text-dark mb-3">Scan QRIS untuk Pembayaran</h5>
+                            <div class="qris-section shadow-sm mb-4">
+                                <h4 class="fw-bold text-dark mb-3">Scan QRIS untuk Pembayaran</h4>
 
-                            {{-- NOMINAL PANDUAN --}}
-                            <div class="mb-4 py-3 px-4 rounded-3 shadow-sm w-100"
-                                 style="background: linear-gradient(135deg, #e4002b, #b8001f); color:white; text-align:left;">
-                                <div class="small mb-1" style="opacity:0.8;">Nominal yang harus dibayar:</div>
-                                <div style="font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px;">
-                                    Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}
-                                </div>
-                                <div class="small mt-1" style="opacity:0.75;">
-                                    <i class="bi bi-exclamation-circle me-1"></i>
-                                    Masukkan nominal ini saat mengisi jumlah di aplikasi
-                                </div>
-                            </div>
-
-                            {{-- GAMBAR QRIS STATIS --}}
-                            @if(!empty($gambarQris))
-                                <div class="qr-code-box mb-3">
-                                    <img src="{{ $gambarQris }}" alt="QRIS Smolie Gift" class="qr-code-img">
-                                </div>
-                                <p class="text-muted small mb-4">
-                                    <i class="bi bi-shield-check text-success me-1"></i>
-                                    QRIS resmi Smolie Gift &middot; Berlaku di semua e-wallet & mobile banking
-                                </p>
-                            @elseif($qrCode)
-                                <div class="alert alert-warning py-2 px-3 mb-3 text-start small">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Gambar QRIS toko belum diupload admin. QR di bawah hanya sebagai referensi sementara.
-                                </div>
-                                <div class="qr-code-box mb-4">
-                                    <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code" class="qr-code-img">
-                                </div>
-                            @else
-                                <div class="alert alert-warning mb-4">
-                                    <i class="bi bi-exclamation-triangle me-2"></i>
-                                    QRIS belum tersedia. Silakan hubungi admin.
-                                </div>
-                            @endif
-
-                            {{-- CARA PEMBAYARAN --}}
-                            <div class="instruction-box">
-                                <h6><i class="bi bi-info-circle-fill me-2"></i>Cara Pembayaran QRIS</h6>
-                                <ul>
-                                    <li>Buka aplikasi e-wallet atau mobile banking kamu (GoPay, OVO, Dana, ShopeePay, dll)</li>
-                                    <li>Pilih menu <strong>"Scan QR"</strong> atau <strong>"Bayar QRIS"</strong></li>
-                                    <li>Arahkan kamera ke gambar QRIS di atas</li>
-                                    <li>Saat muncul kolom nominal, masukkan: <strong style="color:#e4002b;">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</strong></li>
-                                    <li>Periksa nama penerima, masukkan PIN lalu konfirmasi</li>
-                                    <li>Setelah berhasil, <strong>screenshot bukti</strong> lalu upload di kolom kanan</li>
-                                </ul>
-                            </div>
-
-                            {{-- INFO REKENING ADMIN --}}
-                            @if($admin && ($admin->nama_bank || $admin->nomor_rekening))
-                            <div class="instruction-box mt-3" style="background: #e7f3ff; border-left-color: #0066cc;">
-                                <h6 style="color: #003d99;"><i class="bi bi-bank me-2"></i>Konfirmasi Data Penerima</h6>
-                                <div style="color: #003d99;">
-                                    @if($admin->nama_bank)
-                                        <p class="mb-2"><strong>Bank:</strong> {{ $admin->nama_bank }}</p>
-                                    @endif
-                                    @if($admin->nomor_rekening)
-                                        <p class="mb-2"><strong>No. Rekening:</strong> {{ $admin->nomor_rekening }}</p>
-                                    @endif
-                                    @if($admin->nama_pemilik_rekening)
-                                        <p class="mb-0"><strong>Atas Nama:</strong> {{ strtoupper($admin->nama_pemilik_rekening) }}</p>
-                                    @endif
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-                        @endif
-                    </div>
-
-                    {{-- KOLOM KANAN: UPLOAD BUKTI / TUNAI --}}
-                    <div class="col-lg-6">
-                        @if($transaksi->metode_pembayaran === 'qris')
-                            <h5 class="fw-bold text-dark mb-4">Upload Bukti Pembayaran</h5>
-
-                            @if($transaksi->bukti_pembayaran)
-                                <div class="proof-preview">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <i class="bi bi-check-circle text-success me-2" style="font-size: 20px;"></i>
-                                        <span class="fw-bold text-success">Bukti Pembayaran Sudah Diupload</span>
+                                {{-- NOMINAL PANDUAN --}}
+                                <div class="mb-4 py-3 px-4 rounded-3 shadow-sm mx-auto"
+                                     style="background: linear-gradient(135deg, #e4002b, #b8001f); color:white; max-width: 400px;">
+                                    <div class="small mb-1" style="opacity:0.8;">Nominal yang harus dibayar:</div>
+                                    <div style="font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px;">
+                                        Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}
                                     </div>
-                                    <p class="mb-2 text-muted">File: <strong>{{ $transaksi->bukti_pembayaran }}</strong></p>
-                                    <p class="mb-3 text-muted">Status:
-                                        @if($transaksi->status_pembayaran === 'berhasil')
-                                            <span class="badge bg-success">Terverifikasi</span>
-                                        @elseif($transaksi->status_pembayaran === 'gagal')
-                                            <span class="badge bg-danger">Ditolak</span>
-                                        @else
-                                            <span class="badge bg-warning text-dark">Menunggu Verifikasi</span>
-                                        @endif
+                                    <div class="small mt-1" style="opacity:0.75;">
+                                        <i class="bi bi-exclamation-circle me-1"></i> Masukkan nominal ini di aplikasi
+                                    </div>
+                                </div>
+
+                                {{-- GAMBAR QRIS (ANTI PENYEK) --}}
+                                @if(!empty($gambarQris))
+                                    <div class="qr-code-box mb-3">
+                                        <img src="{{ $gambarQris }}" alt="QRIS Smolie Gift" class="img-fluid object-fit-contain border rounded p-2" style="max-width: 250px; height: auto;">
+                                    </div>
+                                    <p class="text-muted small mb-4">
+                                        <i class="bi bi-shield-check text-success me-1"></i> QRIS resmi Smolie Gift
                                     </p>
-                                    <a href="{{ route('pembayaran.downloadProof', $transaksi->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-download me-1"></i> Download
-                                    </a>
-                                </div>
-                            @else
-                                <div class="upload-section">
-                                    <div class="text-center mb-4">
-                                        <i class="bi bi-cloud-upload fs-1 text-muted mb-3 d-block"></i>
-                                        <h6 class="text-dark fw-bold">Upload Bukti Pembayaran</h6>
-                                        <p class="text-muted mb-0">Silakan upload screenshot/bukti transfer pembayaran Anda</p>
+                                @elseif($qrCode)
+                                    <div class="alert alert-warning py-2 px-3 mb-3 text-start small">
+                                        <i class="bi bi-info-circle me-1"></i> Gambar QRIS toko belum diupload admin. QR di bawah hanya referensi.
                                     </div>
+                                    <div class="qr-code-box mb-4">
+                                        <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code QRIS" class="img-fluid object-fit-contain border rounded p-2" style="max-width: 250px; height: auto;">
+                                    </div>
+                                @else
+                                    <div class="alert alert-warning mb-4">
+                                        <i class="bi bi-exclamation-triangle me-2"></i> QRIS belum tersedia. Silakan hubungi admin.
+                                    </div>
+                                @endif
 
-                                    <form action="{{ route('pembayaran.uploadProof', $transaksi->id) }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="file-input-wrapper mb-3">
-                                            <input type="file" id="buktiFile" name="bukti_pembayaran" accept=".jpg,.jpeg,.png,.pdf" required>
-                                            <label for="buktiFile" class="btn btn-upload w-100">
-                                                <i class="bi bi-plus-circle me-2"></i>Pilih File
-                                            </label>
-                                        </div>
-                                        <div id="fileInfo" class="text-center mb-3" style="display: none;">
-                                            <small id="fileName" class="text-muted"></small>
-                                        </div>
-                                        <div class="instruction-box">
-                                            <h6><i class="bi bi-checklist me-2"></i>Persyaratan File</h6>
+                                {{-- CARA PEMBAYARAN & REKENING --}}
+                                <div class="row text-start mt-4">
+                                    <div class="col-md-6">
+                                        <div class="instruction-box h-100">
+                                            <h6><i class="bi bi-info-circle-fill me-2"></i>Cara Pembayaran</h6>
                                             <ul>
-                                                <li>Format: <strong>JPG, PNG, atau PDF</strong></li>
-                                                <li>Ukuran maksimal: <strong>2MB</strong></li>
-                                                <li>Pastikan bukti pembayaran jelas dan terbaca</li>
-                                                <li>Sertakan nama pemesan & nominal di bukti</li>
+                                                <li>Buka aplikasi e-wallet / m-banking</li>
+                                                <li>Pilih menu <strong>Scan QR</strong></li>
+                                                <li>Arahkan kamera ke gambar QRIS</li>
+                                                <li>Masukkan nominal: <strong style="color:#e4002b;">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</strong></li>
+                                                <li>Konfirmasi & <strong>screenshot bukti</strong></li>
                                             </ul>
                                         </div>
-                                        <button type="submit" class="btn btn-upload w-100 mt-3">
-                                            <i class="bi bi-upload me-2"></i>Upload Bukti
-                                        </button>
-                                    </form>
+                                    </div>
+                                    <div class="col-md-6 mt-3 mt-md-0">
+                                        @if($admin && ($admin->nama_bank || $admin->nomor_rekening))
+                                        <div class="instruction-box h-100" style="background: #e7f3ff; border-left-color: #0066cc;">
+                                            <h6 style="color: #003d99;"><i class="bi bi-bank me-2"></i>Data Penerima</h6>
+                                            <div style="color: #003d99; font-size: 0.95rem;">
+                                                @if($admin->nama_bank) <p class="mb-2"><strong>Bank:</strong> {{ $admin->nama_bank }}</p> @endif
+                                                @if($admin->nomor_rekening) <p class="mb-2"><strong>No. Rek:</strong> {{ $admin->nomor_rekening }}</p> @endif
+                                                @if($admin->nama_pemilik_rekening) <p class="mb-0"><strong>A/n:</strong> {{ strtoupper($admin->nama_pemilik_rekening) }}</p> @endif
+                                            </div>
+                                        </div>
+                                        @endif
+                                    </div>
                                 </div>
-                            @endif
 
+                                <hr class="border-secondary my-4">
+
+                                {{-- FORM UPLOAD BUKTI (DI BAWAH QR) --}}
+                                <h5 class="fw-bold text-dark mb-3">Upload Bukti Pembayaran</h5>
+                                
+                                @if($transaksi->bukti_pembayaran)
+                                    <div class="proof-preview text-center mx-auto" style="max-width: 500px;">
+                                        <div class="d-flex align-items-center justify-content-center mb-3">
+                                            <i class="bi bi-check-circle text-success me-2" style="font-size: 20px;"></i>
+                                            <span class="fw-bold text-success">Bukti Sudah Diupload</span>
+                                        </div>
+                                        <p class="mb-2 text-muted">File: <strong>{{ $transaksi->bukti_pembayaran }}</strong></p>
+                                        <p class="mb-3 text-muted">Status:
+                                            @if($transaksi->status_pembayaran === 'berhasil')
+                                                <span class="badge bg-success">Terverifikasi</span>
+                                            @elseif($transaksi->status_pembayaran === 'gagal')
+                                                <span class="badge bg-danger">Ditolak</span>
+                                            @else
+                                                <span class="badge bg-warning text-dark">Menunggu Verifikasi</span>
+                                            @endif
+                                        </p>
+                                        <a href="{{ route('pembayaran.downloadProof', $transaksi->id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-download me-1"></i> Download File
+                                        </a>
+                                    </div>
+                                @else
+                                    <div class="upload-section mx-auto" style="max-width: 500px;">
+                                        <i class="bi bi-cloud-upload fs-1 text-muted mb-3 d-block"></i>
+                                        <p class="text-muted mb-3">Upload screenshot/bukti transfer Anda di sini.</p>
+
+                                        <form action="{{ route('pembayaran.uploadProof', $transaksi->id) }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="file-input-wrapper mb-3">
+                                                <input type="file" id="buktiFile" name="bukti_pembayaran" accept=".jpg,.jpeg,.png,.pdf" required>
+                                                <label for="buktiFile" class="btn btn-upload w-100">
+                                                    <i class="bi bi-plus-circle me-2"></i>Pilih File
+                                                </label>
+                                            </div>
+                                            <div id="fileInfo" class="text-center mb-3" style="display: none;">
+                                                <small id="fileName" class="text-muted"></small>
+                                            </div>
+                                            <div class="form-text mb-3">Format: JPG, PNG, PDF. Max: 2MB.</div>
+                                            
+                                            <button type="submit" class="btn btn-upload w-100">
+                                                <i class="bi bi-upload me-2"></i>Kirim Bukti Pembayaran
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endif
+                            </div>
+
+                        {{-- 3. JIKA METODE TUNAI --}}
                         @elseif($transaksi->metode_pembayaran === 'tunai')
-                            <div class="d-flex align-items-center justify-content-center h-100" style="min-height: 350px;">
-                                <div class="text-center p-4">
+                            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                <div class="card-body text-center p-5">
                                     <i class="bi bi-cash-coin text-success mb-3" style="font-size: 80px;"></i>
                                     <h4 class="fw-bold text-dark">Pembayaran Tunai / COD</h4>
                                     <p class="text-muted mt-2">Tidak perlu upload bukti pembayaran.<br>Silakan bayar langsung kepada kasir saat pesanan Anda terima.</p>
-                                    <div class="alert alert-success mt-4 border-0 shadow-sm" style="background-color: #d1e7dd; color: #0f5132; border-radius: 12px;">
+                                    <div class="alert alert-success mt-4 border-0 shadow-sm mx-auto" style="background-color: #d1e7dd; color: #0f5132; border-radius: 12px; max-width: 500px;">
                                         <i class="bi bi-check-circle-fill me-2 fs-5 align-middle"></i>
-                                        <span class="align-middle">Pesanan Anda sudah tercatat. Silakan tunggu konfirmasi dari admin.</span>
+                                        <span class="align-middle">Pesanan Anda sudah tercatat. Silakan tunggu konfirmasi.</span>
                                     </div>
                                 </div>
                             </div>
-                        @else
-                            <div class="alert alert-secondary mt-4">
-                                <i class="bi bi-info-circle me-2"></i>
-                                Metode pembayaran tidak dikenali. Silakan hubungi admin untuk konfirmasi.
-                            </div>
                         @endif
-                    </div>
 
+                    </div>
                 </div>
             </div>
 

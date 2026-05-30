@@ -10,16 +10,8 @@
                 @csrf
                 <div class="modal-body">
                     
-                    {{-- 1. INPUT ID MANUAL (Tetap Ada) --}}
-                    <div class="mb-3">
-                        <label for="id" class="form-label">Kode Produk <span class="text-danger">*</span></label>
-                        {{-- Tambahkan @error untuk memberi tahu jika ID sudah terpakai --}}
-                        <input type="number" class="form-control @error('id') is-invalid @enderror" name="id" id="id" value="{{ old('id') }}" required>
-                        @error('id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
+                    {{-- INPUT ID MANUAL TELAH DIHAPUS. SISTEM AKAN AUTO-GENERATE KODE PRODUK! --}}
+                    
                     <div class="mb-3">
                         <label for="gambar" class="form-label">Gambar Produk</label>
                         <input type="file" class="form-control" name="gambar" id="gambar" accept="image/*">
@@ -30,11 +22,8 @@
                         <input type="text" class="form-control" name="nama_produk" id="nama_produk" value="{{ old('nama_produk') }}" required>
                     </div>
                     
-                    {{-- 2. PERBAIKAN KRUSIAL DISINI --}}
                     <div class="mb-3">
                         <label for="kategori_id" class="form-label">Kategori <span class="text-danger">*</span></label>
-                        
-                        {{-- Ubah name="kategori" menjadi name="kategori_id" --}}
                         <select name="kategori_id" class="form-select" required>
                             <option value="" disabled selected>Pilih Kategori...</option>
                             @foreach ($kategori as $category)
