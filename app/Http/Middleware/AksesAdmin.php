@@ -13,26 +13,52 @@ class AksesAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        // 1. Pastikan user sudah login
+        // 1. Pastikan sudah login
         if (!Auth::check()) {
             return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        // 2. KUNCI RBAC UNTUK PEMBELI (USERTYPE == 'user')
-        if (Auth::user()->usertype == 'user') {
-            
-            // CEK JALUR: Jika sistem default Laravel melempar ke '/home' setelah login
+        $userType = Auth::user()->usertype;
+
+        // ==========================================
+        // 2. KUNCI UNTUK PEMBELI (USER)
+        // ==========================================
+        if ($userType == 'user') {
             if ($request->is('home')) {
-                // Pindahkan ke beranda dengan mulus TANPA pesan error
                 return redirect('/'); 
             }
-
-            // CEK JALUR: Jika user mencoba memaksa masuk ke rute admin lainnya (/transaksi, dll)
-            // Lemparkan pesan error merah!
             return redirect('/')->with('error', 'Akses Ditolak! Halaman tersebut hanya untuk Admin dan Kasir.');
         }
 
-        // 3. Jika lolos (berarti dia admin atau kasir), izinkan masuk
+        // ==========================================
+        // 3. KUNCI KETAT UNTUK KASIR (ROLE: KASIR)
+        // ==========================================
+        if ($userType == 'kasir') {
+            // Daftar URL yang DIIZINKAN untuk Kasir (Tanda * berarti termasuk sub-halamannya)
+            $allowedForKasir = [
+                'home',
+                'katalog*',
+                'transaksi*',
+                'logout*'
+            ];
+
+            $isAllowed = false;
+            foreach ($allowedForKasir as $path) {
+                if ($request->is($path)) {
+                    $isAllowed = true;
+                    break;
+                }
+            }
+
+            // Jika Kasir mencoba masuk ke halaman terlarang (seperti /laporan, /produk, dsb)
+            if (!$isAllowed) {
+                return redirect('/home')->with('error', 'Akses Ditolak! Anda login sebagai Kasir, halaman tersebut khusus Admin.');
+            }
+        }
+
+        // ==========================================
+        // 4. JIKA ADMIN (Bebas mengakses semuanya)
+        // ==========================================
         return $next($request);
     }
 }
