@@ -9,4 +9,8 @@ Route::post('/produk',              [ProdukController::class, 'store']);
 Route::put('/produk/{id}',          [ProdukController::class, 'update']);
 Route::delete('/produk/{id}',       [ProdukController::class, 'destroy']);
 Route::post('/produk/upload-image', [ProdukController::class, 'uploadImage']);
-Route::get('/kategori', [KategoriController::class, 'index']);
+
+Route::get('/kategori',             [KategoriController::class, 'index']);
+Route::post('/kategori',            [KategoriController::class, 'store']);
+Route::put('/kategori/{id}',        [KategoriController::class, 'update']);   // ← TAMBAH
+Route::delete('/kategori/{id}',     [KategoriController::class, 'destroy']);  // ← TAMBAH

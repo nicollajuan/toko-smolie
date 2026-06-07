@@ -156,8 +156,9 @@ Route::middleware(['auth', AksesAdmin::class])->group(function () {
     Route::get('/tambah-kategori', [KategoriController::class, 'create'])->name('kategori.create');
     Route::post('/tampil-kategori', [KategoriController::class, 'store'])->name('kategori.store');
     Route::get('/kategori/edit/{id}', [KategoriController::class, 'edit'])->name('kategori.edit');
-    Route::post('/kategori/edit/{id}', [KategoriController::class, 'update'])->name('kategori.update');
-    Route::post('/kategori/delete/{id}', [KategoriController::class, 'destroy'])->name('kategori.delete');
+    // ✅ Fix biar bisa update terus nyambung ke APK mobile
+Route::put('/kategori/edit/{id}', [KategoriController::class, 'update'])->name('kategori.update');
+Route::delete('/kategori/delete/{id}', [KategoriController::class, 'destroy'])->name('kategori.delete');
 });
 
 // =========================================================================
