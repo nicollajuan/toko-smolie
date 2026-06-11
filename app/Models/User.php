@@ -22,6 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         'usertype',
+        'total_pembelanjaan',
+        'level_member',
         'username',
         'jenis_kelamin',
         'alamat',

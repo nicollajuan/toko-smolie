@@ -136,7 +136,20 @@
                     </a>
                     @auth
                         <div class="dropdown">
-                            <a class="btn btn-sm rounded-pill fw-bold px-3 py-2" style="background-color: var(--secondary-color); color: var(--primary-color);" href="#" data-bs-toggle="dropdown">{{ explode(' ', Auth::user()->name)[0] }}</a>
+                            <a class="btn btn-sm rounded-pill fw-bold px-3 py-2 d-flex align-items-center" style="background-color: var(--secondary-color); color: var(--primary-color);" href="#" data-bs-toggle="dropdown">
+    {{ explode(' ', Auth::user()->name)[0] }}
+
+    {{-- Logika Warna Lencana Berdasarkan Level --}}
+    @php
+        $lvl = Auth::user()->level_member ?? 'Bronze';
+        $bgBadge = 'bg-secondary'; // Default Bronze
+        if($lvl == 'Silver') $bgBadge = 'bg-info text-dark';
+        if($lvl == 'Gold') $bgBadge = 'bg-warning text-dark';
+        if($lvl == 'Platinum') $bgBadge = 'bg-dark text-white';
+    @endphp
+
+    <span class="badge rounded-pill ms-2 {{ $bgBadge }}" style="font-size: 0.65rem;">{{ $lvl }}</span>
+</a>
                             <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2" style="border-radius: 12px;">
                                 @if(in_array(Auth::user()->usertype, ['admin', 'kasir'])) 
                                     <li><a class="dropdown-item py-2 small fw-semibold" href="/home"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li> 
@@ -228,7 +241,7 @@
                         
                         <div class="product-img-wrapper position-relative">
                             @if($p->gambar) 
-                                <img src="{{ asset('img/produk/'.$p->gambar) }}" alt="{{ $p->nama_produk }}" class="product-img" style="{{ $isNonAktif ? 'filter: grayscale(100%);' : '' }}"> 
+                                <img src="{{ asset('img/produk/'.$p->gambar) }}" alt="{{ $p->nama_produk }}" class="product-img" loading="lazy" style="{{ $isNonAktif ? 'filter: grayscale(100%);' : '' }}">
                             @else 
                                 <div class="d-flex align-items-center justify-content-center h-100 bg-light text-muted"><i class="bi bi-image fs-1"></i></div> 
                             @endif

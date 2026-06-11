@@ -19,7 +19,9 @@ class TransaksiController extends Controller
     // Menampilkan semua transaksi masuk ke Admin
     public function index()
     {
-        $dataTransaksi = Transaksi::orderBy('created_at', 'desc')->get();
+        // PERBAIKAN: Tambahkan with('details') untuk meringankan load database Admin
+        $dataTransaksi = Transaksi::with('details')->orderBy('created_at', 'desc')->get();
+        
         $produk = Produk::where('status', 'aktif')
                         ->where('stock', '>', 0)
                         ->orderBy('nama_produk', 'asc')
@@ -142,18 +144,40 @@ class TransaksiController extends Controller
     }
 
     // Mengubah status pesanan menjadi Selesai (Oleh Admin)
+    // Mengubah status pesanan menjadi Selesai dan Update Level Member
     public function selesai($id)
-    {
-        // Cari transaksi berdasarkan ID
-        $transaksi = Transaksi::findOrFail($id);
-        
-        // Ubah kolom status jadi 'selesai'
-        $transaksi->update([
-            'status' => 'selesai'
-        ]);
+    {   
+     // Cari transaksi
+     $transaksi = Transaksi::findOrFail($id);
 
-        return redirect()->back()->with('success', 'Status pesanan berhasil diubah menjadi SELESAI!');
-    }
+     // Ubah kolom status jadi 'selesai'
+     $transaksi->update(['status' => 'selesai']);
+
+     // LOGIKA NAIK LEVEL OTOMATIS
+     if ($transaksi->user_id) {
+         $user = \App\Models\User::find($transaksi->user_id);
+
+         if ($user && $user->usertype == 'user') {
+             // Tambahkan nominal transaksi ke total pembelanjaan
+             $user->total_pembelanjaan += $transaksi->total_harga;
+
+             // Tentukan level baru berdasarkan total belanja
+             if ($user->total_pembelanjaan >= 1000000) {
+                 $user->level_member = 'Platinum';
+             } elseif ($user->total_pembelanjaan >= 500000) {
+                 $user->level_member = 'Gold';
+             } elseif ($user->total_pembelanjaan >= 200000) {
+                 $user->level_member = 'Silver';
+             } else {
+                 $user->level_member = 'Bronze';
+             }
+
+             $user->save();
+         }
+     }
+
+     return redirect()->back()->with('success', 'Status pesanan SELESAI. Total belanja pelanggan berhasil diakumulasikan!');
+ }
 
     // Cetak Struk Termal (Oleh Admin/Kasir di Toko)
     public function cetakStruk($id)
@@ -275,10 +299,23 @@ class TransaksiController extends Controller
             $totalHarga += $item['price'] * $item['quantity'];
         }
 
-        // 4. LOGIKA DISKON 10% (Ditaruh di sini, pastikan cek Auth dulu)
-        if (Auth::check() && Auth::user()->usertype == 'user') {
-            $totalHarga = $totalHarga * 0.90; // Terapkan diskon 10% khusus member
-        }
+     if (Auth::check() && Auth::user()->usertype == 'user') {
+         $diskon = 0; // Default Bronze = 0%
+
+         switch (Auth::user()->level_member) {
+             case 'Platinum': 
+                 $diskon = 0.15; // Diskon 15%
+                 break;
+             case 'Gold': 
+                 $diskon = 0.10; // Diskon 10%
+                 break;
+             case 'Silver': 
+                 $diskon = 0.05; // Diskon 5%
+                 break;
+         }
+
+         $totalHarga = $totalHarga - ($totalHarga * $diskon); 
+     }
 
         DB::beginTransaction();
 

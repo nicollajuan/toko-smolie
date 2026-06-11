@@ -230,6 +230,98 @@
                 <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
             </div>
         @endif
+        {{-- FLASH MESSAGE --}}
+        @if(session('success'))
+            <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center">
+                <i class="bi bi-check-circle-fill fs-4 me-2"></i> {{ session('success') }}
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        {{-- ========================================================================= --}}
+        {{-- KARTU PROGRESS BAR TIERED LOYALTY MEMBER                                  --}}
+        {{-- ========================================================================= --}}
+        <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+            <div class="card-body p-4">
+                @php
+                    $totalBelanja = Auth::user()->total_pembelanjaan ?? 0;
+                    $currentTier = Auth::user()->level_member ?? 'Bronze';
+                    
+                    // Definisikan ambang batas (threshold) untuk setiap level
+                    if ($currentTier == 'Bronze') {
+                        $nextTier = 'Silver';
+                        $target = 200000;
+                        $prevTarget = 0;
+                    } elseif ($currentTier == 'Silver') {
+                        $nextTier = 'Gold';
+                        $target = 500000;
+                        $prevTarget = 200000;
+                    } elseif ($currentTier == 'Gold') {
+                        $nextTier = 'Platinum';
+                        $target = 1000000;
+                        $prevTarget = 500000;
+                    } else {
+                        $nextTier = 'Maksimal';
+                        $target = 1000000;
+                        $prevTarget = 1000000;
+                    }
+
+                    // Hitung persentase bar
+                    if ($currentTier != 'Platinum') {
+                        $kurangBelanja = $target - $totalBelanja;
+                        $pembilang = max(0, $totalBelanja - $prevTarget);
+                        $penyebut = $target - $prevTarget;
+                        $persen = max(0, min(100, ($pembilang / $penyebut) * 100)); 
+                    } else {
+                        $kurangBelanja = 0;
+                        $persen = 100;
+                    }
+                @endphp
+
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-2">
+                    <div>
+                        <h6 class="fw-bold mb-1 text-dark" style="font-family: 'Poppins', sans-serif;">Loyalitas Member Smolie</h6>
+                        <p class="text-muted small mb-0">Total akumulasi belanja selesai: <span class="fw-bold text-danger">Rp {{ number_format($totalBelanja, 0, ',', '.') }}</span></p>
+                    </div>
+                    
+                    @php
+                        $bgBadge = 'bg-secondary text-white'; 
+                        if($currentTier == 'Silver') $bgBadge = 'bg-info text-dark';
+                        if($currentTier == 'Gold') $bgBadge = 'bg-warning text-dark';
+                        if($currentTier == 'Platinum') $bgBadge = 'bg-dark text-white';
+                    @endphp
+                    <span class="badge rounded-pill px-3 py-2 text-uppercase font-monospace border shadow-sm {{ $bgBadge }}" style="font-size: 0.75rem;">
+                        <i class="bi bi-shield-fill-check me-1"></i> Level {{ $currentTier }}
+                    </span>
+                </div>
+
+                {{-- Bar Visual Progress --}}
+                @if($currentTier != 'Platinum')
+                    <div class="progress rounded-pill mb-2 shadow-sm" style="height: 14px; background-color: #f1f5f9;">
+                        {{-- Hapus progress-bar-striped dan progress-bar-animated di sini --}}
+                        <div class="progress-bar 
+                            @if($currentTier == 'Silver') bg-info 
+                            @elseif($currentTier == 'Gold') bg-warning 
+                            @else bg-danger @endif" 
+                            role="progressbar" style="width: {{ $persen }}%;" aria-valuenow="{{ $persen }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <p class="text-muted mb-0 d-flex align-items-center" style="font-size: 0.8rem; font-weight: 500;">
+                        <i class="bi bi-lightning-charge-fill text-warning me-1 fs-6"></i> 
+                        <span>Belanja <strong class="text-dark">Rp {{ number_format($kurangBelanja, 0, ',', '.') }}</strong> lagi untuk naik kelas ke level <strong class="text-primary">{{ $nextTier }}</strong>!</span>
+                    </p>
+                @else
+                    <div class="progress rounded-pill mb-2 shadow-sm" style="height: 14px;">
+                        {{-- Hapus juga animasi untuk level Platinum --}}
+                        <div class="progress-bar bg-dark" role="progressbar" style="width: 100%;"></div>
+                    </div>
+                    <p class="text-success mb-0 d-flex align-items-center" style="font-size: 0.8rem; font-weight: 600;">
+                        <i class="bi bi-trophy-fill text-warning me-1 fs-6"></i> 
+                        <span>Selamat! Anda berada di level tertinggi. Nikmati keuntungan diskon 15% di setiap pesanan!</span>
+                    </p>
+                @endif
+            </div>
+        </div>
+        {{-- ========================================================================= --}}
         
         @if($riwayat->isEmpty())
             {{-- TAMPILAN JIKA KOSONG --}}

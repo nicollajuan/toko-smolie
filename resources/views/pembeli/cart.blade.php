@@ -479,20 +479,34 @@
 
         currentTotal = total;
 
-        // --- LOGIKA PROMO MEMBER 10% ---
+        // --- LOGIKA DISKON TIERED MEMBER ---
         let isMember = {{ Auth::check() && Auth::user()->usertype == 'user' ? 'true' : 'false' }};
+        let userTier = "{{ Auth::check() ? (Auth::user()->level_member ?? 'Bronze') : 'Bronze' }}";
         
         if (isMember && total > 0) {
-            let diskon = total * 0.10; // Potongan 10%
-            let totalSetelahDiskon = total - diskon;
+            let diskonPersen = 0; // Bronze
+            
+            if (userTier === 'Silver') diskonPersen = 0.05; // 5%
+            else if (userTier === 'Gold') diskonPersen = 0.10; // 10%
+            else if (userTier === 'Platinum') diskonPersen = 0.15; // 15%
+
+            let nominalDiskon = total * diskonPersen;
+            let totalSetelahDiskon = total - nominalDiskon;
             currentTotal = totalSetelahDiskon;
 
-            $('#displayTotal').html(
-                `<span class="text-muted fs-6 text-decoration-line-through me-2">Rp ${new Intl.NumberFormat('id-ID').format(total)}</span>` +
-                `Rp ${new Intl.NumberFormat('id-ID').format(totalSetelahDiskon)} <br>` +
-                `<div class="text-success fw-bold text-end mt-1" style="font-size: 0.8rem;"><i class="bi bi-tag-fill"></i> Diskon Member 10% Berhasil Dipasang!</div>`
-            );
+            if (diskonPersen > 0) {
+                // Tampilan jika dapat diskon (Silver, Gold, Platinum)
+                $('#displayTotal').html(
+                    `<span class="text-muted fs-6 text-decoration-line-through me-2">Rp ${new Intl.NumberFormat('id-ID').format(total)}</span>` +
+                    `Rp ${new Intl.NumberFormat('id-ID').format(totalSetelahDiskon)} <br>` +
+                    `<div class="text-success fw-bold text-end mt-1" style="font-size: 0.8rem;"><i class="bi bi-tag-fill"></i> Diskon ${userTier} ${(diskonPersen*100)}% Berhasil Dipasang!</div>`
+                );
+            } else {
+                // Tampilan jika masih Bronze (Tidak ada diskon)
+                $('#displayTotal').text('Rp ' + new Intl.NumberFormat('id-ID').format(total));
+            }
         } else {
+            // Tampilan untuk Kasir/Admin/Guest
             $('#displayTotal').text('Rp ' + new Intl.NumberFormat('id-ID').format(total));
         }
 

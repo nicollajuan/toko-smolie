@@ -338,7 +338,8 @@ class PembeliController extends Controller
     {
         if (!Auth::check()) { return redirect()->route('login'); }
 
-        $riwayat = Transaksi::with('review') 
+        // PERBAIKAN: Tambahkan 'details' dan 'details.produk' agar dipanggil sekaligus
+        $riwayat = Transaksi::with(['review', 'details.produk']) 
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
