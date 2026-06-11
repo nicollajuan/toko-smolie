@@ -108,17 +108,6 @@
             margin-top: 10px;
         }
 
-        .btn-facebook {
-            background-color: #5C7CFA;
-            color: white;
-            font-weight: 600;
-            border-radius: 50px;
-            padding: 10px;
-            width: 100%;
-            border: none;
-            margin-top: 10px;
-        }
-
         .password-toggle {
             cursor: pointer;
             color: #94A3B8;
@@ -215,14 +204,6 @@
                     </div>
 
                     <button type="submit" class="btn-submit">Registrasi Akun</button>
-
-                    <button type="button" class="btn-google">
-                        <i class="bi bi-google me-2"></i> Register dengan Google
-                    </button>
-
-                    <button type="button" class="btn-facebook mb-4">
-                        <i class="bi bi-facebook me-2"></i> Register dengan Facebook
-                    </button>
 
                     <div class="text-center mt-3">
                         <a href="{{ route('login') }}" class="text-decoration-none fw-semibold" style="color: #3B82F6; font-size: 0.9rem;">Sudah memiliki akun? Login!</a>

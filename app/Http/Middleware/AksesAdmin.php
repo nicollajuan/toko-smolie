@@ -36,10 +36,19 @@ class AksesAdmin
         if ($userType == 'kasir') {
             // Daftar URL yang DIIZINKAN untuk Kasir (Tanda * berarti termasuk sub-halamannya)
             $allowedForKasir = [
+                '/',             // <-- AKSES DIBUKA: Halaman utama / Katalog depan
                 'home',
+                'kasir*',
                 'katalog*',
                 'transaksi*',
-                'logout*'
+                'logout*',
+                'cart*',         // <-- AKSES DIBUKA: Halaman keranjang
+                'add-to-cart*',  // <-- AKSES DIBUKA: Fungsi tambah keranjang
+                'update-cart*',  // <-- AKSES DIBUKA: Fungsi update jumlah barang
+                'remove-cart*',  // <-- AKSES DIBUKA: Fungsi hapus barang dari keranjang
+                'checkout*',     // <-- AKSES DIBUKA: Fungsi proses pesanan
+                'pembayaran*',   // <-- AKSES DIBUKA: Halaman pembayaran/struk
+                'set-layanan*'   // <-- AKSES DIBUKA: Pilihan Takeaway / Delivery
             ];
 
             $isAllowed = false;

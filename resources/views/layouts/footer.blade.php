@@ -64,12 +64,6 @@
                 <p class="small mb-3">Dapatkan promo terbaru dan info menarik lewat sosial media kami.</p>
                 <div class="d-flex gap-2 mb-4">
                     {{-- Ganti href="#" dengan URL akun sosmed yang nyata --}}
-                    <a href="#" class="footer-social-btn" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="footer-social-btn" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="footer-social-btn" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
-                    <a href="https://wa.me/{{ $site_whatsapp ?? '' }}" target="_blank" class="footer-social-btn" aria-label="WhatsApp">
-                        <i class="bi bi-whatsapp"></i>
-                    </a>
                 </div>
                 <a href="https://wa.me/{{ $site_whatsapp ?? '' }}" target="_blank"
                    class="btn w-100 fw-bold rounded-pill py-2 text-white shadow-sm"

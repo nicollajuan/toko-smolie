@@ -35,13 +35,6 @@ Route::get('/pembayaran/{id}', [TransaksiController::class, 'halamanPembayaran']
 Route::get('/', [PembeliController::class, 'index'])->name('pembeli.index');
 
 // =========================================================================
-// SOCIAL LOGIN (FACEBOOK)
-// =========================================================================
-
-Route::get('/auth/facebook', [FacebookAuthController::class, 'redirect'])->name('facebook.redirect');
-Route::get('/auth/facebook/callback', [FacebookAuthController::class, 'callback'])->name('facebook.callback');
-
-// =========================================================================
 // ROUTING PEMBELI (HANYA BUTUH LOGIN BIASA)
 // =========================================================================
 
@@ -92,7 +85,7 @@ Route::middleware(['auth', AksesAdmin::class])->group(function () {
 // =========================================================================
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfaileController::class, 'index'])->name('profile');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
