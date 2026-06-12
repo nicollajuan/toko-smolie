@@ -23,6 +23,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\Kasir::class,
         ]);
 
+        $middleware->alias([
+            'profile.complete' => \App\Http\Middleware\EnsureProfileIsComplete::class,
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

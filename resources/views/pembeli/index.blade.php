@@ -160,9 +160,11 @@
     <span class="badge rounded-pill ms-2 {{ $bgBadge }}" style="font-size: 0.65rem;">{{ $lvl }}</span>
 </a>
                             <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2" style="border-radius: 12px;">
+                                <li><a class="dropdown-item py-2 small fw-semibold" href="{{ route('profile.edit') }}"><i class="bi bi-person-circle me-2"></i>Profil Saya</a></li>
                                 @if(in_array(Auth::user()->usertype, ['admin', 'kasir'])) 
                                     <li><a class="dropdown-item py-2 small fw-semibold" href="/home"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li> 
                                 @endif
+                                <li><hr class="dropdown-divider"></li>
                                 {{-- PERUBAHAN: Tombol Logout memanggil Modal --}}
                                 <li>
                                     <button type="button" class="dropdown-item py-2 small text-danger fw-semibold" data-bs-toggle="modal" data-bs-target="#modalLogoutKonfirmasi">

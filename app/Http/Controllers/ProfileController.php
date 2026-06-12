@@ -19,12 +19,28 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
+
+        if ($user->usertype === 'user') {
+            return view('profile.edit-pembeli', compact('user'));
+        }
+
         return view('profile.edit', compact('user'));
     }
 
     public function update(Request $request)
     {
         $user = Auth::user();
+
+        // =====================================================
+        // BRANCH KHUSUS PEMBELI
+        // =====================================================
+        if ($user->usertype === 'user') {
+            return $this->updatePembeli($request, $user);
+        }
+
+        // =====================================================
+        // BRANCH ADMIN / KASIR (TIDAK DIUBAH)
+        // =====================================================
 
         // 1. Validasi
         $rules = [
@@ -72,7 +88,6 @@ class ProfileController extends Controller
 
         // 4. Update WhatsApp, Bank & QRIS (Khusus Admin)
         if ($user->usertype === 'admin') {
-            // Auto-format WhatsApp
             if ($request->whatsapp) {
                 $whatsapp = preg_replace('/[^0-9]/', '', $request->whatsapp);
                 if (substr($whatsapp, 0, 4) === '6262') {
@@ -93,14 +108,11 @@ class ProfileController extends Controller
             $user->nomor_rekening        = $request->nomor_rekening;
             $user->nama_pemilik_rekening = $request->nama_pemilik_rekening;
 
-            // Upload Gambar QRIS
             if ($request->hasFile('gambar_qris')) {
-                // Hapus gambar lama jika ada
                 if ($user->gambar_qris && File::exists(public_path('img/qris/' . $user->gambar_qris))) {
                     File::delete(public_path('img/qris/' . $user->gambar_qris));
                 }
 
-                // Buat folder jika belum ada
                 if (!File::exists(public_path('img/qris'))) {
                     File::makeDirectory(public_path('img/qris'), 0755, true);
                 }
@@ -130,9 +142,71 @@ class ProfileController extends Controller
             $user->foto = $filename;
         }
 
-        // Simpan ke Database
         $user->save();
 
         return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    /**
+     * Update profil khusus pembeli (tema Smolie)
+     */
+    protected function updatePembeli(Request $request, $user)
+    {
+        $rules = [
+            'name'           => 'required|string|max:255',
+            'username'       => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($user->id)],
+            'email'          => 'required|email|max:255|unique:users,email,'.$user->id,
+            'jenis_kelamin'  => 'required|in:Laki-laki,Perempuan',
+            'no_hp'          => 'required|numeric',
+            'alamat'         => 'required|string|max:500',
+            'foto'           => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'current_password' => 'nullable|required_with:password|string',
+            'password'       => 'nullable|min:8|confirmed',
+        ];
+
+        $request->validate($rules, [
+            'username.unique'         => 'Username ini sudah digunakan.',
+            'email.unique'             => 'Email ini sudah digunakan oleh pengguna lain.',
+            'password.confirmed'       => 'Konfirmasi password tidak cocok.',
+            'foto.max'                  => 'Ukuran foto maksimal 2MB.',
+            'current_password.required_with' => 'Masukkan password lama untuk mengubah password.',
+        ]);
+
+        // Verifikasi password lama jika user ingin ganti password
+        if ($request->filled('password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors(['current_password' => 'Password lama yang Anda masukkan salah.'])->withInput();
+            }
+            $user->password = Hash::make($request->password);
+        }
+
+        // Update data dasar
+        $user->name          = $request->name;
+        $user->username      = $request->username;
+        $user->email         = $request->email;
+        $user->jenis_kelamin = $request->jenis_kelamin;
+        $user->no_hp         = $request->no_hp;
+        $user->alamat        = $request->alamat;
+
+        // Update foto
+        if ($request->hasFile('foto')) {
+            if ($user->foto && File::exists(public_path('img/user/' . $user->foto))) {
+                File::delete(public_path('img/user/' . $user->foto));
+            }
+
+            if (!File::exists(public_path('img/user'))) {
+                File::makeDirectory(public_path('img/user'), 0755, true);
+            }
+
+            $file     = $request->file('foto');
+            $filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+            $file->move(public_path('img/user'), $filename);
+
+            $user->foto = $filename;
+        }
+
+        $user->save();
+
+        return redirect()->route('profile.edit')->with('success', 'Profil berhasil diperbarui!');
     }
 }
