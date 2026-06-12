@@ -124,11 +124,17 @@
 
             <div class="collapse navbar-collapse text-center text-lg-start mt-3 mt-lg-0" id="navbarNav">
                 <ul class="navbar-nav mx-auto mb-3 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" href="{{ url('/') }}#beranda">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/') }}#menu-area">Katalog</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://wa.me/{{ $site_whatsapp ?? '' }}" target="_blank">Kontak</a></li>
-                    @auth <li class="nav-item"><a class="nav-link" href="{{ route('pembeli.riwayat') }}">Riwayat</a></li> @endauth
-                </ul>
+    <li class="nav-item"><a class="nav-link active" href="{{ url('/') }}#beranda">Beranda</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url('/') }}#menu-area">Katalog</a></li>
+    
+    {{-- Menu Baru: Lokasi Pop-up --}}
+    <li class="nav-item">
+        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalLokasi">Lokasi</a>
+    </li>
+    
+    <li class="nav-item"><a class="nav-link" href="https://wa.me/{{ $site_whatsapp ?? '' }}" target="_blank">Kontak</a></li>
+    @auth <li class="nav-item"><a class="nav-link" href="{{ route('pembeli.riwayat') }}">Riwayat</a></li> @endauth
+</ul>
                 <div class="d-none d-lg-flex align-items-center">
                     <a href="{{ route('cart') }}" class="me-4 text-dark position-relative transition">
                         <i class="bi bi-bag-fill fs-5"></i>
@@ -438,5 +444,33 @@
             }
         });
     </script>
+    {{-- TAMBAHAN: MODAL LOKASI GOOGLE MAPS --}}
+    <div class="modal fade" id="modalLokasi" tabindex="-1" aria-labelledby="modalLokasiLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0 pt-3 px-4">
+                    <h5 class="modal-title fw-bold" id="modalLokasiLabel" style="color: var(--text-dark);">
+                        <i class="bi bi-geo-alt-fill text-danger me-2"></i>Lokasi Smolie Gift
+                    </h5>
+                    <button type="button" class="btn-close bg-light rounded-circle p-2" data-bs-dismiss="modal" style="box-shadow: none;"></button>
+                </div>
+                <div class="modal-body p-4">
+                    {{-- Kotak Peta (Rasio 16:9 agar responsif di HP) --}}
+                    {{-- Kotak Peta (Rasio 16:9 agar responsif di HP) --}}
+                    <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm" style="background-color: #eee;">
+                        
+    {{-- Contoh Hasil Paste yang Benar: --}}
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126646.20960533252!2d112.63028212154378!3d-7.27561413813898!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fbf8381ac47d%3A0x3039d80b220cb27!2sSurabaya%2C%20Jawa%20Timur!5e0!3m2!1sid!2sid!4v1718167890123!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        
+</div>
+                    <div class="text-center mt-3">
+                        <p class="fw-semibold text-muted mb-0 small">
+                            <i class="bi bi-building me-1"></i> Jl. Raya No. 123 Surabaya
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
