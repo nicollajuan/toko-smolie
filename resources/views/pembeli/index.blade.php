@@ -132,7 +132,10 @@
         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalLokasi">Lokasi</a>
     </li>
     
-    <li class="nav-item"><a class="nav-link" href="https://wa.me/{{ $site_whatsapp ?? '' }}" target="_blank">Kontak</a></li>
+    {{-- Menu Kontak Pop-up --}}
+    <li class="nav-item">
+        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalKontak">Kontak</a>
+    </li>
     @auth <li class="nav-item"><a class="nav-link" href="{{ route('pembeli.riwayat') }}">Riwayat</a></li> @endauth
 </ul>
                 <div class="d-none d-lg-flex align-items-center">
@@ -468,6 +471,50 @@
                             <i class="bi bi-building me-1"></i> Jl. Raya No. 123 Surabaya
                         </p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- TAMBAHAN: SCRIPT UNTUK PINDAH GARIS MERAH NAVBAR --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Ambil semua tombol menu di navbar
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    // 1. Hapus garis merah (class 'active') dari semua menu
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    
+                    // 2. Berikan garis merah (class 'active') ke menu yang baru saja diklik
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+    {{-- TAMBAHAN: MODAL KONTAK WHATSAPP --}}
+    <div class="modal fade" id="modalKontak" tabindex="-1" aria-labelledby="modalKontakLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0 pt-3 px-4">
+                    <h5 class="modal-title fw-bold" id="modalKontakLabel" style="color: var(--text-dark);">
+                        <i class="bi bi-headset text-success me-2"></i>Hubungi Kami
+                    </h5>
+                    <button type="button" class="btn-close bg-light rounded-circle p-2" data-bs-dismiss="modal" style="box-shadow: none;"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 rounded-circle" style="width: 70px; height: 70px;">
+                            <i class="bi bi-whatsapp text-success" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                    <h6 class="fw-bold mb-2">Butuh Bantuan?</h6>
+                    <p class="text-muted small mb-4">Punya pertanyaan seputar custom souvenir atau pesananmu? Admin Smolie Gift siap membantu!</p>
+                    
+                    {{-- Tombol Lanjut ke WhatsApp --}}
+                    <a href="https://wa.me/{{ $site_whatsapp ?? '6281515490908' }}" target="_blank" class="btn btn-success rounded-pill px-4 py-2 fw-bold w-100 shadow-sm" style="background-color: #25D366; border: none; transition: 0.2s;">
+                        <i class="bi bi-chat-dots-fill me-2"></i> Chat Sekarang
+                    </a>
                 </div>
             </div>
         </div>
