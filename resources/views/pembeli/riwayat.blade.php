@@ -230,13 +230,6 @@
                 <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
             </div>
         @endif
-        {{-- FLASH MESSAGE --}}
-        @if(session('success'))
-            <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center">
-                <i class="bi bi-check-circle-fill fs-4 me-2"></i> {{ session('success') }}
-                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
 
         {{-- ========================================================================= --}}
         {{-- KARTU PROGRESS BAR TIERED LOYALTY MEMBER                                  --}}
@@ -395,7 +388,7 @@
                                             </div>
                                         @endif
 
-                                        <a href="{{ route('transaksi.struk', $data->id) }}" target="_blank" class="btn-struk">
+                                        <a href="{{ route('pembeli.invoice', $data->id) }}" target="_blank" class="btn-struk">
                                             <i class="bi bi-file-pdf me-1"></i> Invoice
                                         </a>
                                     @else

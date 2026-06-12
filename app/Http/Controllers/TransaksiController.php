@@ -221,27 +221,32 @@ class TransaksiController extends Controller
     }
 
     // Cetak Invoice Standar A4 (Oleh Pembeli dari Dashboard)
+    // Cetak Struk Thermal (Dilihat oleh Pembeli dari Dashboard)
     public function cetakInvoice($id)
     {
-        $transaction = Transaksi::findOrFail($id);
+        // 1. Cari data transaksi (Gunakan variabel $transaksi agar cocok dengan view struk kasir)
+        $transaksi = Transaksi::findOrFail($id);
 
-        // KEAMANAN PENTING: Pastikan user tidak mengintip invoice orang lain dengan mengganti ID di URL
-        if ($transaction->customer_email != Auth::user()->email) {
-            abort(403, 'Anda tidak memiliki akses ke invoice ini.');
+        // 2. KEAMANAN: Pastikan user tidak mengintip struk orang lain
+        if ($transaksi->user_id != Auth::id()) {
+            abort(403, 'Akses ditolak! Anda tidak memiliki akses ke struk ini.');
         }
 
-        // Ambil detail barang juga jika ingin ditampilkan di invoice pembeli
+        // 3. Ambil detail barang yang dibeli
         $details = DB::table('detail_transaksi')
             ->join('produk', 'detail_transaksi.produk_id', '=', 'produk.id')
             ->where('detail_transaksi.transaksi_id', $id)
             ->select('detail_transaksi.*', 'produk.nama_produk')
             ->get();
 
-        // Load View PDF Invoice
-        $pdf = Pdf::loadView('pembeli.invoice_pdf', compact('transaction', 'details'));
+        // 4. Load View PDF menggunakan template STRUK KASIR (bukan pembeli.invoice_pdf)
+        $pdf = Pdf::loadView('transaksi.struk', compact('transaksi', 'details'));
         
-        // Download otomatis (Kertas defaultnya adalah A4 portrait)
-        return $pdf->download('Invoice-SmolieGift-'.$transaction->id.'.pdf');
+        // 5. Atur ukuran kertas seperti struk kasir (Custom: 72mm x 600mm)
+        $pdf->setPaper([0, 0, 204, 600], 'portrait');
+        
+        // 6. Tampilkan PDF (Stream = Buka di tab baru)
+        return $pdf->stream('Struk-SmolieGift-'.$transaksi->kode_transaksi.'.pdf');
     }
 
     // Mengupdate status menjadi dikirim beserta estimasi tibanya

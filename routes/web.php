@@ -44,7 +44,7 @@ Route::delete('/remove-from-cart', [PembeliController::class, 'removeCart'])->na
 Route::post('/checkout', [TransaksiController::class, 'checkout'])->name('checkout');
 Route::get('/set-layanan/{tipe}', [PembeliController::class, 'setLayanan'])->name('set.layanan');
 Route::patch('/update-cart', [PembeliController::class, 'updateCart'])->name('update.cart'); // <-- Bisa diakses tamu
-
+Route::get('/riwayat/invoice/{id}', [\App\Http\Controllers\TransaksiController::class, 'cetakInvoice'])->name('pembeli.invoice');
 Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat-pesanan', [PembeliController::class, 'riwayat'])->name('pembeli.riwayat');
 });
