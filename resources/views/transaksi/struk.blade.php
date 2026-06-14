@@ -18,7 +18,7 @@
         {{-- HEADER STRUK --}}
         <div class="text-center">
             <h3 style="margin: 0 0 5px 0; font-size: 14pt;">SMOLIE GIFT</h3>
-            Surabaya, Jawa Timur<br>
+            jalan pogot 5 no.77, RT.009/RW.005, Kel. Tanah Kali Kedinding, Kec. Kenjeran, Kota Surabaya, 60129<br>
             WA: 0895-3958-10940
         </div>
         

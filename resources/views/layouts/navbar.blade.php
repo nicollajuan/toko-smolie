@@ -54,6 +54,11 @@
                             <i class="bi bi-people-fill me-3 fs-4"></i> Kelola Staf
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.diskon') }}" class="nav-link d-flex align-items-center {{ Request::is('admin/diskon*') ? 'active-smolie' : 'text-secondary' }}">
+                            <i class="bi bi-percent me-3 fs-4"></i> Diskon Member
+                        </a>
+                    </li>
                 @endif
 
                 {{-- MENU KHUSUS KASIR --}}

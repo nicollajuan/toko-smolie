@@ -305,18 +305,18 @@ class TransaksiController extends Controller
         }
 
      if (Auth::check() && Auth::user()->usertype == 'user') {
-         $diskon = 0; // Default Bronze = 0%
+         $diskon = 0;
 
-         switch (Auth::user()->level_member) {
-             case 'Platinum': 
-                 $diskon = 0.15; // Diskon 15%
-                 break;
-             case 'Gold': 
-                 $diskon = 0.10; // Diskon 10%
-                 break;
-             case 'Silver': 
-                 $diskon = 0.05; // Diskon 5%
-                 break;
+         $diskonSetting = \App\Models\DiskonLevel::where('level_member', Auth::user()->level_member)->first();
+         if ($diskonSetting) {
+             $diskon = $diskonSetting->getDiskonAktif() / 100;
+         } else {
+             // Fallback jika tabel belum ada
+             switch (Auth::user()->level_member) {
+                 case 'Platinum': $diskon = 0.15; break;
+                 case 'Gold':     $diskon = 0.10; break;
+                 case 'Silver':   $diskon = 0.05; break;
+             }
          }
 
          $totalHarga = $totalHarga - ($totalHarga * $diskon); 

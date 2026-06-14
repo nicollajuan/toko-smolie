@@ -15,6 +15,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StafController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\CompleteProfileController;
+use App\Http\Controllers\DiskonController;
 
 // =========================================================================
 // ROUTING LOGIN STAFF (ADMIN & KASIR)
@@ -62,6 +63,8 @@ Route::get('/riwayat/invoice/{id}', [\App\Http\Controllers\TransaksiController::
 
 Route::middleware(['auth', 'profile.complete'])->group(function () {
     Route::get('/riwayat-pesanan', [PembeliController::class, 'riwayat'])->name('pembeli.riwayat');
+    Route::get('/profil-saya', [PembeliController::class, 'profil'])->name('pembeli.profil');
+    Route::get('/kartu-member', [PembeliController::class, 'kartuMember'])->name('pembeli.kartu-member');
 });
 
 // =========================================================================
@@ -164,6 +167,11 @@ Route::middleware(['auth', AksesAdmin::class])->group(function () {
     Route::get('/kasir/menu', [TransaksiController::class, 'kasirMenu'])->name('transaksi.kasir.menu');
     Route::get('/transaksi/manual', [TransaksiController::class, 'createKasir'])->name('transaksi.kasir.create');
     Route::post('/transaksi/manual', [TransaksiController::class, 'storeKasir'])->name('transaksi.kasir.store');
+});
+
+Route::middleware(['auth', AksesAdmin::class])->group(function () {
+    Route::get('/admin/diskon', [DiskonController::class, 'index'])->name('admin.diskon');
+    Route::post('/admin/diskon', [DiskonController::class, 'update'])->name('admin.diskon.update');
 });
 
 // =========================================================================
