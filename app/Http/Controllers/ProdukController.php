@@ -30,7 +30,7 @@ class ProdukController extends Controller
     // =========================================================
 
     public function index(){
-        $this->cekAdmin(); // Panggil penjaga pintu
+        $this->cekAdmin();
 
         $data = Produk::all();
         $kategori = Kategori::all();
@@ -49,12 +49,11 @@ class ProdukController extends Controller
 
         $message = [
             'required' => ':attribute tidak boleh kosong',
-            'unique'   => ':attribute sudah digunakan, pakai kode lain', 
+            'unique'   => ':attribute sudah digunakan, pakai kode lain',
             'numeric'  => ':attribute harus berupa angka',
             'image'    => ':attribute harus berupa gambar',
         ];
 
-        // VALIDASI DIUBAH: Hapus validasi 'id' karena sekarang otomatis
         $request->validate([
             'nama_produk' => 'required|unique:produk,nama_produk',
             'kategori_id' => 'required',
@@ -64,39 +63,37 @@ class ProdukController extends Controller
         ], $message);
 
         $data = new Produk();
-        
-        // its NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWwwwWWWWWWWWWWWWWWWWWW
-        // -------------------------------------------------------------
-        // LOGIKA AUTO-GENERATE KODE PRODUK ALFANUMERIK (Contoh: SML-X9B2A)
-        // -------------------------------------------------------------
-        $kode_baru = 'SML-' . strtoupper(Str::random(5)); // Membuat 5 huruf/angka acak
-        
-        // Memastikan kode benar-benar unik dan belum ada di database
+
+        // Auto-generate kode produk unik
+        $kode_baru = 'SML-' . strtoupper(Str::random(5));
         while (Produk::where('kode_produk', $kode_baru)->exists()) {
             $kode_baru = 'SML-' . strtoupper(Str::random(5));
         }
-        $data->kode_produk = $kode_baru; 
-        // (Baris $data->id dihapus karena database akan auto-increment otomatis)
-        // -------------------------------------------------------------
-        
+        $data->kode_produk = $kode_baru;
+
         $data->nama_produk = $request->nama_produk;
-        $data->kategori_id = $request->kategori_id; 
-        $data->harga = $request->harga;
-        $data->stock = $request->stock;
-        $data->status = 'aktif'; 
-        
-        $data->deskripsi = $request->has('deskripsi') ? $request->deskripsi : '-';
+        $data->kategori_id = $request->kategori_id;
+        $data->harga       = $request->harga;
+        $data->stock       = $request->stock;
+        $data->status      = 'aktif';
+        $data->deskripsi   = $request->has('deskripsi') ? $request->deskripsi : '-';
 
         if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            $nama_file = time()."_".$file->getClientOriginalName();
-            $tujuan_upload = 'img/produk';
+            $file      = $request->file('gambar');
+            $nama_file = time() . "_" . $file->getClientOriginalName();
+
+            // Pastikan folder ada, buat jika belum
+            $tujuan_upload = public_path('img/produk');
+            if (!File::exists($tujuan_upload)) {
+                File::makeDirectory($tujuan_upload, 0755, true);
+            }
+
             $file->move($tujuan_upload, $nama_file);
             $data->gambar = $nama_file;
         }
 
         $data->save();
-        return redirect('/tampil-produk')->with('success','Data berhasil disimpan dengan Kode: ' . $kode_baru);
+        return redirect('/tampil-produk')->with('success', 'Data berhasil disimpan dengan Kode: ' . $kode_baru);
     }
 
     public function update(Request $request, $id)
@@ -104,9 +101,9 @@ class ProdukController extends Controller
         $this->cekAdmin();
 
         $produk = Produk::findOrFail($id);
-        
+
         $request->validate([
-            'nama_produk' => 'required', 
+            'nama_produk' => 'required',
             'kategori_id' => 'required',
             'harga'       => 'required|numeric',
             'stock'       => 'required|numeric',
@@ -114,64 +111,62 @@ class ProdukController extends Controller
 
         $produk->nama_produk = $request->nama_produk;
         $produk->kategori_id = $request->kategori_id;
-        $produk->harga = $request->harga;
-        $produk->stock = $request->stock;
+        $produk->harga       = $request->harga;
+        $produk->stock       = $request->stock;
 
-        if($request->has('deskripsi')){
+        if ($request->has('deskripsi')) {
             $produk->deskripsi = $request->deskripsi;
         }
 
-        if($request->has('status')){
+        if ($request->has('status')) {
             $produk->status = $request->status;
         }
 
         if ($request->hasFile('gambar')) {
-            if(File::exists(public_path('img/produk/'.$produk->gambar)) && $produk->gambar){
-                File::delete(public_path('img/produk/'.$produk->gambar));
+            // Hapus gambar lama jika ada
+            $gambarLama = public_path('img/produk/' . $produk->gambar);
+            if ($produk->gambar && File::exists($gambarLama)) {
+                File::delete($gambarLama);
             }
 
-            $file = $request->file('gambar');
-            $nama_file = time()."_".$file->getClientOriginalName();
-            $tujuan_upload = 'img/produk';
+            $file      = $request->file('gambar');
+            $nama_file = time() . "_" . $file->getClientOriginalName();
+
+            $tujuan_upload = public_path('img/produk');
+            if (!File::exists($tujuan_upload)) {
+                File::makeDirectory($tujuan_upload, 0755, true);
+            }
+
             $file->move($tujuan_upload, $nama_file);
-            
             $produk->gambar = $nama_file;
         }
 
         $produk->save();
-
         return redirect('/tampil-produk')->with('success', 'Data berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
         $this->cekAdmin();
-
         $produk = Produk::findOrFail($id);
-        
+
         try {
-            $gambarLama = $produk->gambar; 
-            
+            // Lepas relasi dulu
+            \DB::table('detail_transaksi')
+                ->where('produk_id', $id)
+                ->update(['produk_id' => null]);
+
+            $gambarLama = $produk->gambar;
             $produk->delete();
 
-            if(File::exists(public_path('img/produk/'.$gambarLama)) && $gambarLama){
-                File::delete(public_path('img/produk/'.$gambarLama));
+            if ($gambarLama && File::exists(public_path('img/produk/' . $gambarLama))) {
+                File::delete(public_path('img/produk/' . $gambarLama));
             }
 
-            return redirect('/tampil-produk')->with('success','Data berhasil dihapus permanen');
-            
+            return redirect('/tampil-produk')->with('success', 'Data berhasil dihapus permanen');
+
         } catch (QueryException $e) {
-            
-            if ($e->errorInfo[1] == 1451) {
-                
-                $produk->status = 'non-aktif';
-                $produk->save();
-
-                return redirect('/tampil-produk')
-                    ->with('success', 'Produk ini pernah terjual dan tidak bisa dihapus permanen. Status otomatis diubah menjadi "Non-Aktif" (Diarsipkan) agar data transaksi aman.');
-            }
-            
-            return redirect('/tampil-produk')->with('error', 'Terjadi kesalahan database: ' . $e->getMessage());
+            return redirect('/tampil-produk')->with('error', 'Gagal menghapus: ' . $e->getMessage());
         }
     }
 
@@ -184,7 +179,7 @@ class ProdukController extends Controller
     {
         $this->cekAdmin();
         $data = Produk::all();
-        $pdf = PDF::loadView('produk.pdfproduk', ['dataProduk' => $data]);
+        $pdf  = PDF::loadView('produk.pdfproduk', ['dataProduk' => $data]);
         $pdf->setPaper('A4', 'portrait');
         return $pdf->download('laporan-produk.pdf');
     }

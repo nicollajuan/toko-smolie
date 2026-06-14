@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class ProdukController extends Controller
 {
-    // GET semua produk
+    // GET semua produk (hanya aktif)
     public function index()
     {
-        $produk = Produk::all();
+        $produk = Produk::where('status', 'aktif')->get();
         return response()->json([
             'status' => 'success',
             'data'   => $produk
@@ -64,17 +66,32 @@ class ProdukController extends Controller
     {
         $produk = Produk::findOrFail($id);
 
-        // ✅ UBAH 'images/' MENJADI 'img/produk/'
-        $imagePath = public_path('img/produk/' . $produk->gambar);
-        if ($produk->gambar && file_exists($imagePath)) {
-            unlink($imagePath);
-        }
+        try {
+            // Lepas relasi ke detail_transaksi agar tidak kena foreign key constraint
+            // produk_id di detail_transaksi di-set NULL — data transaksi tetap aman
+            DB::table('detail_transaksi')
+                ->where('produk_id', $id)
+                ->update(['produk_id' => null]);
 
-        $produk->delete();
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Produk dihapus'
-        ]);
+            // Hapus gambar fisik jika ada
+            $imagePath = public_path('img/produk/' . $produk->gambar);
+            if ($produk->gambar && file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            $produk->delete();
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Produk berhasil dihapus'
+            ]);
+
+        } catch (QueryException $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Gagal menghapus: ' . $e->getMessage()
+            ]);
+        }
     }
 
     // POST upload gambar
@@ -86,8 +103,6 @@ class ProdukController extends Controller
 
         $file     = $request->file('image');
         $filename = 'produk_' . time() . '.' . $file->getClientOriginalExtension();
-        
-        // ✅ UBAH 'images' MENJADI 'img/produk'
         $file->move(public_path('img/produk'), $filename);
 
         return response()->json([
