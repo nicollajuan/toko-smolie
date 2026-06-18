@@ -31,7 +31,7 @@ class GoogleController extends Controller
                 'social_id' => $googleUser->getId(),
                 'social_provider' => 'google',
                 'password' => bcrypt(Str::random(16)),
-                'usertype' => 'pembeli', // sesuaikan dengan default usertype pembeli di project kamu
+                'usertype' => 'user', 
                 'email_verified_at' => now(),
             ]);
         } else {
@@ -45,9 +45,8 @@ class GoogleController extends Controller
 
         Auth::login($user);
 
-        // Hanya pembeli yang butuh kelengkapan profil
         if (
-            $user->usertype === 'pembeli' &&
+            $user->usertype === 'user' &&
             (empty($user->username) || empty($user->jenis_kelamin) || empty($user->no_hp) || empty($user->alamat))
         ) {
             return redirect()->route('complete-profile');

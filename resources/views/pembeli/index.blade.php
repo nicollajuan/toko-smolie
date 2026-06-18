@@ -160,7 +160,9 @@
     <span class="badge rounded-pill ms-2 {{ $bgBadge }}" style="font-size: 0.65rem;">{{ $lvl }}</span>
 </a>
                             <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2" style="border-radius: 12px;">
-                                <li><a class="dropdown-item py-2 small fw-semibold" href="{{ route('profile.edit') }}"><i class="bi bi-person-circle me-2"></i>Profil Saya</a></li>
+                                <li><a class="dropdown-item py-2 small fw-semibold" href="{{ route('pembeli.profil') }}"><i class="bi bi-person-circle me-2"></i>Profil Saya</a></li>
+                                <li><a class="dropdown-item py-2 small fw-semibold" href="{{ route('profile.edit') }}"><i class="bi bi-pencil-square me-2"></i>Edit Profil</a></li>
+                                <li><a class="dropdown-item py-2 small fw-semibold" href="{{ route('pembeli.kartu-member') }}"><i class="bi bi-credit-card-2-front-fill me-2"></i>Kartu Member</a></li>
                                 @if(in_array(Auth::user()->usertype, ['admin', 'kasir'])) 
                                     <li><a class="dropdown-item py-2 small fw-semibold" href="/home"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li> 
                                 @endif
@@ -470,7 +472,7 @@
 </div>
                     <div class="text-center mt-3">
                         <p class="fw-semibold text-muted mb-0 small">
-                            <i class="bi bi-building me-1"></i> Jl. Raya No. 123 Surabaya
+                            <i class="bi bi-building me-1"></i> jalan pogot 5 no.77, RT.009/RW.005, Kel. Tanah Kali Kedinding, Kec. Kenjeran, Kota Surabaya, 60129
                         </p>
                     </div>
                 </div>

@@ -11,15 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('produk', function (Blueprint $table) {
-            $table->string('kode_produk')->nullable()->unique()->after('id');
-        });
+        // Mengecek apakah kolom 'kode_produk' belum ada di tabel 'produk'
+        if (!Schema::hasColumn('produk', 'kode_produk')) {
+            Schema::table('produk', function (Blueprint $table) {
+                $table->string('kode_produk')->nullable()->unique()->after('id');
+            });
+        }
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::table('produk', function (Blueprint $table) {
-            $table->dropColumn('kode_produk');
-        });
+        // Mengecek apakah kolom 'kode_produk' memang ada sebelum dihapus (rollback)
+        if (Schema::hasColumn('produk', 'kode_produk')) {
+            Schema::table('produk', function (Blueprint $table) {
+                $table->dropColumn('kode_produk');
+            });
+        }
     }
 };

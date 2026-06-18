@@ -24,7 +24,7 @@
                 <ul class="list-unstyled small">
                     <li class="mb-2 d-flex align-items-start">
                         <i class="bi bi-geo-alt-fill me-2 mt-1" style="color:#E4002B;"></i>
-                        <span>Surabaya, Jawa Timur</span>
+                        <span>jalan pogot 5 no.77, RT.009/RW.005, Kel. Tanah Kali Kedinding, Kec. Kenjeran, Kota Surabaya, 60129</span>
                     </li>
                     <li class="mb-2 d-flex align-items-center">
                         <i class="bi bi-clock-fill me-2" style="color:#E4002B;"></i>

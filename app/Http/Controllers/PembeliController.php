@@ -346,4 +346,40 @@ class PembeliController extends Controller
 
         return view('pembeli.riwayat', compact('riwayat'));
     }
+
+    public function profil()
+    {
+        if (!Auth::check()) { return redirect()->route('login'); }
+
+        $user = Auth::user();
+
+        $riwayat = Transaksi::with('details')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('pembeli.profil', compact('user', 'riwayat'));
+    }
+
+    public function kartuMember()
+    {
+        if (!Auth::check()) { return redirect()->route('login'); }
+
+        $user = Auth::user();
+
+        // Ambil setting diskon per level dari database (jika ada)
+        $diskonMap = \App\Models\DiskonLevel::pluck('persentase_diskon', 'level_member')->toArray();
+
+        // Jika ada diskon manual aktif, override
+        $manualDiskon = \App\Models\DiskonLevel::where('diskon_manual_aktif', true)
+            ->where('nominal_diskon_manual', '>', 0)
+            ->pluck('nominal_diskon_manual', 'level_member')
+            ->toArray();
+
+        foreach ($manualDiskon as $level => $nominal) {
+            $diskonMap[$level] = $nominal;
+        }
+
+        return view('pembeli.kartu-member', compact('user', 'diskonMap'));
+    }
 }
