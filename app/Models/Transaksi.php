@@ -28,6 +28,7 @@ class Transaksi extends Model
         'tipe_pengambilan',
         'alamat_pengiriman',
         'detail_rumah',
+        'items_json',
     ];
 
     // RELASI KE USER

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ProdukController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\TransaksiController;
+use App\Http\Controllers\Api\ReviewController;
 
 //  upload-image HARUS di atas /{id} agar tidak bentrok
 Route::post('/produk/upload-image', [ProdukController::class, 'uploadImage']);
@@ -22,4 +23,8 @@ Route::post('/transaksi',                    [TransaksiController::class, 'store
 Route::get('/transaksi',                     [TransaksiController::class, 'index']);
 Route::get('/transaksi/all',                 [TransaksiController::class, 'all']);
 Route::put('/transaksi/{id}/confirm',        [TransaksiController::class, 'confirm']);
+Route::put('/transaksi/{id}/cancel',         [TransaksiController::class, 'cancel']); 
 Route::get('/transaksi/history/{email}',     [TransaksiController::class, 'history']);
+
+Route::get('/reviews',  [ReviewController::class, 'index']);
+Route::post('/reviews', [ReviewController::class, 'store']);
