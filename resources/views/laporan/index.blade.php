@@ -125,7 +125,7 @@
         <div class="col-md-12">
             <div class="card card-modern">
                 <div class="card-header-modern">
-                    <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-receipt me-2 text-kfc"></i>RIWAYAT PEMESANAN PRODUK</h5>
+                    <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-receipt me-2 text-kfc"></i>RIWAYAT PESANAN PRODUK</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
